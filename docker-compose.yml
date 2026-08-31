@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: rento-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rento
+      POSTGRES_PASSWORD: rento_dev
+      POSTGRES_DB: rento
+    ports:
+      - "5432:5432"
+    volumes:
+      - rento_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rento -d rento"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  rento_pgdata:

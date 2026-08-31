@@ -1,0 +1,3568 @@
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 1)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\auth.js:88:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\auth.js:88:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\auth.js:88:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\auth.js:88:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 1)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 1)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:11:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Promise.all (index 0)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\home.js:31:41 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\categories.js:38:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\locations.js:10:22 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+AggregateError [ECONNREFUSED]: 
+    at C:\Users\lazar.milivojevic\Documents\Rento\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async C:\Users\lazar.milivojevic\Documents\Rento\backend\src\routes\search.js:167:21 {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1648:14)
+        at afterConnectMultiple (node:net:1678:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}

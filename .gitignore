@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+build/
+.web/
+
+# Env
+.env
+.env.local
+
+# Uploads / runtime files
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Flutter
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/android/app/.cxx/
+mobile/ios/Pods/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
