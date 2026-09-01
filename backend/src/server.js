@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const config = require("./config");
 const { notFound, errorHandler } = require("./middleware/http");
+const { migrate } = require("./db/migrate");
 
 const app = express();
 
@@ -35,6 +36,8 @@ app.use("/api/estimate", require("./routes/estimate"));
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(config.port, () => {
-  console.log(`Rento API listening on http://localhost:${config.port}`);
+migrate().then(() => {
+  app.listen(config.port, () => {
+    console.log(`Rento API listening on http://localhost:${config.port}`);
+  });
 });

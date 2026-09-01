@@ -475,11 +475,15 @@ async function seed() {
     throw err;
   } finally {
     client.release();
-    await pool.end();
+    if (require.main === module) await pool.end();
   }
 }
 
-seed().catch((e) => {
-  console.error("Seed failed:", e);
-  process.exitCode = 1;
-});
+module.exports = { seed };
+
+if (require.main === module) {
+  seed().catch((e) => {
+    console.error("Seed failed:", e);
+    process.exitCode = 1;
+  });
+}
