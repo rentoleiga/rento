@@ -5,21 +5,9 @@ import ListingCard from "../components/ListingCard";
 import CategoryIcon from "../components/CategoryIcon";
 import { useLang } from "../i18n";
 
-
-
-const PARTNERS = [
-  { name: "Elko", logo: "/partners/elko.svg" },
-  { name: "N1", logo: "/partners/n1.svg" },
-  { name: "Ólís", logo: "/partners/olis.svg" },
-  { name: "Blue Lagoon", logo: "/partners/blue-lagoon.svg" },
-  { name: "Húsavík Whale", logo: "/partners/husavik-whale.svg" },
-  { name: "Harpa", logo: "/partners/harpa.svg" },
-];
-
 export default function HomePage() {
   const { t, lang } = useLang();
   const [categories, setCategories] = useState([]);
-  const [locations, setLocations] = useState([]);
   const [platinum, setPlatinum] = useState([]);
   const [popular, setPopular] = useState([]);
   const [newest, setNewest] = useState([]);
@@ -28,7 +16,6 @@ export default function HomePage() {
 
   useEffect(() => {
     api.get(`/api/categories?lang=${lang}`).then((d) => setCategories(d.categories || [])).catch(() => {});
-    api.get("/api/locations").then((d) => setLocations(d.locations || [])).catch(() => {});
   }, [lang]);
 
   useEffect(() => {
@@ -116,21 +103,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section section-flush">
-        <div className="container">
-          <div className="section-head">
-            <h2>{t("home.locations")}</h2>
-          </div>
-          <div className="location-list">
-            {locations.map((l) => (
-              <Link key={l.id} to={`/search?location=${encodeURIComponent(l.city)}`} className="location-chip">
-                {l.city}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {platinum.length > 0 && (
         <section className="section section-flush featured-band">
           <div className="container">
@@ -178,22 +150,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-      <section className="section partners-section">
-        <div className="container">
-          <div className="section-head">
-            <h2>{t("home.partners")}</h2>
-          </div>
-          <div className="partners-grid">
-            {PARTNERS.map((p) => (
-              <div key={p.name} className="partner-tile">
-                <img className="partner-logo" src={p.logo} alt={p.name} width="44" height="44" />
-                <strong>{p.name}</strong>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
 }
