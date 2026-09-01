@@ -1,14 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const { lang, setLang, t } = useLang();
-  const navigate = useNavigate();
   const location = useLocation();
-  const [q, setQ] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -26,14 +24,6 @@ export default function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  const submitSearch = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (q) params.set("keyword", q);
-    navigate(`/search?${params.toString()}`);
-    closeMenu();
-  };
-
   return (
     <header className="header">
       <div className="container header-inner">
@@ -49,18 +39,6 @@ export default function Header() {
           <span className="brand-mark" aria-hidden="true" />
           <span>Rento</span>
         </Link>
-
-        <form className="header-search" onSubmit={submitSearch}>
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder={t("search.placeholder")}
-            aria-label={t("search.placeholder")}
-          />
-          <button className="btn btn-primary" type="submit">
-            {t("search.go")}
-          </button>
-        </form>
 
         <div className={`mobile-overlay ${menuOpen ? "open" : ""}`} onClick={closeMenu} />
 
