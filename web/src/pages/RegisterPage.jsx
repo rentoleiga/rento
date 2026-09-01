@@ -49,6 +49,7 @@ export default function RegisterPage() {
   };
 
   return (
+    <div className="container section">
     <div className="form-card">
       <h1>{t("auth.registerTitle")}</h1>
       <p className="sub">{t("auth.subRegister")}</p>
@@ -96,6 +97,7 @@ export default function RegisterPage() {
         {t("auth.haveAccount")}{" "}
         <Link to="/login">{t("nav.login")}</Link>
       </p>
+    </div>
     </div>
   );
 }

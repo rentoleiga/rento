@@ -41,6 +41,7 @@ export default function LoginPage() {
   };
 
   return (
+    <div className="container section">
     <div className="form-card">
       <h1>{t("auth.welcome")}</h1>
       <p className="sub">{t("auth.subLogin")}</p>
@@ -69,6 +70,7 @@ export default function LoginPage() {
       <p className="muted" style={{ textAlign: "center", fontSize: 13, marginTop: 12 }}>
         {t("auth.demo")}
       </p>
+    </div>
     </div>
   );
 }

@@ -80,7 +80,8 @@ export default function CalculatorPage() {
       </section>
 
       <section className="section">
-        <div className="container calc-layout">
+        <div className="container">
+          <div className="calc-layout">
           <div className="card calc-panel">
             <h3 className="mt0">{t("calc.configure")}</h3>
 
@@ -176,6 +177,7 @@ export default function CalculatorPage() {
               {t("calc.startListing")}
             </Link>
           </div>
+        </div>
         </div>
 
         <div className="container" style={{ marginTop: 48 }}>
