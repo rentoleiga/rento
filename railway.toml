@@ -1,6 +1,0 @@
-[build]
-builder = "NIXPACKS"
-buildCommand = "cd backend && echo skip"
-
-[deploy]
-startCommand = "cd backend && node src/server.js"

@@ -1,0 +1,6 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "echo skip"
+
+[deploy]
+startCommand = "node src/server.js"
