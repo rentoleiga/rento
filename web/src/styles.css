@@ -257,6 +257,7 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-left: auto;
 }
 .user-menu {
   display: flex;
