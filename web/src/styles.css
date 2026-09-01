@@ -1870,6 +1870,7 @@ a:hover {
   .hero p { font-size: 16px; }
   .hero-search { padding: 12px; gap: 8px; }
   .hero-search .field { min-width: 0; }
+  .section-head { flex-direction: column; align-items: flex-start; gap: 8px; }
   .section-head h2 { font-size: 22px; }
   .dash-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .stat-card .stat-num { font-size: 22px; }
@@ -1887,6 +1888,8 @@ a:hover {
   .hero-calc h1 { font-size: clamp(26px, 6vw, 36px); }
   .calc-panel .calc-slider { flex-direction: column; align-items: stretch; gap: 6px; }
   .calc-panel .calc-slider output { min-width: 0; }
+  .sort-row { flex-direction: column; align-items: stretch; gap: 8px; }
+  .form-card.wide { margin: 20px auto; }
 }
 @media (min-width: 641px) and (max-width: 860px) {
   .grid { grid-template-columns: repeat(2, 1fr); }

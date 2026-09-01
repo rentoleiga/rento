@@ -70,7 +70,8 @@ export default function SearchPage() {
   const subs = categories.filter((c) => c.parent_id && (query.category === c.slug || (query.category === String(c.parent_id))));
 
   return (
-    <div className="container section">
+    <div className="section">
+      <div className="container">
       <div className="section-head">
         <h2 className="mt0">
           {query.keyword ? `Results for "${query.keyword}"` : t("search.allRentals")}
@@ -88,7 +89,9 @@ export default function SearchPage() {
           {t("search.shown").replace("{n}", data?.results?.length || 0)}
         </span>
       </div>
+      </div>
 
+      <div className="container">
       <div className="split">
         <aside className="filter-panel">
           <h4 className="mt0">{t("search.filter.category")}</h4>
@@ -206,6 +209,7 @@ export default function SearchPage() {
             <Pager page={data.page} pages={data.pages} onChange={(p) => update("page", p > 1 ? String(p) : "")} />
           )}
         </div>
+      </div>
       </div>
     </div>
   );
