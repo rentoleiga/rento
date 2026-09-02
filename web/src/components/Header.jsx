@@ -46,11 +46,11 @@ export default function Header() {
           <Link to="/search" className="nav-link" onClick={closeMenu}>
             {t("nav.rent")}
           </Link>
-          <Link to="/dashboard/listings/new" className="nav-link highlight" onClick={closeMenu}>
+          <Link to="/dashboard/listings/new" className="btn btn-primary btn-sm" onClick={closeMenu}>
             {t("nav.list")}
           </Link>
           {user ? (
-            <div className="user-menu">
+            <>
               <Link to="/dashboard" className="nav-link" onClick={closeMenu}>
                 {t("nav.dashboard")}
               </Link>
@@ -60,16 +60,11 @@ export default function Header() {
               <button className="nav-link" onClick={() => { logout(); closeMenu(); }}>
                 {t("nav.logout")}
               </button>
-            </div>
-          ) : (
-            <>
-              <Link to="/login" className="nav-link" onClick={closeMenu}>
-                {t("nav.login")}
-              </Link>
-              <Link to="/register" className="btn btn-primary btn-sm" onClick={closeMenu}>
-                {t("nav.register")}
-              </Link>
             </>
+          ) : (
+            <Link to="/login" className="nav-link" onClick={closeMenu}>
+              {t("nav.login")}
+            </Link>
           )}
           <select
             className="lang-select"
