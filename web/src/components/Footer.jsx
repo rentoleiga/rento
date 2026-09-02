@@ -28,7 +28,7 @@ export default function Footer() {
           <div className="footer-col">
             <h4>{t("footer.rento")}</h4>
             <Link to="/how-it-works" className="footer-link">{t("footer.howItWorks")}</Link>
-            <Link to="/search" className="footer-link">{t("footer.safety")}</Link>
+            <Link to="/safety" className="footer-link">{t("footer.safety")}</Link>
             <Link to="/search" className="footer-link">{t("footer.browse")}</Link>
             <Link to="/calculator" className="footer-link">{t("footer.faq")}</Link>
             <a href="mailto:info@rento.is" className="footer-link">{t("footer.contact")}</a>
@@ -36,10 +36,10 @@ export default function Footer() {
 
           <div className="footer-col">
             <h4>{t("footer.info")}</h4>
-            <a href="#" className="footer-link">{t("footer.terms")}</a>
-            <a href="#" className="footer-link">{t("footer.privacy")}</a>
-            <a href="#" className="footer-link">{t("footer.cookies")}</a>
-            <a href="#" className="footer-link">{t("footer.banned")}</a>
+            <Link to="/terms" className="footer-link">{t("footer.terms")}</Link>
+            <Link to="/privacy" className="footer-link">{t("footer.privacy")}</Link>
+            <Link to="/cookies" className="footer-link">{t("footer.cookies")}</Link>
+            <Link to="/banned" className="footer-link">{t("footer.banned")}</Link>
           </div>
 
           <div className="footer-col">

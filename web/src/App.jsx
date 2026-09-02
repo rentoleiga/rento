@@ -19,6 +19,11 @@ import ProfilePage from "./pages/ProfilePage";
 import PremiumPage from "./pages/PremiumPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import CalculatorPage from "./pages/CalculatorPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import CookiesPage from "./pages/CookiesPage";
+import BannedPage from "./pages/BannedPage";
+import SafetyPage from "./pages/SafetyPage";
 import { useAuth } from "./store";
 
 function ScrollToTop() {
@@ -59,6 +64,11 @@ export default function App() {
           <Route path="/promote" element={<PremiumPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/calculator" element={<CalculatorPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/cookies" element={<CookiesPage />} />
+          <Route path="/banned" element={<BannedPage />} />
+          <Route path="/safety" element={<SafetyPage />} />
         </Routes>
       </main>
       <Footer />
