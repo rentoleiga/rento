@@ -37,7 +37,11 @@ router.get(
     const lang = req.query.lang || "en";
     const { rows } = await db.query(
       `SELECT c.id, c.parent_id, c.slug, c.icon, c.sort_order,
-              COALESCE(ct.name, cte.name, '') AS name
+              COALESCE(ct.name, cte.name, '') AS name,
+              (SELECT count(*)::int FROM listings l
+               WHERE l.status='published'
+                 AND (l.category_id = c.id OR l.subcategory_id = c.id
+                      OR l.category_id IN (SELECT id FROM categories WHERE parent_id = c.id))) AS listing_count
        FROM categories c
        LEFT JOIN category_translations ct
          ON ct.category_id = c.id AND ct.language = $1

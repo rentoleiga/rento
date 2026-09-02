@@ -1062,6 +1062,104 @@ a:hover {
   height: 16px;
   accent-color: var(--primary);
 }
+.location-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+.location-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+}
+.location-tree-item:last-child { border-bottom: none; }
+.location-tree-item:hover { background: var(--bg-soft); }
+.location-tree-item.active {
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 600;
+}
+.location-tree-item.region {
+  font-weight: 600;
+  color: var(--ink);
+}
+.tree-toggle {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-soft);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.tree-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--bg-soft);
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+.location-tree-children {
+  padding-left: 20px;
+}
+.location-tree-children .location-tree-item {
+  font-weight: 400;
+}
+.category-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  overflow: hidden;
+}
+.category-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+}
+.category-filter-item:last-child { border-bottom: none; }
+.category-filter-item:hover { background: var(--bg-soft); }
+.category-filter-item.active {
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 600;
+}
+.category-filter-item.active svg { stroke: var(--primary-ink); }
+.category-filter-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .sort-row {
   display: flex;
   align-items: center;

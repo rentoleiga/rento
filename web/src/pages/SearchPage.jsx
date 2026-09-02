@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api";
 import ListingCard from "../components/ListingCard";
+import CategoryIcon from "../components/CategoryIcon";
 import { useLang } from "../i18n";
 
 const SORTS = [
@@ -69,6 +70,19 @@ export default function SearchPage() {
   const topCats = categories.filter((c) => !c.parent_id);
   const subs = categories.filter((c) => c.parent_id && (query.category === c.slug || (query.category === String(c.parent_id))));
 
+  const regions = useMemo(() => {
+    const map = {};
+    locations.forEach((l) => {
+      const r = l.region || "Annað";
+      if (!map[r]) map[r] = [];
+      map[r].push(l);
+    });
+    return Object.entries(map).sort((a, b) => b[1].reduce((s, l) => s + l.listing_count, 0) - a[1].reduce((s, l) => s + l.listing_count, 0));
+  }, [locations]);
+
+  const [openRegions, setOpenRegions] = useState({});
+  const toggleRegion = (r) => setOpenRegions((prev) => ({ ...prev, [r]: !prev[r] }));
+
   return (
     <div className="section">
       <div className="container">
@@ -95,16 +109,27 @@ export default function SearchPage() {
       <div className="split">
         <aside className="filter-panel">
           <h4 className="mt0">{t("search.filter.category")}</h4>
-          <div className="field">
-            <select value={query.category} onChange={(e) => { update("category", e.target.value); update("subcategory", ""); }}>
-              <option value="">{t("search.allCategories")}</option>
-              {topCats.map((c) => (
-                <option key={c.id} value={c.slug}>{c.name}</option>
-              ))}
-            </select>
+          <div className="category-filter">
+            <button
+              className={`category-filter-item ${query.category === "" ? "active" : ""}`}
+              onClick={() => { update("category", ""); update("subcategory", ""); }}
+            >
+              {t("search.allCategories")}
+            </button>
+            {topCats.map((c) => (
+              <button
+                key={c.id}
+                className={`category-filter-item ${query.category === c.slug ? "active" : ""}`}
+                onClick={() => { update("category", c.slug); update("subcategory", ""); }}
+              >
+                <CategoryIcon slug={c.slug} size={20} />
+                <span className="category-filter-name">{c.name}</span>
+                {c.listing_count > 0 && <span className="tree-count">{c.listing_count}</span>}
+              </button>
+            ))}
           </div>
-          {query.category && (
-            <div className="field">
+          {query.category && subs.length > 0 && (
+            <div className="field" style={{ marginTop: 8 }}>
               <select value={query.subcategory} onChange={(e) => update("subcategory", e.target.value)}>
                 <option value="">{t("search.allSubcategories")}</option>
                 {subs.map((c) => (
@@ -115,13 +140,39 @@ export default function SearchPage() {
           )}
 
           <h4>{t("search.filter.location")}</h4>
-          <div className="field">
-            <select value={query.location} onChange={(e) => update("location", e.target.value)}>
-              <option value="">{t("search.allIceland")}</option>
-              {locations.map((l) => (
-                <option key={l.id} value={l.city}>{l.city}</option>
-              ))}
-            </select>
+          <div className="location-tree">
+            <button
+              className={`location-tree-item ${query.location === "" ? "active" : ""}`}
+              onClick={() => update("location", "")}
+            >
+              {t("search.allIceland")}
+            </button>
+            {regions.map(([region, locs]) => (
+              <div key={region}>
+                <button
+                  className={`location-tree-item region ${openRegions[region] ? "open" : ""}`}
+                  onClick={() => toggleRegion(region)}
+                >
+                  <span className="tree-toggle">{openRegions[region] ? "−" : "+"}</span>
+                  {region}
+                  <span className="tree-count">{locs.length}</span>
+                </button>
+                {openRegions[region] && (
+                  <div className="location-tree-children">
+                    {locs.map((l) => (
+                      <button
+                        key={l.id}
+                        className={`location-tree-item ${query.location === l.city ? "active" : ""}`}
+                        onClick={() => update("location", l.city)}
+                      >
+                        {l.city}
+                        {l.listing_count > 0 && <span className="tree-count">{l.listing_count}</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
           <h4>{t("listing.check")}</h4>
@@ -182,16 +233,6 @@ export default function SearchPage() {
         </aside>
 
         <div>
-          {data && data.facets && data.facets.categories && Object.keys(data.facets.categories).length > 0 && (
-            <div className="facets-row">
-              {Object.entries(data.facets.categories).slice(0, 8).map(([slug, n]) => (
-                <button key={slug} className="facet-chip" onClick={() => update("category", slug)}>
-                  {slug.replace(/-/g, " ")} ({n})
-                </button>
-              ))}
-            </div>
-          )}
-
           {loading ? (
             <div className="empty">{t("search.loading")}</div>
           ) : !data || data.results.length === 0 ? (

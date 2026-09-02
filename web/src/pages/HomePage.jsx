@@ -43,7 +43,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="container">
           <h1>{t("hero.title")}</h1>
-          <p>{t("hero.sub")}</p>
+          {t("hero.sub") && <p>{t("hero.sub")}</p>}
           <form className="hero-search" onSubmit={submitSearch}>
             <div className="field">
               <label>{t("hero.what")}</label>
