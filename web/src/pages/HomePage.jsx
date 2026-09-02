@@ -65,6 +65,7 @@ export default function HomePage() {
               <label>{t("hero.from")}</label>
               <input
                 type="date"
+                lang="is"
                 value={q.start}
                 onChange={(e) => setQ({ ...q, start: e.target.value })}
               />
@@ -73,6 +74,7 @@ export default function HomePage() {
               <label>{t("hero.to")}</label>
               <input
                 type="date"
+                lang="is"
                 value={q.end}
                 onChange={(e) => setQ({ ...q, end: e.target.value })}
               />

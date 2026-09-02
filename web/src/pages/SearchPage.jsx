@@ -129,6 +129,7 @@ export default function SearchPage() {
             <label className="muted">{t("hero.from")} ({t("search.filter.dateOpt")})</label>
             <input
               type="date"
+              lang="is"
               value={query.start ? query.start.slice(0, 10) : ""}
               onChange={(e) => update("start", e.target.value ? `${e.target.value}T10:00:00` : "")}
             />
@@ -137,6 +138,7 @@ export default function SearchPage() {
             <label className="muted">{t("hero.to")} ({t("search.filter.dateOpt")})</label>
             <input
               type="date"
+              lang="is"
               value={query.end ? query.end.slice(0, 10) : ""}
               onChange={(e) => update("end", e.target.value ? `${e.target.value}T10:00:00` : "")}
             />
