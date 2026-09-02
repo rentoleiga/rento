@@ -1,45 +1,36 @@
 import React from "react";
+import { useLang } from "../i18n";
 
 export default function PrivacyPage() {
+  const { t } = useLang();
   return (
     <section className="section">
       <div className="container" style={{ maxWidth: 760 }}>
-        <h1>Persónuverndarstefna</h1>
-        <p className="muted">Síðast uppfært: September 2026</p>
+        <h1>{t("privacy.title")}</h1>
+        <p className="muted">{t("privacy.updated")}</p>
 
         <div className="detail-section">
-          <h3>1. Safnaðar upplýsingar</h3>
-          <p>Skráðu upplýsingar: nafn, netfang, símanúmer, staðsetning. Greiðsluupplýsingar: greiðslukortaupplýsingar eru ekki geymdar á okkar servers — þær fara í gegnum örugga þriðja aðila.</p>
+          <h3>{t("privacy.s1.title")}</h3>
+          <p>{t("privacy.s1.text")}</p>
         </div>
-
         <div className="detail-section">
-          <h3>2. Notkun upplýsinga</h3>
-          <p>Við notum upplýsingar til að: reikna og meðhöndla leigur, senda tilkynningar um bókanir, bæta þjónustuna og senda markaðsefni (ef þú samþykkir).</p>
+          <h3>{t("privacy.s2.title")}</h3>
+          <p>{t("privacy.s2.text")}</p>
         </div>
-
         <div className="detail-section">
-          <h3>3. Deiling upplýsinga</h3>
-          <p>Við deilum ekki persónuupplýsingum með þriðja aðila nema þegar lög skylda eða til að meðhöndla greiðslur í gegnum örugga greiðslumáta.</p>
+          <h3>{t("privacy.s3.title")}</h3>
+          <p>{t("privacy.s3.text")}</p>
         </div>
-
         <div className="detail-section">
-          <h3>4. Öryggi</h3>
-          <p>Við notum SSL dulkóðun og örugga gagnagrunna til að vernda upplýsingar þínar. Engin greiðslukortaupplýsingar eru geymdar á okkar kerfum.</p>
+          <h3>{t("privacy.s4.title")}</h3>
+          <p>{t("privacy.s4.text")}</p>
         </div>
-
         <div className="detail-section">
-          <h3>5. Réttindi þín</h3>
-          <p>Þú hefur rétt á að: skoða upplýsingar sem við höfum um þig, biðja um að leiðrétta eða eyða upplýsingum, hætta við markaðsefni hvenær sem er.</p>
+          <h3>{t("privacy.s5.title")}</h3>
+          <p>{t("privacy.s5.text")}</p>
         </div>
-
         <div className="detail-section">
-          <h3>6. Cookies</h3>
-          <p>Við notum vafrakökur til að bæta upplifun. Sjá nánar á <a href="/cookies">cookies síðunni</a>.</p>
-        </div>
-
-        <div className="detail-section">
-          <h3>7. Hafa samband</h3>
-          <p>Spurningar um persónuvernd? Sendu okkur línu á <a href="mailto:info@rento.is">info@rento.is</a></p>
+          <h3>{t("privacy.contact")} <a href="mailto:info@rento.is">info@rento.is</a></h3>
         </div>
       </div>
     </section>
