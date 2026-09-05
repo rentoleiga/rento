@@ -59,11 +59,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <div className="footer-bottom-row">
-            <span className="footer-bottom-left">
-              <span>{t("footer.copyright")}</span>
-              <span className="footer-bottom-sep">·</span>
-              <span className="footer-disclaimer">{t("footer.disclaimer")}</span>
-            </span>
+            <span>{t("footer.copyright")}</span>
             <span className="footer-bottom-right">
               <span className="trust-badge">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -76,6 +72,7 @@ export default function Footer() {
               </span>
             </span>
           </div>
+          <p className="footer-disclaimer">{t("footer.disclaimer")}</p>
         </div>
       </div>
     </footer>
