@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
   const startMessage = (listing) => {
     if (!user) {
-      window.location.href = "/login";
+      navigate("/login");
       return;
     }
     setSelectedListing(listing);
@@ -53,7 +53,7 @@ export default function ProfilePage() {
       });
       setMsgSent(true);
       setMsgText("");
-      setTimeout(() => { window.location.href = "/messages"; }, 800);
+      setTimeout(() => navigate("/messages"), 800);
     } catch (err) {
       setError(err.message);
     } finally {

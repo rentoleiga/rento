@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { api, formatPrice, timeAgo } from "../api";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
@@ -8,6 +8,7 @@ import { StarRating } from "../components/ListingCard";
 
 export default function ListingPage() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useLang();
   const [listing, setListing] = useState(null);
@@ -70,7 +71,7 @@ export default function ListingPage() {
 
   const requestBooking = async () => {
     if (!user) {
-      window.location.href = "/login?next=" + encodeURIComponent(`/listing/${slug}`);
+      navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`));
       return;
     }
     setSubmitting(true);
@@ -84,7 +85,7 @@ export default function ListingPage() {
         end,
         message: `Hello! I would like to book ${listing.title} from ${dates.start} to ${dates.end}.`,
       });
-      window.location.href = "/dashboard/bookings";
+      navigate("/dashboard/bookings");
     } catch (err) {
       setError(err.data?.details?.map((c) => c.status).join(", ") || err.message);
     } finally {
@@ -94,7 +95,7 @@ export default function ListingPage() {
 
   const toggleFav = async () => {
     if (!user) {
-      window.location.href = "/login?next=" + encodeURIComponent(`/listing/${slug}`);
+      navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`));
       return;
     }
     try {
@@ -110,7 +111,7 @@ export default function ListingPage() {
 
   const sendMessage = async () => {
     if (!user) {
-      window.location.href = "/login?next=" + encodeURIComponent(`/listing/${slug}`);
+      navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`));
       return;
     }
     if (!msgText.trim()) return;
@@ -123,7 +124,7 @@ export default function ListingPage() {
       });
       setMsgSent(true);
       setMsgText("");
-      setTimeout(() => { window.location.href = "/messages"; }, 800);
+      setTimeout(() => navigate("/messages"), 800);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -210,7 +211,7 @@ export default function ListingPage() {
                 </button>
               )}
               {!user && (
-                <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => window.location.href = "/login?next=" + encodeURIComponent(`/listing/${slug}`)}>
+                <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`))}>
                   {t("listing.messageOwner")}
                 </button>
               )}
