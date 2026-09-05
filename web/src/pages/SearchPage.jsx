@@ -68,7 +68,8 @@ export default function SearchPage() {
   };
 
   const topCats = categories.filter((c) => !c.parent_id);
-  const subs = categories.filter((c) => c.parent_id && (query.category === c.slug || (query.category === String(c.parent_id))));
+  const selectedCat = topCats.find((c) => c.slug === query.category);
+  const subs = selectedCat ? categories.filter((c) => c.parent_id === selectedCat.id) : [];
 
   const regions = useMemo(() => {
     const map = {};
@@ -112,7 +113,7 @@ export default function SearchPage() {
           <div className="category-filter">
             <button
               className={`category-filter-item ${query.category === "" ? "active" : ""}`}
-              onClick={() => { update("category", ""); update("subcategory", ""); }}
+              onClick={() => { const next = new URLSearchParams(params); next.delete("category"); next.delete("subcategory"); setParams(next, { replace: false }); }}
             >
               {t("search.allCategories")}
             </button>
@@ -120,7 +121,7 @@ export default function SearchPage() {
               <button
                 key={c.id}
                 className={`category-filter-item ${query.category === c.slug ? "active" : ""}`}
-                onClick={() => { update("category", c.slug); update("subcategory", ""); }}
+                onClick={() => { const next = new URLSearchParams(params); next.set("category", c.slug); next.delete("subcategory"); setParams(next, { replace: false }); }}
               >
                 <CategoryIcon slug={c.slug} size={20} />
                 <span className="category-filter-name">{c.name}</span>

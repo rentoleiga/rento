@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS listings (
   condition_description TEXT         DEFAULT '',
 
   -- Contact
+  phone                 VARCHAR(32)  DEFAULT '',
   phone_visibility      BOOLEAN      NOT NULL DEFAULT FALSE,
 
   -- Category-specific attributes (spec section 8) as flexible JSONB

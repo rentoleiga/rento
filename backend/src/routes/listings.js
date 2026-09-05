@@ -105,6 +105,7 @@ const baseSchema = z.object({
   cancellationPolicy: z.enum(["flexible", "moderate", "strict", "custom"]).default("moderate"),
   condition: z.enum(["new", "like_new", "good", "fair", "used"]).default("good"),
   conditionDescription: z.string().optional().default(""),
+  phone: z.string().optional().default(""),
   phoneVisibility: z.boolean().default(false),
   attributes: z.record(z.any()).optional().default({}),
   mainImage: z.string().optional().default(""),
@@ -125,7 +126,7 @@ function listingColumnsForInsert() {
     ["latitude", "longitude", "airport_name", "airport_distance", "location_public"],
     ["pickup_available", "delivery_available", "instant_booking", "booking_required"],
     ["smoking_allowed", "pets_allowed", "min_age", "usage_restrictions", "cancellation_policy"],
-    ["condition", "condition_description", "phone_visibility", "attributes"],
+    ["condition", "condition_description", "phone", "phone_visibility", "attributes"],
     ["seo_title", "seo_description", "view_count", "unique_view_count"],
   ].flat();
 }
@@ -144,7 +145,7 @@ function buildListingValues(l, ownerId, slug) {
     l.latitude ?? null, l.longitude ?? null, l.airportName, l.airportDistance, l.locationPublic,
     l.pickupAvailable, l.deliveryAvailable, l.instantBooking, l.bookingRequired,
     l.smokingAllowed, l.petsAllowed, l.minAge, l.usageRestrictions, l.cancellationPolicy,
-    l.condition, l.conditionDescription, l.phoneVisibility, JSON.stringify(l.attributes || {}),
+    l.condition, l.conditionDescription, l.phone || "", l.phoneVisibility, JSON.stringify(l.attributes || {}),
     l.title, l.subtitle, 0, 0,
   ];
 }
@@ -258,7 +259,7 @@ router.get(
         )).rowCount > 0);
 
     out.ownerPhone =
-      listing.phone_visibility ? listing.owner_phone : null;
+      listing.phone_visibility && listing.phone ? listing.phone : null;
     out.ownerEmail = canContact ? listing.owner_email : null;
 
     res.json({ listing: out });
@@ -296,7 +297,7 @@ router.put(
       smokingAllowed: "smoking_allowed", petsAllowed: "pets_allowed",
       minAge: "min_age", usageRestrictions: "usage_restrictions",
       cancellationPolicy: "cancellation_policy", condition: "condition",
-      conditionDescription: "condition_description", phoneVisibility: "phone_visibility",
+      conditionDescription: "condition_description", phone: "phone", phoneVisibility: "phone_visibility",
       attributes: "attributes",
     };
     for (const [key, value] of Object.entries(req.body)) {

@@ -19,7 +19,7 @@ const SORTS = {
 // Paid promotion priority on the default (recommended) view:
 // gold first on category pages, then featured, then platinum, then regular.
 const PROMO_RANK =
-  "CASE promotion_tier WHEN 'gold' THEN 0 WHEN 'featured' THEN 1 WHEN 'platinum' THEN 2 ELSE 3 END";
+  "CASE promotion_tier WHEN 'platinum' THEN 0 WHEN 'gold' THEN 1 WHEN 'silver' THEN 2 WHEN 'featured' THEN 3 ELSE 4 END";
 
 router.get(
   "/",
@@ -163,7 +163,7 @@ router.get(
         : "";
 
 const sortSql = SORTS[sort] || SORTS.recommended;
-    const orderSql = sort === "recommended" ? `${PROMO_RANK}, ${sortSql}` : sortSql;
+    const orderSql = `${PROMO_RANK}, ${sortSql}`;
     const countRs = await db.query(
       `SELECT count(*)::int AS total FROM v_listing_search v WHERE ${where.join(" AND ")}`,
       params
