@@ -258,7 +258,7 @@ router.get(
         )).rowCount > 0);
 
     out.ownerPhone =
-      canContact && listing.phone_visibility ? listing.owner_phone : null;
+      listing.phone_visibility ? listing.owner_phone : null;
     out.ownerEmail = canContact ? listing.owner_email : null;
 
     res.json({ listing: out });

@@ -205,6 +205,11 @@ export default function ListingPage() {
                   </div>
                 </div>
               </Link>
+              {listing.ownerPhone && (
+                <a href={`tel:${listing.ownerPhone}`} className="btn btn-outline btn-block" style={{ marginTop: 12, textDecoration: "none" }}>
+                  📞 {listing.ownerPhone}
+                </a>
+              )}
               {user && user.id !== listing.owner.id && (
                 <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => setMsgOpen(true)}>
                   {t("listing.messageOwner")}

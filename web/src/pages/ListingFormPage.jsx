@@ -18,6 +18,7 @@ const initial = {
   smokingAllowed: false, petsAllowed: false, minAge: 0,
   cancellationPolicy: "moderate", condition: "good",
   usageRestrictions: "",
+  phoneVisibility: false,
   attributes: {},
   mainImage: "", gallery: [],
 };
@@ -400,6 +401,10 @@ export default function ListingFormPage() {
           <label className="row" style={{ cursor: "pointer" }}>
             <input type="checkbox" checked={form.deliveryAvailable} onChange={(e) => set("deliveryAvailable", e.target.checked)} />
             Delivery available
+          </label>
+          <label className="row" style={{ cursor: "pointer", marginTop: 8 }}>
+            <input type="checkbox" checked={form.phoneVisibility} onChange={(e) => set("phoneVisibility", e.target.checked)} />
+            Show phone number on listing (visible to everyone)
           </label>
           {nextBtn}
         </>
