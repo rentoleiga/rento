@@ -1808,9 +1808,14 @@ a:hover {
 }
 .footer-bottom-row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.footer-bottom-sep {
+  color: var(--footer-border);
+  user-select: none;
 }
 .footer-disclaimer {
   line-height: 1.5;

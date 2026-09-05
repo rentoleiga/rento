@@ -205,21 +205,23 @@ export default function ListingPage() {
                   </div>
                 </div>
               </Link>
-              {listing.ownerPhone && (
-                <a href={`tel:${listing.ownerPhone}`} className="btn btn-outline btn-block" style={{ marginTop: 12, textDecoration: "none" }}>
-                  📞 {listing.ownerPhone}
-                </a>
-              )}
-              {user && user.id !== listing.owner.id && (
-                <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => setMsgOpen(true)}>
-                  {t("listing.messageOwner")}
-                </button>
-              )}
-              {!user && (
-                <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`))}>
-                  {t("listing.messageOwner")}
-                </button>
-              )}
+              <div className="row" style={{ marginTop: 12, gap: 10 }}>
+                {listing.ownerPhone && (
+                  <a href={`tel:${listing.ownerPhone}`} className="btn btn-outline grow" style={{ textDecoration: "none", textAlign: "center" }}>
+                    📞 {listing.ownerPhone}
+                  </a>
+                )}
+                {user && user.id !== listing.owner.id && (
+                  <button className="btn btn-outline grow" onClick={() => setMsgOpen(true)}>
+                    {t("listing.messageOwner")}
+                  </button>
+                )}
+                {!user && (
+                  <button className="btn btn-outline grow" onClick={() => navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`))}>
+                    {t("listing.messageOwner")}
+                  </button>
+                )}
+              </div>
             </div>
           )}
 

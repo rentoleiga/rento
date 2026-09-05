@@ -59,19 +59,19 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <div className="footer-bottom-row">
-            <p>{t("footer.copyright")}</p>
-            <p className="footer-disclaimer">{t("footer.disclaimer")}</p>
-          </div>
-          <div className="footer-trust">
+            <span>{t("footer.copyright")}</span>
+            <span className="footer-bottom-sep">|</span>
             <span className="trust-badge">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               {t("footer.secure")}
             </span>
+            <span className="footer-bottom-sep">|</span>
             <span className="trust-badge">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               {t("footer.verified")}
             </span>
           </div>
+          <p className="footer-disclaimer">{t("footer.disclaimer")}</p>
         </div>
       </div>
     </footer>
