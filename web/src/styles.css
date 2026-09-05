@@ -1832,6 +1832,9 @@ a:hover {
 }
 .footer-disclaimer {
   line-height: 1.5;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--footer-border);
 }
 .footer-trust {
   display: flex;
