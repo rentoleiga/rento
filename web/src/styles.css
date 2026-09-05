@@ -1808,15 +1808,12 @@ a:hover {
 }
 .footer-bottom-row {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 6px;
   margin-bottom: 12px;
 }
 .footer-disclaimer {
   line-height: 1.5;
-  flex: 1;
-  min-width: 200px;
 }
 .footer-trust {
   display: flex;
