@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { api, timeAgo } from "../api";
+import { useAuth } from "../store";
+import { useLang } from "../i18n";
 import { StarRating } from "../components/ListingCard";
 import ListingCard from "../components/ListingCard";
 
 export default function ProfilePage() {
   const { id } = useParams();
+  const { user } = useAuth();
+  const { t } = useLang();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [listings, setListings] = useState([]);
   const [error, setError] = useState("");
+  const [msgOpen, setMsgOpen] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [msgText, setMsgText] = useState("");
+  const [msgSending, setMsgSending] = useState(false);
+  const [msgSent, setMsgSent] = useState(false);
 
   useEffect(() => {
     api.get(`/api/users/${id}`)
@@ -22,6 +32,34 @@ export default function ProfilePage() {
 
   if (error) return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
   if (!profile) return <div className="container section"><div className="empty">Loading…</div></div>;
+
+  const startMessage = (listing) => {
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
+    setSelectedListing(listing);
+    setMsgOpen(true);
+  };
+
+  const sendMessage = async () => {
+    if (!msgText.trim() || !selectedListing) return;
+    setMsgSending(true);
+    try {
+      await api.post("/api/conversations", {
+        listingId: selectedListing.id,
+        recipientId: profile.id,
+        message: msgText.trim(),
+      });
+      setMsgSent(true);
+      setMsgText("");
+      setTimeout(() => { window.location.href = "/messages"; }, 800);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setMsgSending(false);
+    }
+  };
 
   return (
     <div className="container section" style={{ maxWidth: 940 }}>
@@ -43,6 +81,11 @@ export default function ProfilePage() {
             {profile.responseRate > 0 && <span>{profile.responseRate}% response rate</span>}
             <span className="muted">Member since {timeAgo(profile.memberSince)}</span>
           </div>
+          {user && user.id !== profile.id && listings.length > 0 && (
+            <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={() => startMessage(listings[0])}>
+              {t("listing.sendMessage")}
+            </button>
+          )}
         </div>
       </div>
 
@@ -80,6 +123,38 @@ export default function ProfilePage() {
           </div>
         ))}
       </div>
+
+      {msgOpen && (
+        <div className="modal-overlay" onClick={() => { setMsgOpen(false); setMsgSent(false); setSelectedListing(null); }}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3>{t("listing.messageOwner")}</h3>
+            {selectedListing && <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>Re: {selectedListing.title}</p>}
+            {msgSent ? (
+              <div className="empty" style={{ padding: "20px 0" }}>
+                <p>{t("listing.messageSent")}</p>
+              </div>
+            ) : (
+              <>
+                <div className="field">
+                  <textarea
+                    rows={4}
+                    placeholder={t("listing.messagePlaceholder")}
+                    value={msgText}
+                    onChange={(e) => setMsgText(e.target.value)}
+                    style={{ width: "100%", resize: "vertical" }}
+                  />
+                </div>
+                <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+                  <button className="btn btn-outline" onClick={() => { setMsgOpen(false); setSelectedListing(null); }}>{t("listing.cancel")}</button>
+                  <button className="btn btn-primary" disabled={msgSending || !msgText.trim()} onClick={sendMessage}>
+                    {msgSending ? t("listing.sending") : t("listing.sendMessage")}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -22,6 +22,11 @@ export default function ListingPage() {
   const [quoting, setQuoting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const [msgOpen, setMsgOpen] = useState(false);
+  const [msgText, setMsgText] = useState("");
+  const [msgSending, setMsgSending] = useState(false);
+  const [msgSent, setMsgSent] = useState(false);
+
   useEffect(() => {
     setListing(null);
     api.get(`/api/listings/${slug}?inc=1`)
@@ -103,6 +108,29 @@ export default function ListingPage() {
     } catch {}
   };
 
+  const sendMessage = async () => {
+    if (!user) {
+      window.location.href = "/login?next=" + encodeURIComponent(`/listing/${slug}`);
+      return;
+    }
+    if (!msgText.trim()) return;
+    setMsgSending(true);
+    try {
+      await api.post("/api/conversations", {
+        listingId: listing.id,
+        recipientId: listing.owner.id,
+        message: msgText.trim(),
+      });
+      setMsgSent(true);
+      setMsgText("");
+      setTimeout(() => { window.location.href = "/messages"; }, 800);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setMsgSending(false);
+    }
+  };
+
   const attrs = Object.entries(listing.attributes || {}).filter(([k]) => k !== "registration_number");
 
   return (
@@ -176,6 +204,16 @@ export default function ListingPage() {
                   </div>
                 </div>
               </Link>
+              {user && user.id !== listing.owner.id && (
+                <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => setMsgOpen(true)}>
+                  {t("listing.messageOwner")}
+                </button>
+              )}
+              {!user && (
+                <button className="btn btn-outline btn-block" style={{ marginTop: 12 }} onClick={() => window.location.href = "/login?next=" + encodeURIComponent(`/listing/${slug}`)}>
+                  {t("listing.messageOwner")}
+                </button>
+              )}
             </div>
           )}
 
@@ -267,6 +305,37 @@ export default function ListingPage() {
         <div className="section" style={{ paddingBottom: 0 }}>
           <div className="section-head"><h2>{t("listing.similar")}</h2></div>
           <div className="grid">{similar.map((l) => <ListingCard key={l.id} listing={l} />)}</div>
+        </div>
+      )}
+
+      {msgOpen && (
+        <div className="modal-overlay" onClick={() => { setMsgOpen(false); setMsgSent(false); }}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3>{t("listing.messageOwner")}</h3>
+            {msgSent ? (
+              <div className="empty" style={{ padding: "20px 0" }}>
+                <p>{t("listing.messageSent")}</p>
+              </div>
+            ) : (
+              <>
+                <div className="field">
+                  <textarea
+                    rows={4}
+                    placeholder={t("listing.messagePlaceholder")}
+                    value={msgText}
+                    onChange={(e) => setMsgText(e.target.value)}
+                    style={{ width: "100%", resize: "vertical" }}
+                  />
+                </div>
+                <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+                  <button className="btn btn-outline" onClick={() => setMsgOpen(false)}>{t("listing.cancel")}</button>
+                  <button className="btn btn-primary" disabled={msgSending || !msgText.trim()} onClick={sendMessage}>
+                    {msgSending ? t("listing.sending") : t("listing.sendMessage")}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
