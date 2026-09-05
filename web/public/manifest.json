@@ -1,0 +1,18 @@
+{
+  "name": "Rento - Leigumarkaðstorg",
+  "short_name": "Rento",
+  "description": "Leigðu verkfæri, búnað og ýmislegt annað frá fólki nálægt hér.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f3ec",
+  "theme_color": "#2c4a36",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

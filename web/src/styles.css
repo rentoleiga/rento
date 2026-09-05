@@ -1799,20 +1799,24 @@ a:hover {
 }
 .footer-bottom {
   border-top: 1px solid var(--footer-border);
-  padding: 20px 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 24px;
+  padding: 20px 0 16px;
   font-size: 13px;
   color: var(--muted);
 }
 .footer-bottom p {
   margin: 0;
 }
+.footer-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 .footer-disclaimer {
-  flex: 1;
-  min-width: 200px;
+  line-height: 1.5;
+  max-width: 700px;
 }
 .footer-trust {
   display: flex;
