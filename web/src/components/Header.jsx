@@ -36,7 +36,8 @@ export default function Header() {
         </button>
 
         <Link to="/" className="brand">
-          <span className="brand-mark" aria-hidden="true" />
+          <img src="/rento-logo.png" alt="Rentó" className="brand-img" onError={(e)=>{e.target.style.display='none'; e.target.nextSibling.style.display='inline-block';}} />
+          <span className="brand-mark" aria-hidden="true" style={{display:'none'}} />
           <span>Rento</span>
         </Link>
 

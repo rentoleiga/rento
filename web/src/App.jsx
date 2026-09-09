@@ -25,6 +25,7 @@ import CookiesPage from "./pages/CookiesPage";
 import BannedPage from "./pages/BannedPage";
 import SafetyPage from "./pages/SafetyPage";
 import FaqPage from "./pages/FaqPage";
+import ContactPage from "./pages/ContactPage";
 import { useAuth } from "./store";
 
 function ScrollToTop() {
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="/banned" element={<BannedPage />} />
           <Route path="/safety" element={<SafetyPage />} />
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </main>
       <Footer />

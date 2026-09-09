@@ -86,6 +86,30 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <div className="promo-banner">
+            <div className="promo-banner-text">
+              <h2>{t("home.promoTitle")}<br /><span className="promo-accent">{t("home.promoTitle2")}</span></h2>
+              <p>{t("home.promoSub")}</p>
+              <div className="promo-actions">
+                <Link to="/search" className="btn btn-primary">{t("home.promoFind")}</Link>
+                <Link to="/dashboard/listings/new" className="btn btn-outline" style={{ background: "#fff" }}>{t("home.promoStart")}</Link>
+              </div>
+            </div>
+            <div className="promo-banner-icons">
+              <span className="promo-icon" style={{ background: "#e0f0f0" }}>🔑</span>
+              <span className="promo-icon" style={{ background: "#fde8d8", marginTop: 20 }}>⚠️</span>
+              <span className="promo-icon" style={{ background: "#fef3d5" }}>📷</span>
+              <span className="promo-icon" style={{ background: "#f0e6f6" }}>🚲</span>
+              <span className="promo-icon" style={{ background: "#e6f6fd" }}>🔊</span>
+            </div>
+            <button className="promo-close" aria-label="Close" onClick={(e)=> e.currentTarget.closest('.promo-banner').style.display='none'}>×</button>
+          </div>
+          <p className="promo-foot">{t("home.promoFoot")}</p>
+        </div>
+      </section>
+
       <section className="section">
         <div className="container">
           <div className="section-head">

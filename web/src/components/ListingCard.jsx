@@ -67,13 +67,14 @@ export default function ListingCard({ listing }) {
       </div>
       <div className="card-body">
         <h3 className="card-title">{listing.title}</h3>
-        <div className="card-rating">
-          <StarRating rating={listing.rating} />
-          <span className="muted">
-            {Number(listing.rating).toFixed(1)} ({listing.reviewCount})
-          </span>
-        </div>
-        <div className="card-meta">
+        {listing.owner && (
+          <div className="card-meta" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> {listing.owner.firstName || listing.owner.name || "User"}</span>
+            {(listing.owner.identityVerified || listing.verificationStatus === "verified") && <span style={{ color: "#0a7a5a", fontSize: 11 }}>✔ Verified</span>}
+          </div>
+        )}
+        <div className="card-meta" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e85d4d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span>{listing.city}</span>
           {listing.distanceKm != null && <span>• {listing.distanceKm} km</span>}
         </div>

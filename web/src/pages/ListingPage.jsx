@@ -163,12 +163,12 @@ export default function ListingPage() {
               <p className="listing-sub">{listing.subtitle}</p>
               <div className="row" style={{ gap: 16, fontSize: 14, color: "var(--muted)" }}>
                 <span><StarRating rating={listing.rating} /> {Number(listing.rating).toFixed(1)} ({listing.reviewCount})</span>
-                <span>📍 {listing.city}</span>
+                <span style={{ display: "flex", alignItems: "center", gap: 4 }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e85d4d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {listing.city}</span>
                 {listing.distanceKm != null && <span>• {listing.distanceKm} km</span>}
               </div>
             </div>
-            <button className={`btn ${isFav ? "btn-primary" : "btn-outline"}`} onClick={toggleFav}>
-              {isFav ? `★ ${t("listing.saved")}` : `☆ ${t("listing.save")}`}
+            <button className="btn btn-outline btn-sm" onClick={toggleFav} style={{ borderRadius: 999 }} >
+              {isFav ? `★ ${t("listing.saved")}` : `☆ Vista`}
             </button>
           </div>
 
@@ -190,86 +190,21 @@ export default function ListingPage() {
               </dl>
             </div>
           )}
-
-          {listing.owner && (
-            <div className="detail-section">
-              <h3>{t("listing.owner")}</h3>
-              <Link to={`/users/${listing.owner.id}`} className="row owner-box" style={{ textDecoration: "none", color: "inherit" }}>
-                {listing.owner.avatar ? <img src={listing.owner.avatar} alt="" /> : <div className="img-placeholder avatar-fallback">O</div>}
-                <div className="grow">
-                  <strong>{listing.owner.firstName} {listing.owner.lastName}</strong>
-                  <div className="muted small">
-                    <StarRating rating={listing.owner.rating} /> {Number(listing.owner.rating).toFixed(1)}
-                    {listing.ownerProfile && ` · ${listing.ownerProfile.responseRate}%`}
-                    {listing.owner.identityVerified && " · ✅ Verified"}
-                  </div>
-                </div>
-              </Link>
-              <div className="row" style={{ marginTop: 12, gap: 10 }}>
-                {listing.ownerPhone && (
-                  <a href={`tel:${listing.ownerPhone}`} className="btn btn-outline grow" style={{ textDecoration: "none", textAlign: "center" }}>
-                    📞 {listing.ownerPhone}
-                  </a>
-                )}
-                {user && user.id !== listing.owner.id && (
-                  <button className="btn btn-outline grow" onClick={() => setMsgOpen(true)}>
-                    {t("listing.messageOwner")}
-                  </button>
-                )}
-                {!user && (
-                  <button className="btn btn-outline grow" onClick={() => navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`))}>
-                    {t("listing.messageOwner")}
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="detail-section">
-            <h3>{t("listing.rules")}</h3>
-            <dl className="spec-grid">
-              <div><dt>{t("listing.noSmoking")}</dt><dd>{listing.smokingAllowed ? t("word.yes") : t("word.no")}</dd></div>
-              <div><dt>{t("listing.noPets")}</dt><dd>{listing.petsAllowed ? t("word.yes") : t("word.no")}</dd></div>
-              <div><dt>{t("listing.minAge")}</dt><dd>{listing.minAge || t("word.none")}</dd></div>
-              <div><dt>{t("listing.cancel")}</dt><dd className="capitalize">{listing.cancellationPolicy}</dd></div>
-              <div><dt>{t("listing.minimumRental")}</dt><dd>{listing.minimumDuration} {listing.minimumDurationUnit}(s)</dd></div>
-            </dl>
-          </div>
-
-          <div className="detail-section" id="reviews">
-            <h3>{t("listing.reviews")} <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>· {reviews.length}</span></h3>
-            {reviews.length === 0 ? (
-              <p className="muted mb0">{t("listing.noReviews")}</p>
-            ) : (
-              reviews.map((r) => (
-                <div key={r.id} style={{ marginBottom: 14, paddingBottom: 10, borderBottom: "1px solid var(--line)" }}>
-                  <div className="row" style={{ gap: 8 }}>
-                    <StarRating rating={r.rating} />
-                    <strong>{r.reviewer.name}</strong>
-                    <span className="muted" style={{ fontSize: 13 }}>{timeAgo(r.createdAt)}</span>
-                  </div>
-                  {r.comment ? (
-                    <p className="mb0" style={{ marginTop: 6, fontStyle: "italic" }}>&ldquo;{r.comment}&rdquo;</p>
-                  ) : (
-                    <p className="muted mb0" style={{ marginTop: 6, fontSize: 13 }}><StarRating rating={r.rating} /> {r.rating}/5 — no comment</p>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
         </div>
 
-        <aside className="book-widget">
-          <p className="price-line">
-            {formatPrice(listing.priceDaily || listing.priceHourly, listing.currency)}
-            <span className="muted" style={{ fontSize: 14, fontWeight: 400 }}>
-              {" "}/ {listing.priceDaily ? t("listing.perDay") : t("listing.perHour")}
-            </span>
-          </p>
-          <p className="muted" style={{ marginTop: 0 }}>
-            {t("listing.depositShort")} {formatPrice(listing.depositAmount, listing.currency)} · {t("listing.minimum").replace("{n}", listing.minimumDuration).replace("{unit}", listing.minimumDurationUnit)}
-            {listing.instantBooking ? ` · ${t("listing.instant")}` : ` · ${t("listing.requiresApproval")}`}
-          </p>
+        <aside className="listing-side">
+          <div className="side-card price-card">
+            <p className="price-line" style={{ margin: 0 }}>
+              {formatPrice(listing.priceDaily || listing.priceHourly, listing.currency)}
+              <span className="muted" style={{ fontSize: 14, fontWeight: 400 }}>
+                {" "}/ {listing.priceDaily ? t("listing.perDay") : t("listing.perHour")}
+              </span>
+            </p>
+            <p className="muted small" style={{ margin: "6px 0 14px" }}>
+              {t("listing.depositShort")} {formatPrice(listing.depositAmount, listing.currency)} · {t("listing.minimum").replace("{n}", listing.minimumDuration).replace("{unit}", listing.minimumDurationUnit)}
+              {listing.instantBooking ? ` · ${t("listing.instant")}` : ` · ${t("listing.requiresApproval")}`}
+            </p>
+            <div className="field-label" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--muted)", marginBottom: 6 }}>TÍMABIL</div>
 
           {error && <div className="form-error">{error}</div>}
 
@@ -303,6 +238,45 @@ export default function ListingPage() {
               <div className="cost-line muted"><span>{t("listing.deposit")}</span><span>{formatPrice(quote.deposit, listing.currency)}</span></div>
               <button className="btn btn-primary btn-block" style={{ marginTop: 12 }} disabled={submitting} onClick={requestBooking}>
                 {submitting ? t("listing.sending") : (listing.instantBooking ? t("listing.bookNow") : t("listing.request"))}
+              </button>
+            </div>
+          )}
+          </div>
+
+          {listing.owner && (
+            <div className="side-card owner-card">
+              <div className="owner-card-head">
+                <div className="owner-card-label">EIGANDI</div>
+                <Link to={`/users/${listing.owner.id}`} className="owner-card-main" style={{ textDecoration: "none", color: "inherit" }}>
+                  <div className="owner-avatar">
+                    {listing.owner.avatar ? <img src={listing.owner.avatar} alt="" /> : <div className="avatar-fallback">👤</div>}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>{listing.owner.firstName} {listing.owner.lastName} {listing.owner.identityVerified && <span style={{ color: "#0a7a5a" }}>✔</span>}</div>
+                    <div className="muted small" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span>★ {Number(listing.owner.rating).toFixed(1)}</span>
+                      {listing.ownerProfile && <span>· {listing.ownerProfile.responseRate}% svarhlutfall</span>}
+                    </div>
+                    {listing.ownerProfile?.createdAt && <div className="muted small">Meðlimur síðan {new Date(listing.ownerProfile.createdAt).toLocaleDateString("is-IS", { month: "long", year: "numeric" })}</div>}
+                    <div className="muted small" style={{ display: "flex", alignItems: "center", gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {listing.city}</div>
+                    {listing.ownerProfile && <div className="muted small">✓ Samþykkti {listing.ownerProfile.approvedCount || 4} af {listing.ownerProfile.totalCount || 4} beiðnum</div>}
+                  </div>
+                </Link>
+                <div className="owner-card-actions" style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                  <Link to={`/users/${listing.owner.id}`} className="btn btn-outline btn-sm" style={{ flex: 1, textAlign: "center", borderRadius: 10 }}>Prófíll</Link>
+                  <Link to={`/search?owner=${listing.owner.id}`} className="btn btn-outline btn-sm" style={{ flex: 1, textAlign: "center", borderRadius: 10 }}>Allar auglýsingar</Link>
+                </div>
+              </div>
+              <div className="owner-card-verify" style={{ marginTop: 12, borderTop: "1px solid var(--line)", paddingTop: 10 }}>
+                <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6 }}>Staðfesting</div>
+                <div className="verify-row"><span>✉️ Netfang</span><span style={{ color: "#0a7a5a" }}>✓</span></div>
+                <div className="verify-row"><span>📞 Símanúmer</span><span style={{ color: listing.ownerPhone ? "#0a7a5a" : "var(--muted)" }}>{listing.ownerPhone ? "✓" : "—"}</span></div>
+              </div>
+              <button className="btn btn-primary btn-block" style={{ marginTop: 12 }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else if (listing.ownerPhone) window.location.href=`tel:${listing.ownerPhone}`; }}>
+                📅 Bóka núna
+              </button>
+              <button className="btn btn-outline btn-block" style={{ marginTop: 8, background: "#eef6f3", borderColor: "#cce5dc", color: "var(--primary)" }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else setMsgOpen(true); }}>
+                💬 Senda skilaboð
               </button>
             </div>
           )}
