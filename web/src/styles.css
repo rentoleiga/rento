@@ -221,9 +221,10 @@ a:hover {
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  min-width: 220px;
+  width: 200px;
+  min-width: 200px;
 }
-.header-inner { height: 80px; }
+.header-inner { min-height: 72px; height: auto; padding: 10px 0; }
 .brand:hover {
   text-decoration: none;
   color: var(--primary);
@@ -237,10 +238,11 @@ a:hover {
   border-radius: 2px;
 }
 .brand-img {
-  height: 64px;
-  width: auto;
+  width: 200px;
+  height: auto;
   object-fit: contain;
   display: block;
+  object-position: left center;
 }
 .header-search input {
   flex: 1;
