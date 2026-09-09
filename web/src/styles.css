@@ -221,8 +221,9 @@ a:hover {
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  min-width: 160px;
+  min-width: 220px;
 }
+.header-inner { height: 80px; }
 .brand:hover {
   text-decoration: none;
   color: var(--primary);
@@ -236,11 +237,10 @@ a:hover {
   border-radius: 2px;
 }
 .brand-img {
-  height: 36px;
-  width: 140px;
+  height: 64px;
+  width: auto;
   object-fit: contain;
   display: block;
-  object-position: left center;
 }
 .header-search input {
   flex: 1;
