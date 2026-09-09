@@ -15,7 +15,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get(`/api/categories?lang=${lang}`).then((d) => setCategories(d.categories || [])).catch(() => {});
+    api.get(`/api/categories/all?lang=${lang}`).then((d) => setCategories(d.categories?.filter(c=>!c.parent_id) || [])).catch(() => {});
   }, [lang]);
 
   useEffect(() => {
@@ -123,6 +123,7 @@ export default function HomePage() {
                   <CategoryIcon slug={c.slug} />
                 </div>
                 <div>{c.name}</div>
+                {c.listing_count != null && <div className="muted small">{c.listing_count}</div>}
               </Link>
             ))}
           </div>
