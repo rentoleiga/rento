@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer-top">
           <div className="footer-brand">
-            <div className="footer-logo" style={{ display: "flex", alignItems: "center", gap: 8 }}><img src="/rento-logo.png" alt="Rentó" style={{ height: 28, width: "auto" }} onError={(e)=>e.target.style.display='none'} /> RENTÓ</div>
+            <div className="footer-logo">RENTÓ</div>
             <p className="footer-brand-desc">{t("footer.rentoDesc")}</p>
             <p className="footer-brand-sub">{t("footer.rentoSub")}</p>
             <div className="footer-social">
