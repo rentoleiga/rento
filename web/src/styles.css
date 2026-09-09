@@ -223,8 +223,10 @@ a:hover {
   flex-shrink: 0;
   width: 200px;
   min-width: 200px;
+  overflow: visible;
 }
-.header-inner { min-height: 72px; height: auto; padding: 10px 0; }
+.header { overflow: visible; }
+.header-inner { min-height: 72px; height: auto; padding: 8px 0; overflow: visible; }
 .brand:hover {
   text-decoration: none;
   color: var(--primary);
