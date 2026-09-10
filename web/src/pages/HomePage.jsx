@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import ListingCard from "../components/ListingCard";
@@ -13,6 +13,12 @@ export default function HomePage() {
   const [newest, setNewest] = useState([]);
   const [q, setQ] = useState({ keyword: "", city: "", start: "", end: "" });
   const navigate = useNavigate();
+  const catRef = useRef(null);
+  const scrollCats = (dir) => {
+    const el = catRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * 320, behavior: "smooth" });
+  };
 
   useEffect(() => {
     api.get(`/api/categories/all?lang=${lang}`).then((d) => setCategories(d.categories?.filter(c=>!c.parent_id) || [])).catch(() => {});
@@ -116,16 +122,20 @@ export default function HomePage() {
             <h2>{t("home.categories")}</h2>
             <Link to="/search">{t("home.browseAll")}</Link>
           </div>
-          <div className="category-grid">
-            {categories.map((c) => (
-              <Link key={c.id} to={`/search?category=${c.slug}`} className="category-tile">
-                <div className="tile-icon">
-                  <CategoryIcon slug={c.slug} />
-                </div>
-                <div>{c.name}</div>
-                {c.listing_count != null && <div className="muted small">{c.listing_count}</div>}
-              </Link>
-            ))}
+          <div className="category-slider-wrap">
+            <button className="cat-arrow cat-arrow-left" onClick={() => scrollCats(-1)} aria-label="Prev">‹</button>
+            <div className="category-grid" ref={catRef}>
+              {categories.map((c) => (
+                <Link key={c.id} to={`/search?category=${c.slug}`} className="category-tile">
+                  <div className="tile-icon">
+                    <CategoryIcon slug={c.slug} />
+                  </div>
+                  <div>{c.name}</div>
+                  {c.listing_count != null && <div className="muted small">{c.listing_count}</div>}
+                </Link>
+              ))}
+            </div>
+            <button className="cat-arrow cat-arrow-right" onClick={() => scrollCats(1)} aria-label="Next">›</button>
           </div>
         </div>
       </section>
