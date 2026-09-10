@@ -221,8 +221,8 @@ a:hover {
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  width: 200px;
-  min-width: 200px;
+  width: 140px;
+  min-width: 140px;
   overflow: visible;
 }
 .header { overflow: visible; }
@@ -240,7 +240,7 @@ a:hover {
   border-radius: 2px;
 }
 .brand-img {
-  width: 200px;
+  width: 140px;
   height: auto;
   object-fit: contain;
   display: block;
@@ -565,19 +565,30 @@ a:hover {
   background: var(--ink);
 }
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 16px;
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 2px 12px;
+  scrollbar-width: none;
+}
+.category-grid::-webkit-scrollbar { display: none; }
+.category-grid {
+  -ms-overflow-style: none;
 }
 .category-tile {
+  flex: 0 0 120px;
+  scroll-snap-align: start;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 22px 12px 18px;
+  border-radius: 14px;
+  padding: 16px 8px 14px;
   text-align: center;
   color: var(--ink);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 .category-tile:hover {
@@ -591,14 +602,15 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 12px;
+  width: 38px;
+  height: 38px;
+  margin: 0 auto 10px;
   border-radius: 50%;
   background: var(--bg-soft);
   color: var(--primary);
   transition: background 0.18s, transform 0.18s;
 }
+.category-tile .tile-icon svg { width: 20px; height: 20px; }
 .category-tile:hover .tile-icon {
   background: #e8efe9;
   transform: scale(1.05);
@@ -2111,7 +2123,7 @@ a:hover {
   .section { padding: 36px 0; }
   .section-flush { padding-top: 36px; padding-bottom: 36px; }
   .grid { grid-template-columns: 1fr; gap: 14px; }
-  .category-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .category-grid { display: flex; gap: 10px; overflow-x: auto; }
   .steps-grid { grid-template-columns: 1fr; }
   .plans-grid { grid-template-columns: 1fr; }
   .perks-grid { grid-template-columns: 1fr; }
