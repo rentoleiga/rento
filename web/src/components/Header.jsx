@@ -36,7 +36,7 @@ export default function Header() {
         </button>
 
         <Link to="/" className="brand">
-          <img src="/rento-logo-white.png" alt="Rentó" className="brand-img" />
+          <img src="/rento-logo.png" alt="Rentó" className="brand-img" />
         </Link>
 
         <div className={`mobile-overlay ${menuOpen ? "open" : ""}`} onClick={closeMenu} />

@@ -24,8 +24,8 @@
   --shadow-soft: 0 4px 12px rgba(0,0,0,0.06);
   --header-bg: #ffffff;
   --header-border: #e5e7eb;
-  --footer-bg: #ffffff;
-  --footer-border: #e5e7eb;
+  --footer-bg: #111827;
+  --footer-border: #1f2937;
 }
 
 * {
@@ -1771,9 +1771,8 @@ a:hover {
 .footer {
   background: var(--footer-bg);
   border-top: 1px solid var(--footer-border);
-  color: var(--ink-soft);
+  color: #9ca3af;
   margin-top: 0;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
   padding: 48px 0 0;
 }
 .footer-top {
@@ -1798,19 +1797,13 @@ a:hover {
   font-family: "Fraunces", Georgia, serif;
   font-size: 28px;
   font-weight: 700;
-  color: var(--ink);
+  color: #f9fafb;
   letter-spacing: -0.02em;
   margin-bottom: 12px;
 }
 .footer-brand-desc {
   font-size: 14px;
-  color: var(--ink-soft);
-  margin: 0 0 6px;
-  line-height: 1.5;
-}
-.footer-brand-sub {
-  font-size: 13px;
-  color: var(--muted);
+  color: #d1d5db;
   margin: 0 0 16px;
   line-height: 1.5;
 }
@@ -1825,21 +1818,21 @@ a:hover {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--ink-soft);
+  background: #1f2937;
+  border: 1px solid #374151;
+  color: #9ca3af;
   transition: all 0.15s;
 }
 .social-icon:hover {
   border-color: var(--primary);
-  color: var(--primary);
+  color: #fff;
   text-decoration: none;
 }
 .footer-col h4 {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ink-soft);
+  color: #f9fafb;
   margin: 0 0 14px;
   font-weight: 700;
   font-family: inherit;
@@ -1848,6 +1841,7 @@ a:hover {
   display: block;
   margin-bottom: 10px;
   font-size: 14px;
+  color: #9ca3af;
 }
 .footer-app-desc {
   font-size: 13px;
@@ -1882,7 +1876,7 @@ a:hover {
   border-top: 1px solid var(--footer-border);
   padding: 20px 0 16px;
   font-size: 13px;
-  color: var(--muted);
+  color: #9ca3af;
 }
 .footer-bottom p {
   margin: 0;
@@ -2138,7 +2132,7 @@ a:hover {
   transition: color 0.15s;
 }
 .footer-link:hover {
-  color: var(--primary);
+  color: #ffffff;
   text-decoration: none;
 }
 
