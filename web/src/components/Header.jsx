@@ -135,7 +135,6 @@ export default function Header() {
               {t("nav.login")}
             </Link>
           )}
-          <span className="lang-badge" aria-label="Íslenska">IS</span>
         </nav>
       </div>
     </header>
