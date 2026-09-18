@@ -20,7 +20,7 @@ function StarInput({ value, onChange }) {
           }}
         >★</button>
       ))}
-      <span className="muted" style={{ marginLeft: 6, fontSize: 13 }}>{value ? `${value}/5` : "Select"}</span>
+      <span className="muted" style={{ marginLeft: 6, fontSize: 13 }}>{value ? `${value}/5` : "Veldu"}</span>
     </div>
   );
 }
@@ -33,7 +33,7 @@ export default function ReviewForm({ bookingId, onDone, onCancel }) {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (rating < 1) { setError("Please select a rating"); return; }
+    if (rating < 1) { setError("Veldu einkunn"); return; }
     setSubmitting(true);
     setError("");
     try {
@@ -48,17 +48,17 @@ export default function ReviewForm({ bookingId, onDone, onCancel }) {
 
   return (
     <form onSubmit={submit} style={{ marginTop: 10, padding: 14, border: "1px solid var(--line)", borderRadius: 12, background: "var(--surface-2)" }}>
-      <strong style={{ display: "block", marginBottom: 6 }}>Leave a review</strong>
+      <strong style={{ display: "block", marginBottom: 6 }}>Skildu eftir umsögn</strong>
       <div className="field" style={{ marginBottom: 8 }}>
-        <label>Rating *</label>
+        <label>Einkunn *</label>
         <StarInput value={rating} onChange={setRating} />
       </div>
       <div className="field">
-        <label>Comment (visible to everyone)</label>
+        <label>Athugasemd (sýnileg öllum)</label>
         <textarea
           value={comment}
           onChange={e => setComment(e.target.value)}
-          placeholder="How was the experience? Item condition, communication..."
+          placeholder="Hvernig var upplifunin? Ástand hlutar, samskipti..."
           maxLength={2000}
           rows={3}
         />
@@ -66,8 +66,8 @@ export default function ReviewForm({ bookingId, onDone, onCancel }) {
       </div>
       {error && <div className="form-error">{error}</div>}
       <div className="row" style={{ marginTop: 8 }}>
-        <button className="btn btn-primary btn-sm" type="submit" disabled={submitting}>{submitting ? "Sending…" : "Submit review"}</button>
-        <button className="btn btn-outline btn-sm" type="button" onClick={onCancel}>Cancel</button>
+        <button className="btn btn-primary btn-sm" type="submit" disabled={submitting}>{submitting ? "Senda…" : "Senda umsögn"}</button>
+        <button className="btn btn-outline btn-sm" type="button" onClick={onCancel}>Hætta við</button>
       </div>
     </form>
   );

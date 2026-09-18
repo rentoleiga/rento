@@ -58,35 +58,35 @@ export default function CalendarPage() {
 
   return (
     <div className="container section" style={{ maxWidth: 880 }}>
-      <h1 className="mt0">Calendar</h1>
+      <h1 className="mt0">Dagatal</h1>
       {listing && <p className="muted" style={{ marginTop: 0 }}><Link to={`/listing/${listing.slug}`}>{listing.title}</Link></p>}
       {error && !busy && <div className="form-error">{error}</div>}
 
       <div className="detail-section" style={{ marginTop: 0 }}>
-        <h3>Block unavailable dates</h3>
+        <h3>Loka ólæsum dögum</h3>
         <form onSubmit={addBlock} className="row" style={{ alignItems: "flex-end" }}>
           <div className="field grow" style={{ marginBottom: 0 }}>
-            <label>From</label>
+            <label>Frá</label>
             <input type="date" required value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} />
           </div>
           <div className="field grow" style={{ marginBottom: 0 }}>
-            <label>To</label>
+            <label>Til</label>
             <input type="date" required min={form.start} value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} />
           </div>
           <div className="field grow" style={{ marginBottom: 0 }}>
-            <label>Reason</label>
+            <label>Ástæða</label>
             <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-              <option value="blocked">Unavailable</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="available">Force available</option>
+              <option value="blocked">Ólæst</option>
+              <option value="maintenance">Viðhald</option>
+              <option value="available">Þvinga laust</option>
             </select>
           </div>
-          <button className="btn btn-primary" disabled={busy || !form.start || !form.end}>{busy ? "Adding…" : "Add"}</button>
+          <button className="btn btn-primary" disabled={busy || !form.start || !form.end}>{busy ? "Bæti við…" : "Bæta við"}</button>
         </form>
       </div>
 
-      <h2 style={{ fontSize: 19 }}>Upcoming bookings</h2>
-      {bookings.length === 0 ? <div className="empty">No upcoming bookings.</div> : (
+      <h2 style={{ fontSize: 19 }}>Væntanlegar bókanir</h2>
+      {bookings.length === 0 ? <div className="empty">Engar væntanlegar bókanir.</div> : (
         <ul className="plain-list">
           {bookings.map((b) => (
             <li key={b.id}>
@@ -100,16 +100,16 @@ export default function CalendarPage() {
         </ul>
       )}
 
-      <h2 style={{ fontSize: 19 }}>Availability blocks</h2>
-      {avail.length === 0 ? <div className="empty">No blocks set.</div> : (
+      <h2 style={{ fontSize: 19 }}>Lokaðir dagar</h2>
+      {avail.length === 0 ? <div className="empty">Engir lokaðir dagar.</div> : (
         <ul className="plain-list">
           {avail.map((a) => (
             <li key={a.id}>
               <div className="grow">
                 <div className="title">{a.start.slice(0, 10)} → {a.end.slice(0, 10)}</div>
-                <div className="sub">{a.status}{a.bookingId ? ` · booking ${a.bookingId}` : ""}</div>
+                <div className="sub">{a.status}{a.bookingId ? ` · bókun ${a.bookingId}` : ""}</div>
               </div>
-              <button className="btn btn-danger btn-sm" onClick={() => delBlock(a.id)}>Remove</button>
+              <button className="btn btn-danger btn-sm" onClick={() => delBlock(a.id)}>Fjarlægja</button>
             </li>
           ))}
         </ul>

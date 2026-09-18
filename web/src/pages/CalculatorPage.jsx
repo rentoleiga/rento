@@ -161,7 +161,7 @@ export default function CalculatorPage() {
                 <span>{formatPrice(grossMonthly)}</span>
               </li>
               <li>
-                <span>{t("calc.platformFee", { pct: feePct })}</span>
+                <span>{t("calc.platformFee").replace("{pct}", feePct)}</span>
                 <span>-{formatPrice(fee)}</span>
               </li>
               <li className="strong">

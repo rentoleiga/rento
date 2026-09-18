@@ -23,10 +23,10 @@ export default function MessagesPage() {
 
   return (
     <div className="container section" style={{ maxWidth: 720 }}>
-      <h1 className="mt0">Messages</h1>
-      {loading ? <div className="empty">Loading…</div>
+      <h1 className="mt0">Skilaboð</h1>
+      {loading ? <div className="empty">Hleður…</div>
         : convs.length === 0 ? (
-            <div className="empty"><h3>No conversations yet</h3><p>Message a listing owner to get started.</p></div>
+            <div className="empty"><h3>Engin samtöl ennþá</h3><p>Sendu skilaboð til eiganda til að byrja.</p></div>
           ) : (
             <ul className="plain-list">
               {convs.map((c) => {
@@ -38,7 +38,7 @@ export default function MessagesPage() {
                     <div className="grow">
                       <div className="title">
                         <Link to={`/messages/${c.id}`}>{c.listing_title}</Link>
-                        {c.unread > 0 && <span className="status-pill status-active" style={{ marginLeft: 8 }}>{c.unread} new</span>}
+                        {c.unread > 0 && <span className="status-pill status-active" style={{ marginLeft: 8 }}>{c.unread} ný</span>}
                       </div>
                       <div className="sub">
                         {user.id === c.renter_id

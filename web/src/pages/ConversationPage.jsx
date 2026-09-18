@@ -42,7 +42,7 @@ export default function ConversationPage() {
     }
   };
 
-  if (!conv) return <div className="container section"><div className="empty">Loading…</div></div>;
+  if (!conv) return <div className="container section"><div className="empty">Hleður…</div></div>;
 
   const otherName = user.id === conv.renter_id
     ? `${conv.owner_first} ${conv.owner_last}`
@@ -55,7 +55,7 @@ export default function ConversationPage() {
           <div className="grow">
             <strong>{otherName}</strong>
             <div className="muted" style={{ fontSize: 13 }}>
-              about <Link to={`/listing/${conv.listing_slug}`}>{conv.listing_title}</Link>
+              um <Link to={`/listing/${conv.listing_slug}`}>{conv.listing_title}</Link>
             </div>
           </div>
         </div>
@@ -69,8 +69,8 @@ export default function ConversationPage() {
           <div ref={bottom} />
         </div>
         <form className="chat-input" onSubmit={send}>
-          <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Write a message…" />
-          <button className="btn btn-primary" disabled={busy || !text.trim()}>Send</button>
+          <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Skrifaðu skilaboð…" />
+          <button className="btn btn-primary" disabled={busy || !text.trim()}>Senda</button>
         </form>
       </div>
     </div>

@@ -56,7 +56,7 @@ export default function HomePage() {
               <input
                 value={q.keyword}
                 onChange={(e) => setQ({ ...q, keyword: e.target.value })}
-                placeholder="e.g. campervan, fishing gear"
+                placeholder="t.d. húsbíll, veiðibúnaður"
               />
             </div>
             <div className="field">
@@ -64,7 +64,7 @@ export default function HomePage() {
               <input
                 value={q.city}
                 onChange={(e) => setQ({ ...q, city: e.target.value })}
-                placeholder="e.g. Reykjavík"
+                placeholder="t.d. Reykjavík"
               />
             </div>
             <div className="field">

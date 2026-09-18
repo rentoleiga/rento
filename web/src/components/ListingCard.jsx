@@ -5,9 +5,9 @@ import { api } from "../api";
 import { useAuth } from "../store";
 
 const TIER_BADGE = {
-  platinum: "Platinum",
-  gold: "Gold",
-  featured: "Silver",
+  platinum: "Platína",
+  gold: "Gull",
+  featured: "Silfur",
 };
 
 export default function ListingCard({ listing }) {
@@ -51,7 +51,7 @@ export default function ListingCard({ listing }) {
         )}
         <div className="card-badges">
           {listing.verificationStatus === "verified" && (
-            <span className="badge badge-verified">Verified</span>
+            <span className="badge badge-verified">Staðfest</span>
           )}
           {tier && <span className={`badge badge-tier badge-${tierClass}`}>{TIER_BADGE[tier]}</span>}
         </div>
@@ -69,8 +69,8 @@ export default function ListingCard({ listing }) {
         <h3 className="card-title">{listing.title}</h3>
         {listing.owner && (
           <div className="card-meta" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> {listing.owner.firstName || listing.owner.name || "User"}</span>
-            {(listing.owner.identityVerified || listing.verificationStatus === "verified") && <span style={{ color: "#0a7a5a", fontSize: 11 }}>✔ Verified</span>}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> {listing.owner.firstName || listing.owner.name || "Notandi"}</span>
+            {(listing.owner.identityVerified || listing.verificationStatus === "verified") && <span style={{ color: "#0a7a5a", fontSize: 11 }}>✔ Staðfest</span>}
           </div>
         )}
         <div className="card-meta" style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -106,7 +106,7 @@ export function PriceLine({ listing }) {
     return (
       <span>
         <strong>{formatPrice(daily, listing.currency)}</strong>
-        <span className="muted"> / day</span>
+        <span className="muted"> / dag</span>
       </span>
     );
   }
@@ -114,11 +114,11 @@ export function PriceLine({ listing }) {
     return (
       <span>
         <strong>{formatPrice(listing.priceHourly, listing.currency)}</strong>
-        <span className="muted"> / hour</span>
+        <span className="muted"> / klst</span>
       </span>
     );
   }
-  return <span className="muted">Price on request</span>;
+  return <span className="muted">Verð á beiðni</span>;
 }
 
 export function StarRating({ rating }) {

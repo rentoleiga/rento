@@ -89,7 +89,7 @@ export default function SearchPage() {
       <div className="container">
       <div className="section-head">
         <h2 className="mt0">
-          {query.keyword ? `Results for "${query.keyword}"` : t("search.allRentals")}
+          {query.keyword ? `Niðurstöður fyrir "${query.keyword}"` : t("search.allRentals")}
           {data && <span className="muted" style={{ fontSize: 15 }}> · {t("search.found").replace("{n}", data.total)}</span>}
         </h2>
       </div>

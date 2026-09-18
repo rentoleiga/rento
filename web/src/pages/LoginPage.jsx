@@ -47,7 +47,7 @@ export default function LoginPage() {
       <p className="sub">{t("auth.subLogin")}</p>
       {error && <div className="form-error">{error}</div>}
       <GoogleButton />
-      <div className="divider">or</div>
+      <div className="divider">eða</div>
       <form onSubmit={submit}>
         <div className="field">
           <label>{t("auth.email")}</label>

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function GoogleButton({ label = "Continue with Google" }) {
+export default function GoogleButton({ label = "Halda áfram með Google" }) {
   return (
     <a className="btn btn-block google-btn" href="/api/auth/google">
       <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">

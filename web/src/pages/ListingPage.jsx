@@ -83,7 +83,7 @@ export default function ListingPage() {
         listingId: listing.id,
         start,
         end,
-        message: `Hello! I would like to book ${listing.title} from ${dates.start} to ${dates.end}.`,
+        message: `Halló! Ég vil bóka ${listing.title} frá ${dates.start} til ${dates.end}.`,
       });
       navigate("/dashboard/bookings");
     } catch (err) {

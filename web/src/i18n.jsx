@@ -452,6 +452,7 @@ const messages = {
     "how.faq.q3": "Hvernig skrái ég mína hluti?",
     "how.faq.a3": "Farðu á Mín síða → Skráningar mínar → Ný skráning. Bættu við myndum, verði og framboði.",
     "search.title": "Leita",
+    "search.allRentals": "Allar leigur",
     "search.keyword": "Lykilorð",
     "search.filter.category": "Flokkur",
     "search.filter.location": "Staðsetning",

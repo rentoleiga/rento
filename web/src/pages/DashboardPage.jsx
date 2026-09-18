@@ -113,8 +113,8 @@ function Dashboard() {
         </div>
         {listings.length === 0 ? (
           <div className="empty">
-            <h3>No listings yet</h3>
-            <p>List your items and start earning.</p>
+            <h3>Engar skráningar ennþá</h3>
+            <p>Skráðu hlutina þína og byrjaðu að græða.</p>
             <Link className="btn btn-primary" to="/dashboard/listings/new">{t("dash.nav.add")}</Link>
           </div>
         ) : (

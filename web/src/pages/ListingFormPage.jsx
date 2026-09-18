@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api, getToken } from "../api";
 import { useAuth } from "../store";
 
-const STEPS = ["Photos", "Basics", "Price", "Location", "Review"];
+const STEPS = ["Myndir", "Grunnupplýsingar", "Verð", "Staðsetning", "Yfirlit"];
 
 const initial = {
   title: "", subtitle: "", description: "",
@@ -39,21 +39,22 @@ const STEP_OF = {
 };
 
 const LABELS = {
-  title: "Title",
-  description: "Description",
-  categoryId: "Category",
-  subcategoryId: "Subcategory",
-  city: "City",
-  priceHourly: "Price per hour",
-  priceDaily: "Price per day",
-  priceWeekly: "Price per week",
-  priceMonthly: "Price per month",
-  depositAmount: "Deposit",
-  cleaningFee: "Cleaning fee",
-  deliveryFee: "Delivery fee",
-  pickupFee: "Pickup fee",
-  minimumDuration: "Minimum duration",
-  minAge: "Minimum renter age",
+  title: "Titill",
+  description: "Lýsing",
+  categoryId: "Flokkur",
+  subcategoryId: "Undirflokkur",
+  city: "Borg/bær",
+  phone: "Símanúmer",
+  priceHourly: "Verð á klst.",
+  priceDaily: "Verð á dag",
+  priceWeekly: "Verð á viku",
+  priceMonthly: "Verð á mánuði",
+  depositAmount: "Trygging",
+  cleaningFee: "Þrifgjald",
+  deliveryFee: "Afhendingargjald",
+  pickupFee: "Sóknargjald",
+  minimumDuration: "Lágmarkstími",
+  minAge: "Lágmarksaldur",
 };
 
 function msg(field, text) {
@@ -70,24 +71,24 @@ function hasContent(f, v) {
 // Returns a friendly message string, or null if the field is valid.
 function ruleFor(f, v) {
   if (f === "title") {
-    if (typeof v !== "string" || v.trim().length < 3) return msg(f, "Enter at least 3 characters.");
+    if (typeof v !== "string" || v.trim().length < 3) return msg(f, "Sláðu inn að minnsta kosti 3 stafi.");
   }
   if (f === "description") {
-    if (typeof v !== "string" || v.trim().length < 20) return msg(f, "Enter at least 20 characters.");
+    if (typeof v !== "string" || v.trim().length < 20) return msg(f, "Sláðu inn að minnsta kosti 20 stafi.");
   }
   if (f === "city") {
-    if (typeof v !== "string" || !v.trim()) return msg(f, "City is required.");
+    if (typeof v !== "string" || !v.trim()) return msg(f, "Borg/bær er nauðsynleg.");
   }
   if (f === "categoryId" || f === "subcategoryId") {
-    if (Number(v) <= 0) return msg(f, "Select an option from the list.");
+    if (Number(v) <= 0) return msg(f, "Veldu valkost úr listanum.");
   }
   if (NUMERIC_CONVERT.includes(f)) {
     if (v === "" || v === null || v === undefined) return null;
     const n = Number(v);
-    if (Number.isNaN(n)) return msg(f, "Enter a valid number.");
-    if (n < 0) return msg(f, "Must be 0 or more.");
+    if (Number.isNaN(n)) return msg(f, "Sláðu inn gilt númer.");
+    if (n < 0) return msg(f, "Verður að vera 0 eða meira.");
     if (COORDS[f] && (n < COORDS[f][0] || n > COORDS[f][1]))
-      return msg(f, `Must be between ${COORDS[f][0]} and ${COORDS[f][1]}.`);
+      return msg(f, `Verður að vera á milli ${COORDS[f][0]} og ${COORDS[f][1]}.`);
     return null;
   }
   return null;
@@ -159,9 +160,9 @@ export default function ListingFormPage() {
   if (!user || !user.ownerEnabled) {
     return (
       <div className="form-card">
-        <h1>Owner access required</h1>
-        <p className="sub">Enable "I want to list my items" on your profile to create listings.</p>
-        <a className="btn btn-primary btn-block" href="/dashboard">Go to dashboard</a>
+        <h1>Þarf aðgang eiganda</h1>
+        <p className="sub">Virkjaðu „Ég vil skrá hluti mína“ á prófílnum þínum til að búa til skráningar.</p>
+        <a className="btn btn-primary btn-block" href="/dashboard">Fara á Mín síða</a>
       </div>
     );
   }
@@ -171,7 +172,7 @@ export default function ListingFormPage() {
 
   const uploadFiles = async (files) => {
     const room = 15 - form.gallery.length;
-    if (room <= 0) { setError("Maximum 15 images."); return; }
+    if (room <= 0) { setError("Hámark 15 myndir."); return; }
     setUploading(true);
     setError("");
     const urls = [];
@@ -185,7 +186,7 @@ export default function ListingFormPage() {
           body: fd,
         });
         const d = await r.json();
-        if (!r.ok) throw new Error(d.error || "Upload failed");
+        if (!r.ok) throw new Error(d.error || "Upphleðsla mistókst");
         urls.push(d.url);
       } catch (e) {
         setError(e.message);
@@ -247,7 +248,7 @@ export default function ListingFormPage() {
     if (s === 2) {
       const prices = [form.priceHourly, form.priceDaily, form.priceWeekly, form.priceMonthly]
         .map(Number).filter((n) => !Number.isNaN(n) && n > 0);
-      if (prices.length === 0) errors.priceDaily = msg("priceDaily", "Enter at least one price.");
+      if (prices.length === 0) errors.priceDaily = msg("priceDaily", "Sláðu inn að minnsta kosti eitt verð.");
       for (const f of ["priceHourly", "priceDaily", "priceWeekly", "priceMonthly", "depositAmount"]) {
         const m = ruleFor(f, form[f]);
         if (m) errors[f] = m;
@@ -256,7 +257,7 @@ export default function ListingFormPage() {
     if (s === 3) {
       const m = ruleFor("city", form.city);
       if (m) errors.city = m;
-      if (form.phoneVisibility && !String(form.phone || "").trim()) errors.phone = msg("phone", "Enter a phone number or hide it.");
+      if (form.phoneVisibility && !String(form.phone || "").trim()) errors.phone = msg("phone", "Sláðu inn símanúmer eða feldu það.");
     }
     return errors;
   };
@@ -299,7 +300,7 @@ export default function ListingFormPage() {
     try {
       if (id) await api.put(`/api/listings/${id}`, payload);
       else await api.post("/api/listings", payload);
-      setNotice(`${publish ? "Listing published" : "Listing saved as draft"}!`);
+      setNotice(`${publish ? "Skráning birt" : "Skráning vistuð sem drög"}!`);
       setTimeout(() => navigate("/dashboard/listings"), 1200);
     } catch (e) {
       if (e.data?.details?.length) {
@@ -331,8 +332,8 @@ export default function ListingFormPage() {
 
   const navBtns = (isLast) => (
     <div className="row" style={{ justifyContent: "space-between", marginTop: 18 }}>
-      <button className="btn btn-outline" disabled={step === 0 || busy} onClick={() => { setStep(step - 1); window.scrollTo(0, 0); }}>‹ Back</button>
-      {!isLast && <button className="btn btn-primary" disabled={busy} onClick={goNext}>Next ›</button>}
+      <button className="btn btn-outline" disabled={step === 0 || busy} onClick={() => { setStep(step - 1); window.scrollTo(0, 0); }}>‹ Til baka</button>
+      {!isLast && <button className="btn btn-primary" disabled={busy} onClick={goNext}>Áfram ›</button>}
     </div>
   );
 
@@ -340,13 +341,13 @@ export default function ListingFormPage() {
 
   return (
     <div className="container section" style={{ maxWidth: 980 }}>
-      <h1 className="mt0">{id ? "Edit listing" : "Create a listing"}</h1>
-      <p className="muted" style={{ marginTop: -8 }}>List your gear in a few steps — photos, basics, price, location, review.</p>
+      <h1 className="mt0">{id ? "Breyta skráningu" : "Stofna skráningu"}</h1>
+      <p className="muted" style={{ marginTop: -8 }}>Skráðu búnaðinn þinn í nokkrum skrefum — myndir, grunnupplýsingar, verð, staðsetning, yfirlit.</p>
       {error && <div className="form-error">{error}</div>}
       {notice && <div className="alert alert-success">{notice}</div>}
       <div className="wizard-layout">
         <aside className="wizard-steps">
-          <div className="wizard-steps-label">STEPS</div>
+          <div className="wizard-steps-label">SKREF</div>
           {STEPS.map((s, i) => (
             <button key={s} className={`wizard-step ${i === step ? "active" : ""} ${stepDone[i] ? "done" : ""}`} onClick={() => setStep(i)}>
               <span className="wizard-check">{stepDone[i] ? "✓" : i + 1}</span>
@@ -358,18 +359,18 @@ export default function ListingFormPage() {
 
       {step === 0 && (
         <>
-          <h2 style={{ marginTop: 0 }}>Add photos</h2>
-          <p className="muted" style={{ marginTop: -8 }}>Add up to 15 photos of your gear. The first photo will be the cover.</p>
+          <h2 style={{ marginTop: 0 }}>Bæta við myndum</h2>
+          <p className="muted" style={{ marginTop: -8 }}>Bættu við allt að 15 myndum af búnaðinum þínum. Fyrsta myndin verður forsíðumynd.</p>
           <label className="dropzone" onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); if (e.dataTransfer?.files?.length) uploadFiles(e.dataTransfer.files); }}>
             <span className="dropzone-ic">📷</span>
-            <strong>Add gear photos</strong>
-            <small>JPG, PNG, WebP up to 10 MB</small>
-            <span className="btn btn-primary btn-sm" style={{ marginTop: 8 }}>Choose photos</span>
+            <strong>Bæta við myndum af búnaði</strong>
+            <small>JPG, PNG, WebP allt að 10 MB</small>
+            <span className="btn btn-primary btn-sm" style={{ marginTop: 8 }}>Velja myndir</span>
             <input type="file" accept="image/*" multiple hidden onChange={(e) => { uploadFiles(e.target.files); e.target.value = ""; }} />
           </label>
-          <p className="muted small" style={{ textAlign: "center" }}>{form.gallery.length}/15 photos</p>
-          {uploading && <p className="muted">Uploading…</p>}
+          <p className="muted small" style={{ textAlign: "center" }}>{form.gallery.length}/15 myndir</p>
+          {uploading && <p className="muted">Hleð upp…</p>}
           {form.gallery.length > 0 && (
             <div className="gallery-thumbs" style={{ marginBottom: 16 }}>
               {form.gallery.map((url) => (
@@ -381,17 +382,17 @@ export default function ListingFormPage() {
               ))}
             </div>
           )}
-          {form.mainImage && <p className="muted" style={{ fontSize: 13 }}>The first photo is the cover — click any photo to make it the cover.</p>}
+          {form.mainImage && <p className="muted" style={{ fontSize: 13 }}>Fyrsta myndin er forsíðumynd — smelltu á hvaða mynd sem er til að gera hana að forsíðumynd.</p>}
           <div className="tip-box tip-info">
-            <strong>⛨ Don't put your phone number on photos</strong>
-            <p className="mb0">Renters see your number on the platform ("Show number" button) — enter it in the "Contact phone" field in the Location step.</p>
+            <strong>⛨ Settu ekki símanúmerið þitt á myndir</strong>
+            <p className="mb0">Leigjendur sjá númerið þitt á vettvanginum („Sýna númer“ hnappur) — sláðu það inn í reitinn „Símanúmer“ í Staðsetning skrefinu.</p>
           </div>
           <div className="tip-box tip-warn">
-            <strong>Tips for better photos:</strong>
+            <strong>Ráð fyrir betri myndir:</strong>
             <ul>
-              <li>Photograph your gear in good light</li>
-              <li>Show the gear from several angles</li>
-              <li>Include all accessories that come with it</li>
+              <li>Myndaðu búnaðinn í góðu ljósi</li>
+              <li>Sýndu búnaðinn frá nokkrum hliðum</li>
+              <li>Hafðu með allan aukabúnað sem fylgir</li>
             </ul>
           </div>
           {navBtns(false)}
@@ -400,91 +401,91 @@ export default function ListingFormPage() {
 
       {step === 1 && (
         <>
-          <h2 style={{ marginTop: 0 }}>Basic info</h2>
-          <p className="muted" style={{ marginTop: -8 }}>Describe your gear so people can find it easily.</p>
+          <h2 style={{ marginTop: 0 }}>Grunnupplýsingar</h2>
+          <p className="muted" style={{ marginTop: -8 }}>Lýstu búnaðinum þínum svo fólk finni hann auðveldlega.</p>
           <div className={`field ${fieldErrors.title ? "has-error " : ""}${fieldOk.title ? "is-valid" : ""}`}>
-            <label>Listing title *</label>
+            <label>Titill skráningar *</label>
             <input data-field="title" value={form.title} onChange={(e) => { set("title", e.target.value); touch("title", e.target.value); }}
-              placeholder="e.g. Bosch drill GBH 2-26" />
+              placeholder="t.d. Bosch borsvél GBH 2-26" />
             {message("title") && <small className="field-msg">{message("title")}</small>}
           </div>
           <div className={`field ${fieldErrors.description ? "has-error " : ""}${fieldOk.description ? "is-valid" : ""}`}>
-            <label>Description *</label>
+            <label>Lýsing *</label>
             <textarea data-field="description" rows={5} value={form.description}
               onChange={(e) => { set("description", e.target.value); touch("description", e.target.value); }}
-              placeholder="Describe the condition, what's included, what it's used for…" />
-            <small className="muted">{(form.description || "").trim().length}/20 characters minimum</small>
+              placeholder="Lýstu ástandi, hvað fylgir, til hvers það er notað…" />
+            <small className="muted">{(form.description || "").trim().length}/20 stafir að lágmarki</small>
             {message("description") && <small className="field-msg">{message("description")}</small>}
           </div>
-          <div className="field"><label>Short subtitle</label>
-            <input value={form.subtitle} onChange={(e) => set("subtitle", e.target.value)} placeholder="e.g. Sleeps 4, fully equipped" /></div>
+          <div className="field"><label>Stuttur undirtitill</label>
+            <input value={form.subtitle} onChange={(e) => set("subtitle", e.target.value)} placeholder="t.d. Svefnpláss fyrir 4, fullbúið" /></div>
           <div className="row">
             <div className={`field grow ${fieldErrors.categoryId ? "has-error " : ""}${fieldOk.categoryId ? "is-valid" : ""}`}>
-              <label>Category *</label>
+              <label>Flokkur *</label>
               <select data-field="categoryId" value={form.categoryId}
                 onChange={(e) => { set("categoryId", Number(e.target.value)); set("subcategoryId", ""); touch("categoryId", e.target.value); touch("subcategoryId", ""); }}>
-                <option value="">Choose a category</option>
+                <option value="">Veldu flokk</option>
                 {topCats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
               {message("categoryId") && <small className="field-msg">{message("categoryId")}</small>}
             </div>
             <div className={`field grow ${fieldErrors.subcategoryId ? "has-error " : ""}${fieldOk.subcategoryId ? "is-valid" : ""}`}>
-              <label>Subcategory *</label>
+              <label>Undirflokkur *</label>
               <select data-field="subcategoryId" value={form.subcategoryId}
                 onChange={(e) => { set("subcategoryId", Number(e.target.value)); touch("subcategoryId", e.target.value); }}>
-                <option value="">Select…</option>
+                <option value="">Velja…</option>
                 {subCats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
               {message("subcategoryId") && <small className="field-msg">{message("subcategoryId")}</small>}
             </div>
           </div>
           <details className="opt-details">
-            <summary>Booking rules (optional)</summary>
+            <summary>Bókunarreglur (valfrjálst)</summary>
             <div className="row">
               <label className="field grow" style={{ cursor: "pointer" }}>
                 <input type="checkbox" checked={form.instantBooking} onChange={(e) => set("instantBooking", e.target.checked)} />
-                Instant booking (no approval needed)
+                Skyndibókun (þarf ekki samþykki)
               </label>
               <label className="field grow" style={{ cursor: "pointer" }}>
                 <input type="checkbox" checked={form.smokingAllowed} onChange={(e) => set("smokingAllowed", e.target.checked)} />
-                Smoking allowed
+                Reykingar leyfðar
               </label>
               <label className="field grow" style={{ cursor: "pointer" }}>
                 <input type="checkbox" checked={form.petsAllowed} onChange={(e) => set("petsAllowed", e.target.checked)} />
-                Pets allowed
+                Dýr leyfð
               </label>
             </div>
             <div className="row">
-              <div className="field grow"><label>Minimum renter age</label>
+              <div className="field grow"><label>Lágmarksaldur leigjanda</label>
                 <input type="number" min={0} value={form.minAge} onChange={(e) => num("minAge", e.target.value)} /></div>
-              <div className="field grow"><label>Cancellation policy</label>
+              <div className="field grow"><label>Afbókunarregla</label>
                 <select value={form.cancellationPolicy} onChange={(e) => set("cancellationPolicy", e.target.value)}>
-                  <option value="flexible">Flexible</option><option value="moderate">Moderate</option>
-                  <option value="strict">Strict</option><option value="custom">Custom</option>
+                  <option value="flexible">Sveigjanleg</option><option value="moderate">Miðlungs</option>
+                  <option value="strict">Ströng</option><option value="custom">Sérsniðin</option>
                 </select></div>
-              <div className="field grow"><label>Item condition</label>
+              <div className="field grow"><label>Ástand hlutar</label>
                 <select value={form.condition} onChange={(e) => set("condition", e.target.value)}>
-                  <option value="new">New</option><option value="like_new">Like new</option>
-                  <option value="good">Good</option><option value="fair">Fair</option>
+                  <option value="new">Nýtt</option><option value="like_new">Eins og nýtt</option>
+                  <option value="good">Gott</option><option value="fair">Viðunandi</option>
                 </select></div>
             </div>
-            <div className="field"><label>Usage restrictions</label>
-              <textarea value={form.usageRestrictions} onChange={(e) => set("usageRestrictions", e.target.value)} placeholder="e.g. Off-road driving prohibited, no smoking inside" /></div>
+            <div className="field"><label>Notkunartakmarkanir</label>
+              <textarea value={form.usageRestrictions} onChange={(e) => set("usageRestrictions", e.target.value)} placeholder="t.d. Utanvegaakstur bannaður, reykingar bannaðar inni" /></div>
           </details>
           <details className="opt-details">
-            <summary>Spec details (make, model… — optional)</summary>
+            <summary>Tæknilupplýsingar (framleiðandi, gerð… — valfrjálst)</summary>
             {attrRows.map((row, i) => (
               <div key={i} className="row" style={{ marginBottom: 8 }}>
                 <div className="field grow" style={{ marginBottom: 0 }}>
-                  <input placeholder="Name, e.g. make" value={row.k} onChange={(e) => setAttr(i, "k", e.target.value)} />
+                  <input placeholder="Nafn, t.d. framleiðandi" value={row.k} onChange={(e) => setAttr(i, "k", e.target.value)} />
                 </div>
                 <div className="field grow" style={{ marginBottom: 0 }}>
-                  <input placeholder="Value, e.g. Toyota" value={row.v} onChange={(e) => setAttr(i, "v", e.target.value)} />
+                  <input placeholder="Gildi, t.d. Toyota" value={row.v} onChange={(e) => setAttr(i, "v", e.target.value)} />
                 </div>
                 <button type="button" className="btn btn-outline btn-sm" onClick={() => delAttr(i)}>×</button>
               </div>
             ))}
-            <button type="button" className="btn btn-outline btn-sm" onClick={addAttr}>+ Add detail</button>
+            <button type="button" className="btn btn-outline btn-sm" onClick={addAttr}>+ Bæta við upplýsingu</button>
           </details>
           {navBtns(false)}
         </>
@@ -492,40 +493,40 @@ export default function ListingFormPage() {
 
       {step === 2 && (
         <>
-          <h2 style={{ marginTop: 0 }}>Price &amp; period</h2>
-          <p className="muted" style={{ marginTop: -8 }}>Set prices for the periods you want to offer (ISK). You can enter one or more.</p>
-          <div className="field"><label>Prices * (enter at least one)</label></div>
+          <h2 style={{ marginTop: 0 }}>Verð og tímabil</h2>
+          <p className="muted" style={{ marginTop: -8 }}>Stilltu verð fyrir þau tímabil sem þú vilt bjóða (ISK). Þú getur slegið inn eitt eða fleiri.</p>
+          <div className="field"><label>Verð * (sláðu inn að minnsta kosti eitt)</label></div>
           <div className="price-grid">
-            <PricingField name="priceHourly" label="Per hour" suffix="ISK/hr" value={form.priceHourly}
+            <PricingField name="priceHourly" label="Á klst." suffix="ISK/klst" value={form.priceHourly}
               onChange={onChange("priceHourly", (e) => num("priceHourly", e.target.value))}
               errors={fieldErrors} ok={fieldOk} message={message} />
-            <PricingField name="priceDaily" label="Per day" suffix="ISK/day" value={form.priceDaily}
+            <PricingField name="priceDaily" label="Á dag" suffix="ISK/dag" value={form.priceDaily}
               onChange={onChange("priceDaily", (e) => num("priceDaily", e.target.value))}
               errors={fieldErrors} ok={fieldOk} message={message} />
-            <PricingField name="priceWeekly" label="Per week" suffix="ISK/wk" value={form.priceWeekly}
+            <PricingField name="priceWeekly" label="Á viku" suffix="ISK/viku" value={form.priceWeekly}
               onChange={onChange("priceWeekly", (e) => num("priceWeekly", e.target.value))}
               errors={fieldErrors} ok={fieldOk} message={message} />
-            <PricingField name="priceMonthly" label="Per month" suffix="ISK/mo" value={form.priceMonthly}
+            <PricingField name="priceMonthly" label="Á mánuði" suffix="ISK/mán" value={form.priceMonthly}
               onChange={onChange("priceMonthly", (e) => num("priceMonthly", e.target.value))}
               errors={fieldErrors} ok={fieldOk} message={message} />
           </div>
           <div className="field" style={{ marginTop: 12 }}>
-            <label>Deposit (optional) — ISK</label>
+            <label>Trygging (valfrjálst) — ISK</label>
             <input data-field="depositAmount" type="number" min={0} value={form.depositAmount}
               onChange={(e) => num("depositAmount", e.target.value)} placeholder="0" />
-            <small className="muted">Amount the renter leaves as a guarantee</small>
+            <small className="muted">Upphæð sem leigjandinn skilur eftir sem tryggingu</small>
             {message("depositAmount") && <small className="field-msg">{message("depositAmount")}</small>}
           </div>
           <div className="field">
-            <label>Minimum rental period (optional)</label>
+            <label>Lágmarksleigutími (valfrjálst)</label>
             <div className="row">
-              <input type="number" min={0} value={form.minimumDuration} onChange={(e) => set("minimumDuration", e.target.value)} placeholder="e.g. 3" style={{ maxWidth: 120 }} />
+              <input type="number" min={0} value={form.minimumDuration} onChange={(e) => set("minimumDuration", e.target.value)} placeholder="t.d. 3" style={{ maxWidth: 120 }} />
               <select value={form.minimumDurationUnit} onChange={(e) => set("minimumDurationUnit", e.target.value)} style={{ flex: 1 }}>
-                <option value="hour">No limit</option>
-                <option value="hour">hour</option><option value="day">day</option><option value="week">week</option>
+                <option value="hour">Ekkert lágmark</option>
+                <option value="hour">klst.</option><option value="day">dagur</option><option value="week">vika</option>
               </select>
             </div>
-            <small className="muted">e.g. "Min. 3 days" — gear can't be rented for shorter</small>
+            <small className="muted">t.d. „Lágm. 3 dagar“ — ekki hægt að leigja skemur</small>
           </div>
           {navBtns(false)}
         </>
@@ -533,48 +534,48 @@ export default function ListingFormPage() {
 
       {step === 3 && (
         <>
-          <h2 style={{ marginTop: 0 }}>Location &amp; handover</h2>
-          <p className="muted" style={{ marginTop: -8 }}>Where the gear is and how handover works.</p>
+          <h2 style={{ marginTop: 0 }}>Staðsetning og afhending</h2>
+          <p className="muted" style={{ marginTop: -8 }}>Hvar búnaðurinn er og hvernig afhending fer fram.</p>
           <div className={`field ${fieldErrors.city ? "has-error " : ""}${fieldOk.city ? "is-valid" : ""}`}>
-            <label>Gear location *</label>
+            <label>Staðsetning búnaðar *</label>
             <div className="row">
               <input data-field="city" className="grow" value={form.city}
-                onChange={(e) => { set("city", e.target.value); touch("city", e.target.value); }} placeholder="City, e.g. Reykjavík" />
-              <input className="grow" value={form.postcode} onChange={(e) => set("postcode", e.target.value)} placeholder="Postcode" />
+                onChange={(e) => { set("city", e.target.value); touch("city", e.target.value); }} placeholder="Borg/bær, t.d. Reykjavík" />
+              <input className="grow" value={form.postcode} onChange={(e) => set("postcode", e.target.value)} placeholder="Póstnúmer" />
             </div>
             {message("city") && <small className="field-msg">{message("city")}</small>}
           </div>
           <div className="row">
-            <div className="field grow"><label>Region</label>
+            <div className="field grow"><label>Landshluti</label>
               <input value={form.region} onChange={(e) => set("region", e.target.value)} /></div>
-            <div className="field grow"><label>Address (shown publicly)</label>
+            <div className="field grow"><label>Heimilisfang (sýnilegt öllum)</label>
               <input value={form.address} onChange={(e) => set("address", e.target.value)} /></div>
           </div>
           <div className={`field ${fieldErrors.phone ? "has-error " : ""}`}>
-            <label>Contact phone (optional)</label>
-            <input data-field="phone" type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="e.g. +354 612 3456" />
-            <small className="muted">If you enter it, renters can call you directly</small>
+            <label>Símanúmer (valfrjálst)</label>
+            <input data-field="phone" type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="t.d. +354 612 3456" />
+            <small className="muted">Ef þú slærð það inn geta leigjendur hringt beint í þig</small>
             {message("phone") && <small className="field-msg">{message("phone")}</small>}
           </div>
           <label className="row" style={{ cursor: "pointer", marginBottom: 12 }}>
             <input type="checkbox" checked={form.phoneVisibility} onChange={(e) => set("phoneVisibility", e.target.checked)} />
-            Show phone number on listing (visible to everyone)
+            Sýna símanúmer á skráningu (sýnilegt öllum)
           </label>
-          <div className="field"><label>How is the gear handed over?</label></div>
+          <div className="field"><label>Hvernig er búnaðurinn afhentur?</label></div>
           <div className="pickup-cards">
             <button type="button" className={`pickup-card ${pickupMode === "pickup" ? "selected" : ""}`} onClick={() => setPickupMode("pickup")}>
               <span className="pickup-ic">📦</span>
-              <span><strong>Pickup only</strong><small>Renter picks up the gear at my location</small></span>
+              <span><strong>Aðeins sótt</strong><small>Leigjandi sækir búnaðinn á staðinn minn</small></span>
               <span className="pickup-radio" />
             </button>
             <button type="button" className={`pickup-card ${pickupMode === "delivery" ? "selected" : ""}`} onClick={() => setPickupMode("delivery")}>
               <span className="pickup-ic">🚚</span>
-              <span><strong>I deliver</strong><small>I deliver the gear to the renter's address</small></span>
+              <span><strong>Ég afhendi</strong><small>Ég afhendi búnaðinn á heimilisfang leigjandans</small></span>
               <span className="pickup-radio" />
             </button>
             <button type="button" className={`pickup-card ${pickupMode === "both" ? "selected" : ""}`} onClick={() => setPickupMode("both")}>
               <span className="pickup-ic">🔀</span>
-              <span><strong>Both</strong><small>Renter chooses pickup or delivery</small></span>
+              <span><strong>Bæði</strong><small>Leigjandi velur sókn eða afhendingu</small></span>
               <span className="pickup-radio" />
             </button>
           </div>
@@ -584,54 +585,54 @@ export default function ListingFormPage() {
 
       {step === 4 && (
         <>
-          <h2 style={{ marginTop: 0 }}>Review listing</h2>
-          <p className="muted" style={{ marginTop: -8 }}>Check everything before publishing.</p>
+          <h2 style={{ marginTop: 0 }}>Yfirlit skráningar</h2>
+          <p className="muted" style={{ marginTop: -8 }}>Farðu yfir allt áður en þú birtir.</p>
           <div className="review-card">
-            <div className="review-head"><span>📷 Photos ({form.gallery.length})</span><button className="link-btn" onClick={() => setStep(0)}>✎ Edit</button></div>
-            {form.gallery.length === 0 ? <p className="muted mb0">No photos</p> : (
+            <div className="review-head"><span>📷 Myndir ({form.gallery.length})</span><button className="link-btn" onClick={() => setStep(0)}>✎ Breyta</button></div>
+            {form.gallery.length === 0 ? <p className="muted mb0">Engar myndir</p> : (
               <div className="gallery-thumbs" style={{ marginTop: 8 }}>
                 {form.gallery.slice(0, 6).map((url) => <img key={url} src={url} alt="" style={{ width: 72, height: 50, objectFit: "cover", borderRadius: 8 }} />)}
               </div>
             )}
           </div>
           <div className="review-card">
-            <div className="review-head"><span>📄 Basic info</span><button className="link-btn" onClick={() => setStep(1)}>✎ Edit</button></div>
-            <small className="muted">Title</small>
+            <div className="review-head"><span>📄 Grunnupplýsingar</span><button className="link-btn" onClick={() => setStep(1)}>✎ Breyta</button></div>
+            <small className="muted">Titill</small>
             <p style={{ margin: "2px 0 8px", fontWeight: 700 }}>{form.title || "—"}</p>
-            <small className="muted">Description</small>
+            <small className="muted">Lýsing</small>
             <p className="mb0" style={{ marginTop: 2 }}>{form.description || "—"}</p>
-            <small className="muted">Category</small>
+            <small className="muted">Flokkur</small>
             <p className="mb0" style={{ marginTop: 2 }}>
               {cats.find((c) => c.id === Number(form.categoryId))?.name || "—"}
               {form.subcategoryId ? ` / ${cats.find((c) => c.id === Number(form.subcategoryId))?.name || ""}` : ""}
             </p>
           </div>
           <div className="review-card">
-            <div className="review-head"><span>$ Price</span><button className="link-btn" onClick={() => setStep(2)}>✎ Edit</button></div>
+            <div className="review-head"><span>$ Verð</span><button className="link-btn" onClick={() => setStep(2)}>✎ Breyta</button></div>
             <p className="mb0">
-              {form.priceDaily ? <span className="price-hl">{form.priceDaily} ISK/day</span> : ""}
-              {[["hour", form.priceHourly, "/hr"], ["day", null, ""], ["week", form.priceWeekly, "/wk"], ["month", form.priceMonthly, "/mo"]]
+              {form.priceDaily ? <span className="price-hl">{form.priceDaily} ISK/dag</span> : ""}
+              {[["hour", form.priceHourly, "/klst"], ["day", null, ""], ["week", form.priceWeekly, "/viku"], ["month", form.priceMonthly, "/mán"]]
                 .filter(([, v]) => v && Number(v) > 0 && v !== form.priceDaily)
                 .map(([u, v, sfx]) => <span key={u} className="muted" style={{ marginLeft: 8 }}>{v} ISK{sfx}</span>)}
-              {!form.priceDaily && ![form.priceHourly, form.priceWeekly, form.priceMonthly].map(Number).some((n) => n > 0) && "No price set yet"}
+              {!form.priceDaily && ![form.priceHourly, form.priceWeekly, form.priceMonthly].map(Number).some((n) => n > 0) && "Ekkert verð sett ennþá"}
             </p>
-            <p className="muted mb0" style={{ marginTop: 4 }}>Deposit {form.depositAmount || 0} ISK · min {form.minimumDuration} {form.minimumDurationUnit}</p>
+            <p className="muted mb0" style={{ marginTop: 4 }}>Trygging {form.depositAmount || 0} ISK · lágm. {form.minimumDuration} {{hour: "klst.", day: "daga", week: "vikur"}[form.minimumDurationUnit] || form.minimumDurationUnit}</p>
           </div>
           <div className="review-card">
-            <div className="review-head"><span>📍 Location &amp; handover</span><button className="link-btn" onClick={() => setStep(3)}>✎ Edit</button></div>
+            <div className="review-head"><span>📍 Staðsetning og afhending</span><button className="link-btn" onClick={() => setStep(3)}>✎ Breyta</button></div>
             <p className="mb0">📍 {form.city}{form.postcode ? ` ${form.postcode}` : ""}{form.region ? `, ${form.region}` : ""}</p>
-            <p className="muted mb0" style={{ marginTop: 4 }}>📦 {pickupMode === "pickup" ? "Pickup only" : pickupMode === "delivery" ? "I deliver" : "Both"}</p>
+            <p className="muted mb0" style={{ marginTop: 4 }}>📦 {pickupMode === "pickup" ? "Aðeins sótt" : pickupMode === "delivery" ? "Ég afhendi" : "Bæði"}</p>
             {form.phone ? <p className="muted mb0" style={{ marginTop: 4 }}>📞 {form.phone}</p> : null}
           </div>
           <div className="tip-box tip-success">
-            <strong>✓ Listing ready to publish</strong>
-            <p className="mb0">Click "Publish listing" to make your gear visible to everyone.</p>
+            <strong>✓ Skráning tilbúin til birtingar</strong>
+            <p className="mb0">Smelltu á „Birta skráningu“ til að gera búnaðinn þinn sýnilegan öllum.</p>
           </div>
           <div className="row" style={{ justifyContent: "space-between", marginTop: 18 }}>
-            <button className="btn btn-outline" disabled={busy} onClick={() => setStep(3)}>‹ Back</button>
+            <button className="btn btn-outline" disabled={busy} onClick={() => setStep(3)}>‹ Til baka</button>
             <span className="row" style={{ gap: 8 }}>
-              <button className="btn btn-outline" disabled={busy} onClick={() => submit(false)}>{busy ? "Saving…" : "Save as draft"}</button>
-              <button className="btn btn-primary" disabled={busy} onClick={() => submit(true)}>{busy ? "Publishing…" : "Publish listing ✓"}</button>
+              <button className="btn btn-outline" disabled={busy} onClick={() => submit(false)}>{busy ? "Vista…" : "Vista sem drög"}</button>
+              <button className="btn btn-primary" disabled={busy} onClick={() => submit(true)}>{busy ? "Birti…" : "Birta skráningu ✓"}</button>
             </span>
           </div>
         </>

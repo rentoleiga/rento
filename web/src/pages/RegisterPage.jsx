@@ -55,7 +55,7 @@ export default function RegisterPage() {
       <p className="sub">{t("auth.subRegister")}</p>
       {error && <div className="form-error">{error}</div>}
       <GoogleButton label={t("auth.signupGoogle")} />
-      <div className="divider">or</div>
+      <div className="divider">eða</div>
       <form onSubmit={submit}>
         <div className="row">
           <div className="field grow">
@@ -72,7 +72,7 @@ export default function RegisterPage() {
           <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
         </div>
         <div className="field">
-          <label>{t("auth.password")} (min 8)</label>
+          <label>{t("auth.password")} (að lágm. 8)</label>
           <input type="password" required minLength={8} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
         </div>
         <div className="field">

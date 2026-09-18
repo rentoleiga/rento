@@ -31,7 +31,7 @@ export default function ProfilePage() {
   }, [id]);
 
   if (error) return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
-  if (!profile) return <div className="container section"><div className="empty">Loading…</div></div>;
+  if (!profile) return <div className="container section"><div className="empty">Hleður…</div></div>;
 
   const startMessage = (listing) => {
     if (!user) {
@@ -73,13 +73,13 @@ export default function ProfilePage() {
         )}
         <div className="grow">
           <h1 className="mt0 mb0" style={{ fontSize: 24 }}>{profile.fullName}</h1>
-          <div className="muted">{profile.city}{profile.role === "admin" ? " · Admin" : ""}</div>
+          <div className="muted">{profile.city}{profile.role === "admin" ? " · Stjórnandi" : ""}</div>
           <div className="row" style={{ gap: 14, marginTop: 6, fontSize: 14 }}>
             <span><StarRating rating={profile.rating} /> {Number(profile.rating).toFixed(1)} ({profile.reviewCount})</span>
-            {profile.identityVerified && <span>Identity verified</span>}
-            {profile.businessVerified && <span>Business verified</span>}
-            {profile.responseRate > 0 && <span>{profile.responseRate}% response rate</span>}
-            <span className="muted">Member since {timeAgo(profile.memberSince)}</span>
+            {profile.identityVerified && <span>Auðkenni staðfest</span>}
+            {profile.businessVerified && <span>Fyrirtæki staðfest</span>}
+            {profile.responseRate > 0 && <span>{profile.responseRate}% svarhlutfall</span>}
+            <span className="muted">Meðlimur síðan {timeAgo(profile.memberSince)}</span>
           </div>
           {user && user.id !== profile.id && listings.length > 0 && (
             <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={() => startMessage(listings[0])}>
@@ -91,22 +91,22 @@ export default function ProfilePage() {
 
       {profile.bio && (
         <div className="detail-section">
-          <h3>About</h3>
+          <h3>Um</h3>
           <p className="mb0">{profile.bio}</p>
         </div>
       )}
 
       {listings.length > 0 && (
         <div className="section" style={{ paddingBottom: 0 }}>
-          <div className="section-head"><h2>Listings</h2></div>
+          <div className="section-head"><h2>Skráningar</h2></div>
           <div className="grid">{listings.map((l) => <ListingCard key={l.id} listing={l} />)}</div>
         </div>
       )}
 
       <div className="section" style={{ paddingBottom: 0 }}>
-        <div className="section-head"><h2>Reviews <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>· {reviews.length}</span></h2></div>
+        <div className="section-head"><h2>Umsagnir <span className="muted" style={{ fontWeight: 400, fontSize: 14 }}>· {reviews.length}</span></h2></div>
         {reviews.length === 0 ? (
-          <div className="detail-section" style={{ marginTop: 10 }}><p className="muted mb0">No reviews yet — after a completed rental both parties can leave a rating and comment visible to everyone.</p></div>
+          <div className="detail-section" style={{ marginTop: 10 }}><p className="muted mb0">Engar umsagnir ennþá — eftir lokaða leigu geta báðir aðilar skilið eftir einkunn og athugasemd sem er sýnileg öllum.</p></div>
         ) : reviews.map((r) => (
           <div key={r.id} className="detail-section" style={{ marginTop: 10 }}>
             <div className="row" style={{ gap: 8 }}>
@@ -117,9 +117,9 @@ export default function ProfilePage() {
             {r.comment ? (
               <p className="mb0" style={{ marginTop: 6, fontStyle: "italic" }}>&ldquo;{r.comment}&rdquo;</p>
             ) : (
-              <p className="muted mb0" style={{ marginTop: 6, fontSize: 13 }}>{r.rating}/5 — no comment</p>
+              <p className="muted mb0" style={{ marginTop: 6, fontSize: 13 }}>{r.rating}/5 — engin athugasemd</p>
             )}
-            <div className="muted" style={{ fontSize: 13, marginTop: 4 }}>for &ldquo;{r.listingTitle}&rdquo;</div>
+            <div className="muted" style={{ fontSize: 13, marginTop: 4 }}>fyrir &ldquo;{r.listingTitle}&rdquo;</div>
           </div>
         ))}
       </div>

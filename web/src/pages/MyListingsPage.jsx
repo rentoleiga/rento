@@ -4,11 +4,11 @@ import { api, formatPrice } from "../api";
 import { useAuth } from "../store";
 
 const TIERS = [
-  { key: "silver", label: "Silver", price: 250 },
-  { key: "gold", label: "Gold", price: 500 },
-  { key: "platinum", label: "Platinum", price: 1000 },
+  { key: "silver", label: "Silfur", price: 250 },
+  { key: "gold", label: "Gull", price: 500 },
+  { key: "platinum", label: "Platína", price: 1000 },
 ];
-const TIER_LABEL = { featured: "Silver", gold: "Gold", platinum: "Platinum" };
+const TIER_LABEL = { featured: "Silfur", gold: "Gull", platinum: "Platína" };
 
 export default function MyListingsPage() {
   const { user } = useAuth();
@@ -24,7 +24,7 @@ export default function MyListingsPage() {
   useEffect(load, []);
 
   const del = async (l) => {
-    if (!window.confirm(`Delete "${l.title}"?`)) return;
+    if (!window.confirm(`Eyða "${l.title}"?`)) return;
     try {
       await api.del(`/api/listings/${l.id}`);
       load();
@@ -47,7 +47,7 @@ export default function MyListingsPage() {
   };
 
   const removePromo = async (l) => {
-    if (!window.confirm("Remove the promotion from this listing?")) return;
+    if (!window.confirm("Fjarlægja kynningu af þessari skráningu?")) return;
     try {
       await api.del(`/api/listings/${l.id}/promote`);
       load();
@@ -59,15 +59,15 @@ export default function MyListingsPage() {
   return (
     <div className="container section" style={{ maxWidth: 880 }}>
       <div className="row" style={{ justifyContent: "space-between", marginBottom: 18 }}>
-        <h1 className="mt0">My listings</h1>
-        <Link className="btn btn-primary" to="/dashboard/listings/new">+ New listing</Link>
+        <h1 className="mt0">Skráningar mínar</h1>
+        <Link className="btn btn-primary" to="/dashboard/listings/new">+ Ný skráning</Link>
       </div>
 
-      {loading ? <div className="empty">Loading…</div>
+      {loading ? <div className="empty">Hleður…</div>
         : rows.length === 0 ? (
             <div className="empty">
-              <h3>No listings yet</h3>
-              <p>List your items and start earning.</p>
+              <h3>Engar skráningar ennþá</h3>
+              <p>Skráðu hlutina þína og byrjaðu að græða.</p>
             </div>
           ) : (
             <ul className="plain-list">
@@ -86,15 +86,15 @@ export default function MyListingsPage() {
                           )}
                       </div>
                       <div className="sub">
-                        {l.categoryName} · {formatPrice(l.priceDaily || l.priceHourly, l.currency)}/{l.priceDaily ? "day" : "hour"}
-                        {l.depositAmount > 0 && ` · deposit ${formatPrice(l.depositAmount, l.currency)}`}
+                        {l.categoryName} · {formatPrice(l.priceDaily || l.priceHourly, l.currency)}/{l.priceDaily ? "dag" : "klst"}
+                        {l.depositAmount > 0 && ` · trygging ${formatPrice(l.depositAmount, l.currency)}`}
                       </div>
-                      <div className="sub">{l.viewCount} views · {l.favoriteCount} saves</div>
+                      <div className="sub">{l.viewCount} skoðanir · {l.favoriteCount} vistuð</div>
                     </div>
                     <span className={`status-pill status-${l.status}`}>{l.status}</span>
                     <div className="row">
-                      <Link className="btn btn-outline btn-sm" to={`/dashboard/calendar/${l.id}`}>Calendar</Link>
-                      <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}`}>Edit</Link>
+                      <Link className="btn btn-outline btn-sm" to={`/dashboard/calendar/${l.id}`}>Dagatal</Link>
+                      <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}`}>Breyta</Link>
                       <button
                         className={`btn btn-sm ${l.promotionTier && l.promotionTier !== "none" ? "btn-gold" : "btn-outline"}`}
                         onClick={() => {
@@ -103,13 +103,13 @@ export default function MyListingsPage() {
                       >
                         {l.promotionTier && l.promotionTier !== "none" ? `★ ${TIER_LABEL[l.promotionTier]}` : "Premium ↑"}
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => del(l)}>Delete</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => del(l)}>Eyða</button>
                     </div>
                   </li>
                   {openPromo === l.id && (
                     <li className="promo-panel">
                       <div className="promo-head">
-                        <strong>Promote “{l.title}”</strong>
+                        <strong>Efla “{l.title}”</strong>
                         <button className="btn btn-sm" onClick={() => setOpenPromo(null)}>✕</button>
                       </div>
                       <div className="promo-tiers">
@@ -120,16 +120,16 @@ export default function MyListingsPage() {
                             onClick={() => setPickTier(t.key)}
                           >
                             <strong>{t.label}</strong>
-                            <span className="muted">{t.price} ISK / 7 days</span>
+                            <span className="muted">{t.price} ISK / 7 daga</span>
                           </button>
                         ))}
                       </div>
                       <div className="promo-actions">
                         <button className="btn btn-primary" disabled={busyPromo} onClick={() => promote(l)}>
-                          {busyPromo ? "Activating…" : `Activate ${TIERS.find((t) => t.key === pickTier)?.label}`}
+                          {busyPromo ? "Virkja…" : `Virkja ${TIERS.find((t) => t.key === pickTier)?.label}`}
                         </button>
                         {l.promotionTier && l.promotionTier !== "none" && (
-                          <button className="btn btn-outline" onClick={() => removePromo(l)}>Remove promotion</button>
+                          <button className="btn btn-outline" onClick={() => removePromo(l)}>Fjarlægja kynningu</button>
                         )}
                       </div>
                     </li>
