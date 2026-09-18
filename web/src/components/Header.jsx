@@ -62,6 +62,14 @@ export default function Header() {
 
   const initial = ((user?.firstName || user?.email || "R")[0] || "R").toUpperCase();
 
+  const mainLinks = [
+    { to: "/dashboard/listings", label: t("dash.nav.listings"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>) },
+    { to: "/messages", label: t("nav.messages"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>) },
+    { to: "/dashboard/bookings", label: t("dash.nav.bookings"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>) },
+    { to: "/favorites", label: t("dash.nav.favorites"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>) },
+  ];
+  const profileTo = user?.id ? `/users/${user.id}` : "/dashboard";
+
   return (
     <header className="header">
       <div className="container header-inner">
@@ -119,12 +127,11 @@ export default function Header() {
                       <span>{revenue != null ? formatPrice(revenue, "ISK") : "…"}</span>
                     </div>
                   </div>
-                  <Link to="/dashboard/listings" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>{t("dash.nav.listings")}</Link>
-                  <Link to="/messages" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>{t("nav.messages")}</Link>
-                  <Link to="/dashboard/bookings" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>{t("dash.nav.bookings")}</Link>
-                  <Link to="/favorites" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>{t("dash.nav.favorites")}</Link>
+                  {mainLinks.map((l) => (
+                    <Link key={l.to} to={l.to} onClick={closeMenu}>{l.icon}{l.label}</Link>
+                  ))}
                   <div className="um-sep" />
-                  <Link to={user?.id ? `/users/${user.id}` : "/dashboard"} onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{t("nav.profile")}</Link>
+                  <Link to={profileTo} onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{t("nav.profile")}</Link>
                   <div className="um-sep" />
                   <button onClick={() => { logout(); closeMenu(); navigate("/"); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>{t("nav.logout")}</button>
                 </div>
@@ -134,6 +141,23 @@ export default function Header() {
             <Link to="/login" className="nav-link" onClick={closeMenu}>
               {t("nav.login")}
             </Link>
+          )}
+          {user && (
+            <div className="mobile-account">
+              <div className="ma-head">
+                <div className="user-menu-name">{[user.firstName, user.lastName].filter(Boolean).join(" ") || user.email}</div>
+                <div className="user-menu-email">{user.email}</div>
+                <div className="user-menu-balance">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                  <span>{revenue != null ? formatPrice(revenue, "ISK") : "…"}</span>
+                </div>
+              </div>
+              {mainLinks.map((l) => (
+                <Link key={l.to} to={l.to} onClick={closeMenu}>{l.icon}{l.label}</Link>
+              ))}
+              <Link to={profileTo} onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{t("nav.profile")}</Link>
+              <button onClick={() => { logout(); closeMenu(); navigate("/"); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>{t("nav.logout")}</button>
+            </div>
           )}
         </nav>
       </div>

@@ -186,6 +186,25 @@ a:hover {
 .user-menu a svg, .user-menu button svg { width: 18px; height: 18px; color: #9ca3af; flex-shrink: 0; }
 .um-sep { height: 1px; background: #eef1f4; margin: 0; }
 .um-ic { width: 18px; text-align: center; color: var(--muted); }
+.mobile-account { display: none; }
+@media (max-width: 640px) {
+  .header-nav.open .mobile-account {
+    display: flex; flex-direction: column; width: 100%; margin-top: 14px;
+    border-top: 1px solid var(--line); padding-top: 6px;
+  }
+  .header-nav.open .mobile-account a,
+  .header-nav.open .mobile-account button {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 12px 0; font-size: 15px; color: var(--ink);
+    background: none; border: none; border-bottom: 1px solid var(--line);
+    cursor: pointer; text-align: left; text-decoration: none;
+  }
+  .header-nav.open .mobile-account a svg,
+  .header-nav.open .mobile-account button svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+  .header-nav.open .ma-head { padding: 4px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+  .header-nav.open .user-wrap { width: 100%; }
+  .header-nav.open .user-wrap .user-menu { display: none; }
+}
 .hamburger {
   display: none;
   background: none;
