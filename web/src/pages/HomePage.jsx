@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api } from "../api";
 import ListingCard from "../components/ListingCard";
 import CategoryIcon from "../components/CategoryIcon";
@@ -11,8 +11,6 @@ export default function HomePage() {
   const [platinum, setPlatinum] = useState([]);
   const [popular, setPopular] = useState([]);
   const [newest, setNewest] = useState([]);
-  const [q, setQ] = useState({ keyword: "", city: "", start: "", end: "" });
-  const navigate = useNavigate();
   const catRef = useRef(null);
   const scrollCats = (dir) => {
     const el = catRef.current;
@@ -34,64 +32,8 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  const submitSearch = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (q.keyword) params.set("keyword", q.keyword);
-    if (q.city) params.set("location", q.city);
-    if (q.start) params.set("start", new Date(q.start).toISOString());
-    if (q.end) params.set("end", new Date(q.end).toISOString());
-    navigate(`/search?${params.toString()}`);
-  };
-
   return (
     <>
-      <section className="hero">
-        <div className="container">
-          <h1>{t("hero.title")}</h1>
-          {t("hero.sub") && <p>{t("hero.sub")}</p>}
-          <form className="hero-search" onSubmit={submitSearch}>
-            <div className="field">
-              <label>{t("hero.what")}</label>
-              <input
-                value={q.keyword}
-                onChange={(e) => setQ({ ...q, keyword: e.target.value })}
-                placeholder="t.d. húsbíll, veiðibúnaður"
-              />
-            </div>
-            <div className="field">
-              <label>{t("hero.where")}</label>
-              <input
-                value={q.city}
-                onChange={(e) => setQ({ ...q, city: e.target.value })}
-                placeholder="t.d. Reykjavík"
-              />
-            </div>
-            <div className="field">
-              <label>{t("hero.from")}</label>
-              <input
-                type="date"
-                lang="is"
-                value={q.start}
-                onChange={(e) => setQ({ ...q, start: e.target.value })}
-              />
-            </div>
-            <div className="field">
-              <label>{t("hero.to")}</label>
-              <input
-                type="date"
-                lang="is"
-                value={q.end}
-                onChange={(e) => setQ({ ...q, end: e.target.value })}
-              />
-            </div>
-            <button className="btn btn-primary" type="submit">
-              {t("search.go")}
-            </button>
-          </form>
-        </div>
-      </section>
-
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="promo-banner">

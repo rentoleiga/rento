@@ -1749,6 +1749,8 @@ a:hover {
 }
 .wizard-step.active .wizard-check { background: #d7ece4; color: var(--primary); }
 .wizard-step.done .wizard-check { background: var(--primary); color: #fff; }
+.wizard-step.err { color: #b91c1c; }
+.wizard-step.err .wizard-check { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
 .wizard-card {
   background: var(--card);
   border: 1px solid var(--line);

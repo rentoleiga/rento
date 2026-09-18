@@ -108,6 +108,8 @@ export default function ListingFormPage() {
   const [notice, setNotice] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [fieldOk, setFieldOk] = useState({});
+  const [doneSteps, setDoneSteps] = useState({});
+  const [errorSteps, setErrorSteps] = useState({});
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const num = (k, v) => set(k, v === "" ? null : Number(v));
@@ -265,9 +267,23 @@ export default function ListingFormPage() {
   const goNext = () => {
     const errs = stepErrors(step);
     if (Object.keys(errs).length > 0) {
+      setErrorSteps((prev) => ({ ...prev, [step]: true }));
+      setDoneSteps((prev) => {
+        if (!prev[step]) return prev;
+        const next = { ...prev };
+        delete next[step];
+        return next;
+      });
       applyErrors(errs);
       return;
     }
+    setErrorSteps((prev) => {
+      if (!prev[step]) return prev;
+      const next = { ...prev };
+      delete next[step];
+      return next;
+    });
+    setDoneSteps((prev) => ({ ...prev, [step]: true }));
     setStep(step + 1);
     window.scrollTo(0, 0);
   };
@@ -277,6 +293,12 @@ export default function ListingFormPage() {
     setError("");
     const local = validateAll();
     if (Object.keys(local).length > 0) {
+      const bad = {};
+      Object.keys(local).forEach((f) => {
+        const s = STEP_OF[f];
+        if (s !== undefined && s !== 4) bad[s] = true;
+      });
+      setErrorSteps((prev) => ({ ...prev, ...bad }));
       applyErrors(local);
       setBusy(false);
       return;
@@ -323,13 +345,6 @@ export default function ListingFormPage() {
     }
   };
 
-  const stepDone = [
-    form.gallery.length > 0,
-    !ruleFor("title", form.title) && !ruleFor("description", form.description) && Number(form.categoryId) > 0 && Number(form.subcategoryId) > 0,
-    [form.priceHourly, form.priceDaily, form.priceWeekly, form.priceMonthly].map(Number).some((n) => !Number.isNaN(n) && n > 0),
-    !ruleFor("city", form.city),
-  ];
-
   const navBtns = (isLast) => (
     <div className="row" style={{ justifyContent: "space-between", marginTop: 18 }}>
       <button className="btn btn-outline" disabled={step === 0 || busy} onClick={() => { setStep(step - 1); window.scrollTo(0, 0); }}>‹ Til baka</button>
@@ -348,12 +363,15 @@ export default function ListingFormPage() {
       <div className="wizard-layout">
         <aside className="wizard-steps">
           <div className="wizard-steps-label">SKREF</div>
-          {STEPS.map((s, i) => (
-            <button key={s} className={`wizard-step ${i === step ? "active" : ""} ${stepDone[i] ? "done" : ""}`} onClick={() => setStep(i)}>
-              <span className="wizard-check">{stepDone[i] ? "✓" : i + 1}</span>
-              <span>{s}</span>
-            </button>
-          ))}
+          {STEPS.map((s, i) => {
+            const st = errorSteps[i] ? "err" : doneSteps[i] ? "done" : "";
+            return (
+              <button key={s} className={`wizard-step ${i === step ? "active" : ""} ${st}`} onClick={() => setStep(i)}>
+                <span className="wizard-check">{errorSteps[i] ? "!" : doneSteps[i] ? "✓" : i + 1}</span>
+                <span>{s}</span>
+              </button>
+            );
+          })}
         </aside>
         <div className="wizard-card">
 
