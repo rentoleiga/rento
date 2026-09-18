@@ -8,7 +8,7 @@ import ListingCard from "../components/ListingCard";
 
 export default function ProfilePage() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const { t } = useLang();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
@@ -20,6 +20,10 @@ export default function ProfilePage() {
   const [msgText, setMsgText] = useState("");
   const [msgSending, setMsgSending] = useState(false);
   const [msgSent, setMsgSent] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [eform, setEform] = useState({ firstName: "", lastName: "", city: "", phone: "", bio: "", avatar: "" });
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState("");
 
   useEffect(() => {
     api.get(`/api/users/${id}`)
@@ -33,6 +37,52 @@ export default function ProfilePage() {
   if (error) return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
   if (!profile) return <div className="container section"><div className="empty">Hleður…</div></div>;
 
+  const isOwn = user && profile && user.id === profile.id;
+
+  const openEdit = () => {
+    const src = user && user.id === profile.id ? { ...profile, ...user } : profile;
+    setEform({
+      firstName: src.firstName || "",
+      lastName: src.lastName || "",
+      city: src.city || "",
+      phone: src.phone || "",
+      bio: src.bio || "",
+      avatar: src.avatar || "",
+    });
+    setEditError("");
+    setEditOpen(true);
+  };
+
+  const saveEdit = async () => {
+    if (!eform.firstName.trim()) { setEditError("Fornafn er skylda."); return; }
+    setSaving(true);
+    setEditError("");
+    try {
+      const d = await api.put("/api/auth/me", {
+        firstName: eform.firstName.trim(),
+        lastName: eform.lastName.trim(),
+        city: eform.city.trim(),
+        phone: eform.phone.trim(),
+        bio: eform.bio.trim(),
+        avatar: eform.avatar.trim() || undefined,
+      });
+      setUser(d.user);
+      setProfile((p) => ({
+        ...p,
+        firstName: d.user.firstName,
+        lastName: d.user.lastName,
+        fullName: [d.user.firstName, d.user.lastName].filter(Boolean).join(" ") || d.user.email,
+        city: d.user.city,
+        bio: d.user.bio,
+        avatar: d.user.avatar,
+      }));
+      setEditOpen(false);
+    } catch (err) {
+      setEditError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
   const startMessage = (listing) => {
     if (!user) {
       navigate("/login");
@@ -86,6 +136,11 @@ export default function ProfilePage() {
               {t("listing.sendMessage")}
             </button>
           )}
+          {isOwn && (
+            <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={openEdit}>
+              Breyta prófíl
+            </button>
+          )}
         </div>
       </div>
 
@@ -123,6 +178,49 @@ export default function ProfilePage() {
           </div>
         ))}
       </div>
+
+      {editOpen && (
+        <div className="modal-overlay" onClick={() => setEditOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ marginTop: 0 }}>Breyta prófíl</h3>
+            {editError && <div className="form-error">{editError}</div>}
+            <div className="row">
+              <div className="field grow">
+                <label>Fornafn *</label>
+                <input value={eform.firstName} onChange={(e) => setEform({ ...eform, firstName: e.target.value })} />
+              </div>
+              <div className="field grow">
+                <label>Eftirnafn</label>
+                <input value={eform.lastName} onChange={(e) => setEform({ ...eform, lastName: e.target.value })} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="field grow">
+                <label>Borg/bær</label>
+                <input value={eform.city} onChange={(e) => setEform({ ...eform, city: e.target.value })} placeholder="t.d. Reykjavík" />
+              </div>
+              <div className="field grow">
+                <label>Símanúmer</label>
+                <input type="tel" value={eform.phone} onChange={(e) => setEform({ ...eform, phone: e.target.value })} placeholder="t.d. +354 612 3456" />
+              </div>
+            </div>
+            <div className="field">
+              <label>Um mig</label>
+              <textarea rows={3} value={eform.bio} onChange={(e) => setEform({ ...eform, bio: e.target.value })} placeholder="Segðu stuttlega frá þér…" style={{ width: "100%", resize: "vertical" }} />
+            </div>
+            <div className="field">
+              <label>Mynd (slóð)</label>
+              <input value={eform.avatar} onChange={(e) => setEform({ ...eform, avatar: e.target.value })} placeholder="https://…" />
+            </div>
+            <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+              <button className="btn btn-outline" onClick={() => setEditOpen(false)}>Hætta við</button>
+              <button className="btn btn-primary" disabled={saving} onClick={saveEdit}>
+                {saving ? "Vista…" : "Vista"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {msgOpen && (
         <div className="modal-overlay" onClick={() => { setMsgOpen(false); setMsgSent(false); setSelectedListing(null); }}>

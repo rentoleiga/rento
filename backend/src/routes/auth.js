@@ -185,7 +185,7 @@ router.get(
           `INSERT INTO users
             (email, password_hash, first_name, last_name, city, language,
              currency_pref, renter_enabled, owner_enabled, email_verified, avatar)
-           VALUES ($1, '', $2, $3, '', 'en', 'ISK', TRUE, TRUE, TRUE, $4)
+            VALUES ($1, '', $2, $3, '', 'is', 'ISK', TRUE, TRUE, TRUE, $4)
            RETURNING id`,
           [email, info.given_name || "", info.family_name || "", info.picture || ""]
         );
@@ -204,7 +204,7 @@ router.get(
   "/me",
   authRequired,
   asyncHandler(async (req, res) => {
-    res.json({ user: publicUser(req.user) });
+    res.json({ user: { ...publicUser(req.user), phone: req.user.phone || "" } });
   })
 );
 
@@ -238,7 +238,7 @@ router.put(
       `UPDATE users SET ${cols.join(", ")} WHERE id = ${req.user.id} RETURNING *`,
       vals
     );
-    res.json({ user: publicUser(rows[0]) });
+    res.json({ user: { ...publicUser(rows[0]), phone: rows[0].phone || "" } });
   })
 );
 
