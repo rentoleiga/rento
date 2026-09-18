@@ -210,7 +210,7 @@ a:hover {
   .header-inner {
     flex-wrap: wrap;
     height: auto;
-    padding: 10px 14px 12px;
+    padding: 10px 20px 12px;
     gap: 10px;
   }
   .header-search {
@@ -220,6 +220,13 @@ a:hover {
   }
   .header-actions {
     margin-left: auto;
+  }
+  .brand {
+    width: 110px;
+    min-width: 110px;
+  }
+  .brand-img {
+    width: 110px;
   }
   .mobile-overlay {
     display: block;
