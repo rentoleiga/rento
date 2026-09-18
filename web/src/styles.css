@@ -257,7 +257,7 @@ a:hover {
   overflow: visible;
 }
 .header { overflow: visible; }
-.header-inner { min-height: 72px; height: auto; padding: 8px 0; overflow: visible; }
+.header-inner { min-height: 72px; height: auto; overflow: visible; }
 .brand:hover {
   text-decoration: none;
   color: var(--primary);
