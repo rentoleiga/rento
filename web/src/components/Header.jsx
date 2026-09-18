@@ -95,12 +95,6 @@ export default function Header() {
         <div className={`mobile-overlay ${menuOpen ? "open" : ""}`} onClick={closeMenu} />
 
         <nav className={`header-nav ${menuOpen ? "open" : ""}`}>
-          <Link to="/search" className="nav-link" onClick={closeMenu}>
-            {t("nav.rent")}
-          </Link>
-          <Link to="/dashboard/listings/new" className="btn btn-primary btn-sm" onClick={closeMenu}>
-            {t("nav.list")}
-          </Link>
           {user ? (
             <div className="user-wrap" ref={userWrap}>
               <Link to="/dashboard/listings/new" className="icon-btn" title={t("nav.list")} onClick={closeMenu}>
