@@ -49,6 +49,10 @@ body,
   margin: 0;
   min-height: 100%;
 }
+html,
+body {
+  overflow-x: clip;
+}
 
 body {
   font-family: "Inter", system-ui, sans-serif;
@@ -206,7 +210,7 @@ a:hover {
   .header-inner {
     flex-wrap: wrap;
     height: auto;
-    padding: 10px 0 12px;
+    padding: 10px 14px 12px;
     gap: 10px;
   }
   .header-search {
@@ -295,7 +299,7 @@ a:hover {
 .drawer {
   position: fixed;
   top: 0;
-  right: -100%;
+  right: 0;
   width: min(320px, 85vw);
   height: 100dvh;
   background: var(--surface);
@@ -305,12 +309,15 @@ a:hover {
   padding: 64px 24px 24px;
   gap: 0;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-  transition: right 0.25s ease;
+  transform: translateX(105%);
+  visibility: hidden;
+  transition: transform 0.25s ease, visibility 0.25s;
   z-index: 100;
   overflow-y: auto;
 }
 .drawer.open {
-  right: 0;
+  transform: none;
+  visibility: visible;
 }
 .drawer-close {
   position: absolute;
