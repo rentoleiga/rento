@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext } from "react";
 
 const messages = {
   en: {
@@ -737,17 +737,15 @@ const messages = {
 const LangContext = createContext(null);
 
 export function LangProvider({ children }) {
-  const [lang, setLangState] = useState(() => localStorage.getItem("rento_lang") || "en");
+  const lang = "is";
 
-  const setLang = useCallback((l) => {
-    const next = l === "is" ? "is" : "en";
-    setLangState(next);
-    localStorage.setItem("rento_lang", next);
+  const setLang = useCallback(() => {
+    localStorage.setItem("rento_lang", "is");
   }, []);
 
   const t = useCallback(
-    (key) => (messages[lang] && messages[lang][key]) || messages.en[key] || key,
-    [lang]
+    (key) => (messages.is && messages.is[key]) || messages.en[key] || key,
+    []
   );
 
   return (

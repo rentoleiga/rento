@@ -273,10 +273,8 @@ a:hover {
     text-align: center;
     margin-top: 8px;
   }
-  .header-nav .lang-select {
-    width: 100%;
+  .header-nav .lang-badge {
     margin-top: 12px;
-    text-align: center;
   }
   .mobile-overlay {
     display: block;
@@ -373,7 +371,9 @@ a:hover {
 .nav-link.highlight {
   color: var(--primary);
 }
-.lang-select {
+.lang-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 6px 12px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
@@ -382,12 +382,6 @@ a:hover {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.lang-select:hover {
-  border-color: var(--primary);
-  color: var(--primary);
 }
 
 /* ---------- Buttons ---------- */

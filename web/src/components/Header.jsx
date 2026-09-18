@@ -6,7 +6,7 @@ import { api, formatPrice } from "../api";
 
 export default function Header() {
   const { user, logout } = useAuth();
-  const { lang, setLang, t } = useLang();
+  const { t } = useLang();
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -141,15 +141,7 @@ export default function Header() {
               {t("nav.login")}
             </Link>
           )}
-          <select
-            className="lang-select"
-            value={lang}
-            onChange={(e) => { setLang(e.target.value); closeMenu(); }}
-            aria-label="Language"
-          >
-            <option value="en">EN</option>
-            <option value="is">IS</option>
-          </select>
+          <span className="lang-badge" aria-label="Íslenska">IS</span>
         </nav>
       </div>
     </header>
