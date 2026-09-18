@@ -1153,6 +1153,9 @@ a:hover {
   .split {
     grid-template-columns: 1fr;
   }
+  .filter-panel {
+    position: static;
+  }
 }
 .filter-panel {
   background: var(--card);
@@ -1368,6 +1371,9 @@ a:hover {
 @media (max-width: 900px) {
   .listing-layout {
     grid-template-columns: 1fr;
+  }
+  .listing-side {
+    position: static;
   }
 }
 .gallery {
@@ -1876,6 +1882,7 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 .plain-list li img {
   width: 56px;
@@ -2173,6 +2180,7 @@ a:hover {
 }
 .grow {
   flex: 1;
+  min-width: 0;
 }
 .text-right {
   text-align: right;
@@ -2400,6 +2408,11 @@ a:hover {
   .filter-panel { position: static; }
   .plain-list li { flex-direction: column; align-items: flex-start; gap: 8px; }
   .plain-list li img { width: 100%; height: 160px; }
+  .plain-list li .text-right { text-align: left; width: 100%; }
+  .modal-card { padding: 20px; }
+  .wizard-card { padding: 16px; }
+  .detail-section { padding: 16px; }
+  .footer { padding: 32px 0 0; }
   .split { gap: 16px; }
   .chat { height: calc(100dvh - 160px); min-height: 320px; }
   .gallery-main { aspect-ratio: 4 / 3; }
@@ -2412,7 +2425,10 @@ a:hover {
 }
 @media (min-width: 641px) and (max-width: 860px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
-  .category-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .header-search .hs-field:nth-of-type(2),
+  .header-search .hs-div {
+    display: none;
+  }
 }
 
 /* ---------- Modal ---------- */
