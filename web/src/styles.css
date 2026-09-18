@@ -183,6 +183,8 @@ a:hover {
   background: none; border: none; cursor: pointer; text-align: left; text-decoration: none;
 }
 .user-menu a:hover, .user-menu button:hover { background: var(--bg-soft); }
+.user-menu a svg, .user-menu button svg { width: 17px; height: 17px; color: var(--muted); flex-shrink: 0; }
+.um-sep { height: 1px; background: var(--line); margin: 2px 0; }
 .um-ic { width: 18px; text-align: center; color: var(--muted); }
 .hamburger {
   display: none;
