@@ -186,12 +186,12 @@ a:hover {
 .user-menu a svg, .user-menu button svg { width: 18px; height: 18px; color: #9ca3af; flex-shrink: 0; }
 .um-sep { height: 1px; background: #eef1f4; margin: 0; }
 .um-ic { width: 18px; text-align: center; color: var(--muted); }
-  .header-nav.open .mobile-account a svg,
-  .header-nav.open .mobile-account button svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
-  .header-nav.open .ma-head { padding: 4px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
-.mobile-account { display: none; }
-.header-nav.open .mobile-account a,
-.header-nav.open .mobile-account button {
+.drawer .mobile-account a svg,
+.drawer .mobile-account button svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+.drawer .ma-head { padding: 4px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+.mobile-account { display: flex; flex-direction: column; width: 100%; }
+.drawer .mobile-account a,
+.drawer .mobile-account button {
   display: flex; align-items: center; gap: 12px; width: 100%;
   padding: 12px 0; font-size: 15px; color: var(--ink);
   background: none; border: none; border-bottom: 1px solid var(--line);
@@ -222,8 +222,8 @@ a:hover {
   .brand {
     font-size: 20px;
   }
-  .header-nav {
-    gap: 10px;
+  .header-actions {
+    gap: 4px;
   }
   .header-search input {
     font-size: 14px;
@@ -244,48 +244,10 @@ a:hover {
   .header-search {
     order: 3;
     flex: 1 1 100%;
+    max-width: none;
   }
-  .header-nav {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: min(320px, 85vw);
-    height: 100dvh;
-    background: var(--surface);
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 72px 24px 24px;
-    gap: 0;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-    transition: right 0.25s ease;
-    z-index: 100;
-    overflow-y: auto;
-  }
-  .header-nav.open {
-    right: 0;
-  }
-  .header-nav .nav-link,
-  .header-nav .user-menu {
-    width: 100%;
-    padding: 12px 0;
-    font-size: 16px;
-    border-bottom: 1px solid var(--line);
-  }
-  .header-nav .user-menu {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-  }
-  .header-nav .user-menu .nav-link {
-    padding: 12px 0;
-  }
-  .header-nav .btn-primary {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-  }
-  .header-nav .lang-badge {
-    margin-top: 12px;
+  .header-actions {
+    margin-left: auto;
   }
   .mobile-overlay {
     display: block;
@@ -355,38 +317,53 @@ a:hover {
   border-radius: 999px;
   padding: 9px 18px;
 }
-.header-nav {
+.header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 6px;
   margin-left: auto;
+  flex-shrink: 0;
 }
-.header-nav.open {
+.drawer {
   position: fixed;
   top: 0;
-  right: 0;
+  right: -100%;
   width: min(320px, 85vw);
   height: 100dvh;
   background: var(--surface);
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 72px 24px 24px;
+  padding: 64px 24px 24px;
   gap: 0;
-  margin-left: 0;
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  transition: right 0.25s ease;
   z-index: 100;
   overflow-y: auto;
 }
-.header-nav.open .nav-link {
+.drawer.open {
+  right: 0;
+}
+.drawer-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.drawer-close:hover { color: var(--ink); }
+.drawer .nav-link {
   width: 100%;
   padding: 12px 0;
   font-size: 16px;
 }
-.header-nav.open .user-wrap { width: 100%; }
-.header-nav.open .user-wrap .user-menu { display: none; }
-.header-nav.open .mobile-account {
-  display: flex; flex-direction: column; width: 100%; margin-top: 14px;
-  border-top: 1px solid var(--line); padding-top: 6px;
+.drawer .mobile-account {
+  display: flex; flex-direction: column; width: 100%;
 }
 .mobile-overlay.open {
   display: block;

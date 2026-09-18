@@ -102,7 +102,7 @@ export default function Header() {
 
         <div className={`mobile-overlay ${menuOpen ? "open" : ""}`} onClick={closeMenu} />
 
-        <nav className={`header-nav ${menuOpen ? "open" : ""}`}>
+        <div className="header-actions">
           {user ? (
             <div className="user-wrap" ref={userWrap}>
               <Link to="/dashboard/listings/new" className="icon-btn" title={t("nav.list")} onClick={closeMenu}>
@@ -142,7 +142,11 @@ export default function Header() {
               {t("nav.login")}
             </Link>
           )}
-          {user && (
+        </div>
+
+        <nav className={`drawer ${menuOpen ? "open" : ""}`}>
+          <button className="drawer-close" onClick={closeMenu} aria-label="Close">×</button>
+          {user ? (
             <div className="mobile-account">
               <div className="ma-head">
                 <div className="user-menu-name">{[user.firstName, user.lastName].filter(Boolean).join(" ") || user.email}</div>
@@ -158,6 +162,10 @@ export default function Header() {
               <Link to={profileTo} onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{t("nav.profile")}</Link>
               <button onClick={() => { logout(); closeMenu(); navigate("/"); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>{t("nav.logout")}</button>
             </div>
+          ) : (
+            <Link to="/login" className="nav-link" onClick={closeMenu}>
+              {t("nav.login")}
+            </Link>
           )}
         </nav>
       </div>
