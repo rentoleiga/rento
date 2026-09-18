@@ -167,25 +167,11 @@ a:hover {
   background: #7c3aed; color: #fff; font-size: 13px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; line-height: 1;
 }
-.user-menu {
-  position: absolute; top: calc(100% + 10px); right: 0;
-  width: 232px; background: #fff; border: 1px solid #eef1f4; border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12); overflow: hidden; z-index: 80;
-}
 .user-menu-head { padding: 14px 16px 12px; border-bottom: 1px solid #eef1f4; }
 .user-menu-name { font-weight: 600; font-size: 15px; color: #111827; }
 .user-menu-email { font-size: 13px; color: #6b7280; margin: 1px 0 9px; word-break: break-all; }
 .user-menu-balance { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--primary); }
 .user-menu-balance svg { width: 15px; height: 15px; }
-.user-menu a, .user-menu button {
-  display: flex; align-items: center; gap: 12px; width: 100%;
-  padding: 11px 16px; font-size: 14px; color: #374151;
-  background: none; border: none; cursor: pointer; text-align: left; text-decoration: none;
-}
-.user-menu a:hover, .user-menu button:hover { background: #f9fafb; }
-.user-menu a svg, .user-menu button svg { width: 18px; height: 18px; color: #9ca3af; flex-shrink: 0; }
-.um-sep { height: 1px; background: #eef1f4; margin: 0; }
-.um-ic { width: 18px; text-align: center; color: var(--muted); }
 .drawer .mobile-account a svg,
 .drawer .mobile-account button svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
 .drawer .ma-head { padding: 4px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
@@ -196,20 +182,6 @@ a:hover {
   padding: 12px 0; font-size: 15px; color: var(--ink);
   background: none; border: none; border-bottom: 1px solid var(--line);
   cursor: pointer; text-align: left; text-decoration: none;
-}
-.hamburger {
-  display: flex;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  color: var(--ink);
-  flex-shrink: 0;
-}
-.hamburger svg {
-  width: 24px;
-  height: 24px;
-  display: block;
 }
 .mobile-overlay {
   display: none;
@@ -236,10 +208,6 @@ a:hover {
     height: auto;
     padding: 10px 0 12px;
     gap: 10px;
-  }
-  .hamburger {
-    display: flex;
-    order: -1;
   }
   .header-search {
     order: 3;
@@ -373,11 +341,6 @@ a:hover {
   z-index: 99;
   opacity: 1;
   pointer-events: auto;
-}
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 14px;
 }
 .nav-link {
   color: var(--ink);

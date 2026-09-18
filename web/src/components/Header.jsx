@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
@@ -10,13 +10,11 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [userOpen, setUserOpen] = useState(false);
   const [sq, setSq] = useState("");
   const [sloc, setSloc] = useState("");
   const [revenue, setRevenue] = useState(null);
-  const userWrap = useRef(null);
 
-  const closeMenu = useCallback(() => { setMenuOpen(false); setUserOpen(false); }, []);
+  const closeMenu = useCallback(() => { setMenuOpen(false); }, []);
 
   useEffect(() => {
     closeMenu();
@@ -29,18 +27,6 @@ export default function Header() {
       setRevenue(null);
     }
   }, [user]);
-
-  useEffect(() => {
-    const onDoc = (e) => {
-      if (userWrap.current && !userWrap.current.contains(e.target)) setUserOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, []);
-
-  useEffect(() => {
-    closeMenu();
-  }, [location.pathname, closeMenu]);
 
   useEffect(() => {
     if (menuOpen) {
@@ -73,14 +59,6 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-          {menuOpen ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-          )}
-        </button>
-
         <Link to="/" className="brand">
           <img src="/rento-logo.png" alt="Rentó" className="brand-img" />
         </Link>
@@ -104,7 +82,7 @@ export default function Header() {
 
         <div className="header-actions">
           {user ? (
-            <div className="user-wrap" ref={userWrap}>
+            <div className="user-wrap">
               <Link to="/dashboard/listings/new" className="icon-btn" title={t("nav.list")} onClick={closeMenu}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
               </Link>
@@ -114,28 +92,9 @@ export default function Header() {
               <Link to="/messages" className="icon-btn" title={t("nav.messages")} onClick={closeMenu}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
               </Link>
-              <button className={`avatar-btn ${userOpen ? "open" : ""}`} onClick={() => setUserOpen(!userOpen)} aria-label="Account" aria-expanded={userOpen}>
+              <button className={`avatar-btn ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Account" aria-expanded={menuOpen}>
                 <span className="avatar-face">{initial}</span>
               </button>
-              {userOpen && (
-                <div className="user-menu">
-                  <div className="user-menu-head">
-                    <div className="user-menu-name">{[user.firstName, user.lastName].filter(Boolean).join(" ") || user.email}</div>
-                    <div className="user-menu-email">{user.email}</div>
-                    <div className="user-menu-balance">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
-                      <span>{revenue != null ? formatPrice(revenue, "ISK") : "…"}</span>
-                    </div>
-                  </div>
-                  {mainLinks.map((l) => (
-                    <Link key={l.to} to={l.to} onClick={closeMenu}>{l.icon}{l.label}</Link>
-                  ))}
-                  <div className="um-sep" />
-                  <Link to={profileTo} onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{t("nav.profile")}</Link>
-                  <div className="um-sep" />
-                  <button onClick={() => { logout(); closeMenu(); navigate("/"); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>{t("nav.logout")}</button>
-                </div>
-              )}
             </div>
           ) : (
             <Link to="/login" className="nav-link" onClick={closeMenu}>
