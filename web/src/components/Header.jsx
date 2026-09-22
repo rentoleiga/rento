@@ -97,9 +97,11 @@ export default function Header() {
               </button>
             </div>
           ) : (
-            <Link to="/login" className="nav-link" onClick={closeMenu}>
-              {t("nav.login")}
-            </Link>
+            <div className="guest-actions">
+              <Link to="/login" className="guest-link" onClick={closeMenu}>{t("nav.login")}</Link>
+              <Link to="/register" className="guest-link guest-link-muted" onClick={closeMenu}>{t("nav.register")}</Link>
+              <Link to="/dashboard/listings/new" className="btn btn-primary guest-cta" onClick={closeMenu}>Leigja út</Link>
+            </div>
           )}
         </div>
 
@@ -122,9 +124,11 @@ export default function Header() {
               <button onClick={() => { logout(); closeMenu(); navigate("/"); }}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>{t("nav.logout")}</button>
             </div>
           ) : (
-            <Link to="/login" className="nav-link" onClick={closeMenu}>
-              {t("nav.login")}
-            </Link>
+            <div className="mobile-account">
+              <Link to="/login" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>{t("nav.login")}</Link>
+              <Link to="/register" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>{t("nav.register")}</Link>
+              <Link to="/dashboard/listings/new" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Leigja út</Link>
+            </div>
           )}
         </nav>
       </div>

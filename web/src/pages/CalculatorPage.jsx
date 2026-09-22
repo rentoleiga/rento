@@ -176,6 +176,7 @@ export default function CalculatorPage() {
             <Link to="/dashboard/listings/new" className="btn btn-primary btn-block">
               {t("calc.startListing")}
             </Link>
+            <p className="muted" style={{ fontSize: 12, marginTop: 12, textAlign: "center" }}>Engin falin gjöld · Greiðslur í gegnum Rentó · 10% þjónustugjald</p>
           </div>
         </div>
         </div>
