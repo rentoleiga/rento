@@ -1511,6 +1511,13 @@ a:hover {
 .faq-item p { margin: 0; padding: 14px 20px 0; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
 .faq-item p:last-child { padding-bottom: 16px; }
 .faq-item p a { color: var(--primary); font-weight: 600; }
+.faq-q { width: 100%; background: none; border: none; padding: 16px 20px; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; color: var(--ink); font-family: inherit; }
+.faq-icon { font-size: 20px; font-weight: 300; color: var(--primary); flex-shrink: 0; line-height: 1; }
+.faq-item.open .faq-q { border-bottom: 1px solid var(--line); }
+.faq-a { padding: 0; }
+.faq-a p { margin: 0; padding: 14px 20px 0; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+.faq-a p:last-child { padding-bottom: 16px; }
+.faq-a p a { color: var(--primary); font-weight: 600; }
 
 .spec-grid {
   display: grid;
