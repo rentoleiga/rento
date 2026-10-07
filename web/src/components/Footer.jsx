@@ -63,7 +63,6 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p className="footer-disclaimer">{t("footer.disclaimer")}</p>
           <div className="footer-bottom-row">
             <span>{t("footer.copyright")}</span>
           </div>
