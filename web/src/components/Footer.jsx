@@ -26,6 +26,13 @@ export default function Footer() {
             <Link to="/terms" className="footer-link">{t("footer.terms")}</Link>
             <Link to="/privacy" className="footer-link">{t("footer.privacy")}</Link>
             <Link to="/cookies" className="footer-link">{t("footer.cookies")}</Link>
+            <button
+              type="button"
+              className="footer-link footer-link-btn"
+              onClick={() => window.dispatchEvent(new Event("rento:cookie-settings"))}
+            >
+              {t("cookie.footer")}
+            </button>
             <Link to="/banned" className="footer-link">{t("footer.banned")}</Link>
           </div>
 

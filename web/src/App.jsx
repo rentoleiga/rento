@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import CookieConsent from "./components/CookieConsent";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import ListingPage from "./pages/ListingPage";
@@ -78,6 +79,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <CookieConsent />
     </>
   );
 }
