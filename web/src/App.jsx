@@ -17,6 +17,7 @@ import MessagesPage from "./pages/MessagesPage";
 import ConversationPage from "./pages/ConversationPage";
 import ProfilePage from "./pages/ProfilePage";
 import PremiumPage from "./pages/PremiumPage";
+import CreditsPage from "./pages/CreditsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import CalculatorPage from "./pages/CalculatorPage";
 import TermsPage from "./pages/TermsPage";
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/dashboard/listings/new" element={<ListingFormPage />} />
           <Route path="/dashboard/calendar/:listingId" element={<CalendarPage />} />
           <Route path="/dashboard/bookings" element={<MyBookingsPage />} />
+          <Route path="/dashboard/credits" element={<CreditsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/messages/:conversationId" element={<ConversationPage />} />

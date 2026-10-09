@@ -40,6 +40,8 @@ function publicUser(u) {
     completedRentals: u.completed_rentals,
     responseRate: Number(u.response_rate),
     responseTime: u.response_time,
+    creditBalance: u.credit_balance === undefined ? 0 : u.credit_balance,
+    extraSlots: u.extra_slots === undefined ? 0 : u.extra_slots,
     memberSince: u.created_at,
   };
 }

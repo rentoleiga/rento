@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS users (
   response_rate      NUMERIC(5,2) NOT NULL DEFAULT 0,   -- percent
   response_time      INTEGER      NOT NULL DEFAULT 0,   -- minutes
 
+  credit_balance     INTEGER      NOT NULL DEFAULT 0,   -- Rentó Kredit
+  extra_slots        INTEGER      NOT NULL DEFAULT 0,   -- permanent extra listing slots
+
   created_at         TIMESTAMPTZ  NOT NULL DEFAULT now(),
   updated_at         TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
@@ -386,6 +389,21 @@ CREATE TABLE IF NOT EXISTS notifications (
 );
 
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications (user_id, read_at, created_at);
+
+-- ------------------------------------------------------------
+-- CREDIT TRANSACTIONS (Rentó Kredit ledger)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS credit_transactions (
+  id          SERIAL PRIMARY KEY,
+  user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type        VARCHAR(20) NOT NULL,          -- purchase | slot | boost
+  amount      INTEGER NOT NULL,              -- credits delta (negative = spent)
+  description VARCHAR(200) NOT NULL DEFAULT '',
+  listing_id  INTEGER REFERENCES listings(id) ON DELETE SET NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_credit_tx_user ON credit_transactions (user_id, created_at DESC);
 
 -- ------------------------------------------------------------
 -- SEARCH FACET CACHE helper views

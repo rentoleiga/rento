@@ -53,6 +53,7 @@ function Dashboard() {
         <Link to="/dashboard/listings">{t("dash.nav.listings")}</Link>
         <Link to="/dashboard/listings/new">{t("dash.nav.add")}</Link>
         <Link to="/dashboard/bookings">{t("dash.nav.bookings")}</Link>
+        <Link to="/dashboard/credits">Kredit &amp; Boost</Link>
         <Link to="/favorites">{t("dash.nav.favorites")}</Link>
         <Link to="/messages">{t("dash.nav.messages")}</Link>
       </nav>

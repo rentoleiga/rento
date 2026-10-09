@@ -32,6 +32,7 @@ app.use("/api/users", require("./routes/users"));
 app.use("/api/favorites", require("./routes/favorites"));
 app.use("/api/home", require("./routes/home"));
 app.use("/api/estimate", require("./routes/estimate"));
+app.use("/api/credits", require("./routes/credits"));
 
 app.use(notFound);
 app.use(errorHandler);

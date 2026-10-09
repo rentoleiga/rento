@@ -21,7 +21,7 @@ async function loadUser(req) {
               email_verified, phone_verified, identity_verified,
               business_verified, listing_verified,
               rating, review_count, completed_rentals,
-              response_rate, response_time, created_at
+              response_rate, response_time, created_at, credit_balance, extra_slots
        FROM users WHERE id = $1`,
       [payload.sub]
     );
