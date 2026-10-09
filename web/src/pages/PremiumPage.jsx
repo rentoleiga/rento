@@ -1,179 +1,151 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
+import { useAuth } from "../store";
 
-const SUBSCRIPTIONS = [
-  {
-    id: "free",
-    nameKey: "sub.free",
-    priceKey: "sub.free.price",
-    unitKey: null,
-    badge: null,
-    ctaKey: "sub.cta.free",
-    features: ["sub.free.f1", "sub.free.f2", "sub.free.f3"],
-    variant: "free",
-  },
-  {
-    id: "basic",
-    nameKey: "sub.basic",
-    priceKey: "sub.basic.price",
-    unitKey: "sub.perMonth",
-    badge: "sub.mostPopular",
-    ctaKey: "sub.cta.basic",
-    features: ["sub.basic.f1", "sub.basic.f2", "sub.basic.f3", "sub.basic.f4"],
-    variant: "gold",
-  },
-  {
-    id: "pro",
-    nameKey: "sub.pro",
-    priceKey: "sub.pro.price",
-    unitKey: "sub.perMonth",
-    badge: "sub.forCompanies",
-    ctaKey: "sub.cta.pro",
-    features: ["sub.pro.f1", "sub.pro.f2", "sub.pro.f3", "sub.pro.f4", "sub.pro.f5"],
-    variant: "platinum",
-  },
+const PACKAGES = [
+  { id: "litill", nameKey: "credit.pk.litill", credits: 5, price: "990", per: "198", popular: false },
+  { id: "vinsaell", nameKey: "credit.pk.vinsaell", credits: 15, price: "2.490", per: "166", popular: true },
+  { id: "stor", nameKey: "credit.pk.stor", credits: 35, price: "4.990", per: "143", popular: false },
+  { id: "fyrirtaeki", nameKey: "credit.pk.fyrirtaeki", credits: 80, price: "9.990", per: "125", popular: false },
 ];
 
 const BOOSTS = [
-  {
-    tier: "silver",
-    priceKey: "boost.silver.price",
-    ribbon: null,
-    features: ["premium.silver.badge", "premium.silver.frame", "premium.silver.priority"],
-    icons: ["🏷️", "🖼️", "↥"],
-  },
-  {
-    tier: "gold",
-    priceKey: "boost.gold.price",
-    ribbon: "premium.mostPopular",
-    features: ["premium.gold.include", "premium.gold.priority", "premium.gold.home"],
-    icons: ["✓", "↥↥", "🏠"],
-  },
-  {
-    tier: "platinum",
-    priceKey: "boost.platinum.price",
-    ribbon: null,
-    features: ["premium.platinum.include", "premium.platinum.priority", "premium.platinum.home", "premium.platinum.first"],
-    icons: ["✓", "☝", "🥇", "🏆"],
-  },
+  { tier: "silver", kredit: 2, daysKey: "credit.boost.days7", features: ["credit.boost.marked", "credit.boost.above"] },
+  { tier: "gold", kredit: 4, daysKey: "credit.boost.days14", features: ["credit.boost.allSilver", "credit.boost.prioritySilver", "credit.boost.homepage"] },
+  { tier: "platinum", kredit: 7, daysKey: "credit.boost.days30", features: ["credit.boost.allGold", "credit.boost.maxPriority", "credit.boost.specialArea"] },
 ];
 
 export default function PremiumPage() {
   const { t } = useLang();
+  const { user } = useAuth();
+  const buyPath = user ? "/dashboard/credits" : "/login?next=/dashboard/credits";
 
   return (
     <>
       <section className="hero hero-premium">
         <div className="container">
-          <h1>{t("premium.title")}</h1>
-          <p>{t("premium.tag")}</p>
-          <Link to="/dashboard/listings" className="btn btn-primary">
-            {t("premium.cta")}
-          </Link>
+          <h1>{t("credit.hero.title")}</h1>
+          <p>{t("credit.hero.sub")}</p>
+          <div className="credit-stats">
+            <div className="credit-stat"><strong>0%</strong><span>{t("credit.stat.commission")}</span></div>
+            <div className="credit-stat"><strong>3</strong><span>{t("credit.stat.free")}</span></div>
+            <div className="credit-stat"><strong>0</strong><span>{t("credit.stat.sub")}</span></div>
+          </div>
+          <a href="#kreditpakar" className="btn btn-primary">{t("credit.hero.cta")}</a>
         </div>
       </section>
 
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <h2>{t("premium.why")}</h2>
-          </div>
-          <p className="perks-sub">{t("premium.whySub")}</p>
           <div className="perks-grid">
             <div className="perk-card">
-              <div className="perk-icon">✦</div>
-              <h3>30 / 60 / 150</h3>
-              <p className="muted">Ókeypis 30 · Basic 60 · Pro 150 virkar auglýsingar</p>
+              <div className="perk-icon">🎁</div>
+              <h3>{t("credit.free.title")}</h3>
+              <p className="muted">{t("credit.free.text")}</p>
             </div>
             <div className="perk-card">
-              <div className="perk-icon">🏠</div>
-              <h3>{t("premium.homeTitle")}</h3>
-              <p className="muted">{t("premium.homeText")}</p>
+              <div className="perk-icon">🪙</div>
+              <h3>{t("credit.credit.title")}</h3>
+              <p className="muted">{t("credit.credit.text")}</p>
             </div>
             <div className="perk-card">
-              <div className="perk-icon">💰</div>
-              <h3>{t("premium.worthTitle")}</h3>
-              <p className="muted">{t("premium.worthText")}</p>
+              <div className="perk-icon">🚀</div>
+              <h3>{t("credit.boost.title")}</h3>
+              <p className="muted">{t("credit.boost.text")}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pretplata */}
+      {/* What is credit */}
       <section className="section section-flush" style={{ background: "#f6f8f7" }}>
         <div className="container">
           <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-            <h2>{t("sub.title")}</h2>
-            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 640 }}>Engin þóknun á hverja leigu. Borgaðu aðeins ef þú vilt fleiri auglýsingar eða meiri sýnileika.</p>
+            <h2>{t("credit.what.title")}</h2>
+            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 720 }}>{t("credit.what.text")}</p>
+          </div>
+          <div className="perks-grid" style={{ marginTop: 24 }}>
+            <div className="perk-card"><div className="perk-icon">♾️</div><h3>{t("credit.what.k1")}</h3><p className="muted">{t("credit.what.k1t")}</p></div>
+            <div className="perk-card"><div className="perk-icon">🚫</div><h3>{t("credit.what.k2")}</h3><p className="muted">{t("credit.what.k2t")}</p></div>
+            <div className="perk-card"><div className="perk-icon">🧾</div><h3>{t("credit.what.k3")}</h3><p className="muted">{t("credit.what.k3t")}</p></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Kreditpakar */}
+      <section className="section" id="kreditpakar">
+        <div className="container">
+          <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+            <h2>{t("credit.pk.title")}</h2>
           </div>
           <div className="plans-grid" style={{ marginTop: 28 }}>
-            {SUBSCRIPTIONS.map((s) => (
-              <div key={s.id} className={`plan-card plan-${s.variant} ${s.id === "pro" ? "plan-pro" : ""}`}>
-                {s.badge && <div className="plan-ribbon">{t(s.badge)}</div>}
-                <h3 className="plan-name">{t(s.nameKey)}</h3>
+            {PACKAGES.map((p) => (
+              <div key={p.id} className={`plan-card plan-${p.id === "fyrirtaeki" ? "platinum" : p.popular ? "gold" : "free"}`}>
+                {p.popular && <div className="plan-ribbon">{t("credit.pk.popular")}</div>}
+                <h3 className="plan-name">{t(p.nameKey)}</h3>
                 <div className="plan-price">
-                  <strong>{t(s.priceKey)}</strong>
-                  <span className="plan-unit">
-                    {s.unitKey ? `${t("premium.currency")} ${t(s.unitKey)}` : t("premium.currency")}
-                  </span>
+                  <strong>{p.kredit}</strong>
+                  <span className="plan-unit">{t("credit.pk.kredit")}</span>
                 </div>
-                <ul className="plan-features">
-                  {s.features.map((k, i) => (
-                    <li key={k}>
-                      <span className="plan-check" aria-hidden="true">✓</span>
-                      <span>{t(k)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to={s.id === "free" ? "/dashboard/listings/new" : "/contact"}
-                  className={`btn ${s.id === "basic" ? "btn-primary" : s.id === "pro" ? "btn-primary" : "btn-outline"} btn-block`}
-                >
-                  {t(s.ctaKey)}
-                </Link>
+                <div className="credit-price">{p.price} {t("credit.pk.currency")}</div>
+                <div className="credit-per">{p.per} {t("credit.pk.perKredit")}</div>
+                <Link to={buyPath} className={`btn ${p.popular || p.id === "fyrirtaeki" ? "btn-primary" : "btn-outline"} btn-block`}>{t("credit.pk.buy")}</Link>
               </div>
             ))}
           </div>
+
+          {/* How slots work */}
+          <div className="section-head" style={{ justifyContent: "center", marginTop: 56 }}>
+            <h2>{t("credit.slots.title")}</h2>
+          </div>
+          <div className="credit-steps">
+            <div className="credit-step"><span className="credit-step-n">1</span><h3>{t("credit.slots.s1t")}</h3><p className="muted">{t("credit.slots.s1")}</p></div>
+            <div className="credit-step"><span className="credit-step-n">2</span><h3>{t("credit.slots.s2t")}</h3><p className="muted">{t("credit.slots.s2")}</p></div>
+            <div className="credit-step"><span className="credit-step-n">3</span><h3>{t("credit.slots.s3t")}</h3><p className="muted">{t("credit.slots.s3")}</p></div>
+          </div>
+          <p className="credit-example"><strong>{t("credit.slots.example")}</strong> · {t("credit.slots.free")} + {t("credit.slots.bought")}</p>
         </div>
       </section>
 
       {/* Boost */}
-      <section className="section">
+      <section className="section section-flush" style={{ background: "#0f2b24", color: "#e6f6f0" }}>
         <div className="container">
           <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-            <h2>{t("boost.title")}</h2>
-            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 640 }}>{t("boost.sub")}</p>
+            <h2 style={{ color: "#fff" }}>{t("credit.boostPage.title")}</h2>
+            <p style={{ margin: "8px 0 0", maxWidth: 680, color: "#bfe3d8" }}>{t("credit.boostPage.sub")}</p>
           </div>
           <div className="plans-grid" style={{ marginTop: 28 }}>
-            {BOOSTS.map((plan) => (
-              <div key={plan.tier} className={`plan-card plan-${plan.tier}`}>
-                {plan.ribbon && <div className="plan-ribbon">{t(plan.ribbon)}</div>}
-                <h3 className="plan-name">{t(`premium.${plan.tier}`)}</h3>
+            {BOOSTS.map((b) => (
+              <div key={b.tier} className={`plan-card plan-${b.tier}`}>
+                <h3 className="plan-name">{t(`credit.boost.${b.tier}`)}</h3>
                 <div className="plan-price">
-                  <strong>{t(plan.priceKey)}</strong>
-                  <span className="plan-unit">
-                    {t("premium.currency")} {t("premium.per7")}
-                  </span>
+                  <strong>{b.kredit}</strong>
+                  <span className="plan-unit">{t("credit.boost.kredit")}</span>
                 </div>
+                <div className="credit-price" style={{ color: "#e6f6f0" }}>{t(b.daysKey)}</div>
                 <ul className="plan-features">
-                  {plan.features.map((k, i) => (
-                    <li key={k}>
-                      <span className="plan-check" aria-hidden="true">
-                        {plan.icons[i] || "✓"}
-                      </span>
-                      <span>{t(k)}</span>
-                    </li>
+                  {b.features.map((k) => (
+                    <li key={k}><span className="plan-check" aria-hidden="true">✓</span><span>{t(k)}</span></li>
                   ))}
                 </ul>
-                <Link
-                  to="/dashboard/listings"
-                  className={`btn ${plan.tier === "gold" ? "btn-primary" : "btn-outline"} btn-block`}
-                >
-                  {t("premium.cta")}
-                </Link>
+                <Link to={buyPath} className="btn btn-primary btn-block">{t("credit.dash.boostListing")}</Link>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="section">
+        <div className="container">
+          <div className="detail-section" style={{ textAlign: "center" }}>
+            <h2>{t("credit.cta.title")}</h2>
+            <p className="muted">{t("credit.cta.sub")}</p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
+              <Link to="/dashboard/listings/new" className="btn btn-primary">{t("credit.cta.list")}</Link>
+              <Link to="/how-it-works" className="btn btn-outline">{t("credit.cta.how")}</Link>
+            </div>
           </div>
         </div>
       </section>
