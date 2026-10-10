@@ -1155,7 +1155,7 @@ a:hover {
   font-family: "Fraunces", Georgia, serif;
 }
 .plan-unit {
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 13px;
 }
 .plan-features {
@@ -1203,12 +1203,12 @@ a:hover {
 .credit-stat strong {
   display: block;
   font-size: 28px;
-  color: #fff;
+  color: var(--ink);
   line-height: 1.1;
 }
 .credit-stat span {
   font-size: 13px;
-  color: #bfe3d8;
+  color: var(--ink-soft);
 }
 .credit-price {
   font-size: 22px;
@@ -1218,7 +1218,7 @@ a:hover {
 }
 .credit-per {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--ink-soft);
   margin-bottom: 16px;
 }
 .credit-steps {
