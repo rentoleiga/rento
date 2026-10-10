@@ -123,7 +123,7 @@ export default function PremiumPage() {
                   <strong>{b.kredit}</strong>
                   <span className="plan-unit">{t("credit.boost.kredit")}</span>
                 </div>
-                <div className="credit-price" style={{ color: "#e6f6f0" }}>{t(b.daysKey)}</div>
+                <div className="credit-price">{t(b.daysKey)}</div>
                 <ul className="plan-features">
                   {b.features.map((k) => (
                     <li key={k}><span className="plan-check" aria-hidden="true">✓</span><span>{t(k)}</span></li>

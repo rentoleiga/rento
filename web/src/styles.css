@@ -1099,6 +1099,7 @@ a:hover {
   padding: 28px 24px 24px;
   display: flex;
   flex-direction: column;
+  color: var(--ink);
   transition: box-shadow 0.15s, transform 0.15s;
 }
 .plan-card:hover {
