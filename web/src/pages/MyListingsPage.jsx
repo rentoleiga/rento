@@ -4,11 +4,11 @@ import { api, formatPrice } from "../api";
 import { useAuth } from "../store";
 
 const TIERS = [
-  { key: "silver", label: "Silfur", price: 250 },
-  { key: "gold", label: "Gull", price: 500 },
-  { key: "platinum", label: "Platína", price: 1000 },
+  { key: "silver", label: "Silfur", credits: 150, days: 7 },
+  { key: "gold", label: "Gull", credits: 590, days: 14 },
+  { key: "platinum", label: "Platína", credits: 1250, days: 30 },
 ];
-const TIER_LABEL = { featured: "Silfur", gold: "Gull", platinum: "Platína" };
+const TIER_LABEL = { silver: "Silfur", featured: "Silfur", gold: "Gull", platinum: "Platína" };
 
 export default function MyListingsPage() {
   const { user } = useAuth();
@@ -36,7 +36,7 @@ export default function MyListingsPage() {
   const promote = async (l) => {
     setBusyPromo(true);
     try {
-      await api.post(`/api/listings/${l.id}/promote`, { tier: pickTier, days: 7 });
+      await api.post("/api/credits/boost", { listingId: l.id, tier: pickTier });
       setOpenPromo(null);
       load();
     } catch (err) {
@@ -120,7 +120,7 @@ export default function MyListingsPage() {
                             onClick={() => setPickTier(t.key)}
                           >
                             <strong>{t.label}</strong>
-                            <span className="muted">{t.price} ISK / 7 daga</span>
+                            <span className="muted">{t.credits} kredit · {t.days} dagar</span>
                           </button>
                         ))}
                       </div>

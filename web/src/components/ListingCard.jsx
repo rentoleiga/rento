@@ -7,6 +7,7 @@ import { useAuth } from "../store";
 const TIER_BADGE = {
   platinum: "Platína",
   gold: "Gull",
+  silver: "Silfur",
   featured: "Silfur",
 };
 
