@@ -22,7 +22,7 @@ async function insertAlerts(client, rows) {
   for (const a of rows) {
     const ins = await client.query(
       `INSERT INTO credit_alerts (rule, severity, user_id, listing_id, amount, ip, detail)
-       SELECT $1, $2, $3, $4, $5, $6, $7
+       SELECT $1::varchar, $2::varchar, $3::integer, $4::integer, $5::integer, $6::varchar, $7::jsonb
        WHERE NOT EXISTS (
          SELECT 1 FROM credit_alerts ca
          WHERE ca.rule = $1 AND ca.status = 'open'
