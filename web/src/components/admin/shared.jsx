@@ -5,21 +5,24 @@ export const shortDate = (iso) =>
   iso ? new Date(iso).toLocaleString("is-IS", { dateStyle: "short", timeStyle: "short" }) : "";
 
 export const ACTION_LABEL = {
-  "user.role_change": "Breytti hlutverki",
-  "user.ban": "Geymdir notanda",
-  "user.unban": "Losnaði notanda",
-  "listing.status": "Breytti stöðu auglýsingar",
-  "listing.delete": "Eyddi auglýsingu",
-  "contact.new": "Nýtt samband",
-  "contact.answer": "Svaraði sambandi",
-  "credit.purchase": "Keypti kredit",
-  "credit.slot": "Keypti pláss",
+  "user.role_change": "Changed role",
+  "user.ban": "Suspended user",
+  "user.unban": "Reinstated user",
+  "listing.status": "Changed listing status",
+  "listing.delete": "Deleted listing",
+  "contact.new": "New contact message",
+  "contact.answer": "Answered contact",
+  "credit.purchase": "Bought credit",
+  "credit.slot": "Bought slot",
   "credit.boost": "Boost",
+  "credit.scan": "Ran credit scan",
+  "credit.alert_reviewed": "Alert marked reviewed",
+  "credit.alert_dismissed": "Alert dismissed",
 };
 export const actionLabel = (a) => ACTION_LABEL[a] || a;
 
-const PILL_OK = ["published", "paid", "completed", "answered", "approved", "active", "returned", "verified"];
-const PILL_WARN = ["pending", "new", "authorized", "draft", "payment_pending", "paused", "partially_refunded"];
+const PILL_OK = ["published", "paid", "completed", "answered", "approved", "active", "returned", "verified", "reviewed"];
+const PILL_WARN = ["pending", "new", "authorized", "draft", "payment_pending", "paused", "partially_refunded", "open"];
 const PILL_DANGER = ["suspended", "failed", "cancelled", "rejected", "deleted", "refunded", "banned"];
 
 export function pillClass(status) {
@@ -35,30 +38,42 @@ export function StatusPill({ status, label }) {
   return <span className={pillClass(status)}>{label || status}</span>;
 }
 
-export const STATUS_LABEL_IS = {
-  published: "Birt",
-  draft: "Uggr.",
-  paused: "Pásu",
-  suspended: "Geymdir",
-  deleted: "Eyddir",
-  pending: "Bið",
-  approved: "Samþykkt",
-  payment_pending: "Greiðslu í bið",
-  active: "Virkt",
-  returned: "Skilað",
-  completed: "Lokið",
-  cancelled: "Afbókað",
-  rejected: "Hafnað",
-  paid: "Greiðsla",
-  authorized: "Heimilað",
-  failed: "Misheppnað",
-  refunded: "Endurgreitt",
-  partially_refunded: "Hluta endurgreitt",
-  new: "Nýtt",
-  answered: "Svarað",
-  purchase: "Kaup",
-  slot: "Pláss",
+export const STATUS_LABEL = {
+  published: "Published",
+  draft: "Draft",
+  paused: "Paused",
+  suspended: "Suspended",
+  deleted: "Deleted",
+  pending: "Pending",
+  approved: "Approved",
+  payment_pending: "Payment pending",
+  active: "Active",
+  returned: "Returned",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  rejected: "Rejected",
+  paid: "Paid",
+  authorized: "Authorized",
+  failed: "Failed",
+  refunded: "Refunded",
+  partially_refunded: "Partially refunded",
+  new: "New",
+  answered: "Answered",
+  purchase: "Purchase",
+  slot: "Slot",
   boost: "Boost",
-  adjustment: "Aðlögun",
+  adjustment: "Adjustment",
+  open: "Open",
+  reviewed: "Reviewed",
+  dismissed: "Dismissed",
 };
-export const statusLabel = (s) => STATUS_LABEL_IS[s] || s;
+export const statusLabel = (s) => STATUS_LABEL[s] || s;
+
+export const TIER_LABEL = {
+  platinum: "Platinum",
+  gold: "Gold",
+  silver: "Silver",
+  featured: "Silver",
+  none: "—",
+};
+export const tierLabel = (t) => TIER_LABEL[t] || "—";

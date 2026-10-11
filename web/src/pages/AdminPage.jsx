@@ -12,14 +12,14 @@ import AdminMessages from "../components/admin/AdminMessages";
 import AdminLog from "../components/admin/AdminLog";
 
 const TABS = [
-  { k: "overview", label: "Yfirlit", C: AdminOverview },
-  { k: "users", label: "Notendur", C: AdminUsers },
-  { k: "listings", label: "Auglýsingar", C: AdminListings },
-  { k: "bookings", label: "Bókanir", C: AdminBookings },
-  { k: "payments", label: "Uppgjör", C: AdminPayments },
-  { k: "alerts", label: "Sumnjivo", C: AdminAlerts },
-  { k: "messages", label: "Meldingar", C: AdminMessages },
-  { k: "log", label: "Atvikaskrá", C: AdminLog },
+  { k: "overview", label: "Overview", C: AdminOverview },
+  { k: "users", label: "Users", C: AdminUsers },
+  { k: "listings", label: "Listings", C: AdminListings },
+  { k: "bookings", label: "Bookings", C: AdminBookings },
+  { k: "payments", label: "Payments", C: AdminPayments },
+  { k: "alerts", label: "Suspicious", C: AdminAlerts },
+  { k: "messages", label: "Messages", C: AdminMessages },
+  { k: "log", label: "Audit log", C: AdminLog },
 ];
 
 function Denied({ user }) {
@@ -27,9 +27,9 @@ function Denied({ user }) {
     return (
       <div className="container section">
         <div className="empty">
-          <h3>Innskráning nauðsynleg</h3>
-          <p>Þú þarft að vera skráð(ur) inn sem stjórnandi til að sjá þessa síðu.</p>
-          <Link className="btn btn-primary" to="/login">Innskrá</Link>
+          <h3>Sign in required</h3>
+          <p>You need to be signed in as an administrator to view this page.</p>
+          <Link className="btn btn-primary" to="/login">Sign in</Link>
         </div>
       </div>
     );
@@ -37,9 +37,9 @@ function Denied({ user }) {
   return (
     <div className="container section">
       <div className="empty">
-        <h3>403 — Aðgangur hafnaður</h3>
-        <p>Þessi síða er aðeins fyrir stjórnendur.</p>
-        <Link className="btn btn-outline" to="/dashboard">Fara á mælaborð</Link>
+        <h3>403 — Access denied</h3>
+        <p>This page is for administrators only.</p>
+        <Link className="btn btn-outline" to="/dashboard">Go to dashboard</Link>
       </div>
     </div>
   );
@@ -64,8 +64,8 @@ export default function AdminPage() {
   return (
     <div className="container section" style={{ maxWidth: 1180 }}>
       <div className="row" style={{ justifyContent: "space-between", marginBottom: 14 }}>
-        <h1 className="mt0">Stjórnborð</h1>
-        <span className="muted">innskráð(ur) sem {user.email}</span>
+        <h1 className="mt0">Admin panel</h1>
+        <span className="muted">signed in as {user.email}</span>
       </div>
 
       <div className="dash-nav">

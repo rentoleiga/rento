@@ -39,11 +39,11 @@ export default function AdminMessages() {
     <>
       <div className="row" style={{ gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
         <select className="admin-select" value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="new">Ósvarað ({unread})</option>
-          <option value="answered">Svarað</option>
-          <option value="">Allar</option>
+          <option value="new">Unanswered ({unread})</option>
+          <option value="answered">Answered</option>
+          <option value="">All</option>
         </select>
-        <span className="muted">{fmt(total)} meldingar</span>
+        <span className="muted">{fmt(total)} messages</span>
         {error && <span className="form-error">{error}</span>}
       </div>
 
@@ -52,7 +52,7 @@ export default function AdminMessages() {
           <li key={m.id} style={{ alignItems: "flex-start", flexDirection: "column" }}>
             <div className="row" style={{ width: "100%", justifyContent: "space-between", gap: 10 }}>
               <div>
-                <strong>{m.subject || "(án efnis)"}</strong>
+                <strong>{m.subject || "(no subject)"}</strong>
                 <div className="muted" style={{ fontSize: 13 }}>
                   {m.name ? `${m.name} · ` : ""}{m.email} · {shortDate(m.created_at)}
                 </div>
@@ -60,14 +60,14 @@ export default function AdminMessages() {
               <div className="row" style={{ gap: 8 }}>
                 <StatusPill status={m.status} label={statusLabel(m.status)} />
                 <button className="btn btn-sm" onClick={() => setOpenId(openId === m.id ? null : m.id)}>
-                  {openId === m.id ? "Fela" : "Skoða"}
+                  {openId === m.id ? "Hide" : "View"}
                 </button>
-                <a className="btn btn-sm btn-outline" href={`mailto:${m.email}?subject=Svar: ${encodeURIComponent(m.subject || "Rentó")}`}>
-                  Svara
+                <a className="btn btn-sm btn-outline" href={`mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || "Rentó")}`}>
+                  Reply
                 </a>
                 {m.status === "new" && (
                   <button className="btn btn-sm btn-primary" disabled={busyId === m.id} onClick={() => answer(m)}>
-                    Merkja svarað
+                    Mark answered
                   </button>
                 )}
               </div>
@@ -77,14 +77,14 @@ export default function AdminMessages() {
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{m.message}</p>
                 <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>
                   IP: {m.ip || "—"}
-                  {m.answered_at && ` · svarað ${shortDate(m.answered_at)}${m.answered_by_email ? ` af ${m.answered_by_email}` : ""}`}
+                  {m.answered_at && ` · answered ${shortDate(m.answered_at)}${m.answered_by_email ? ` by ${m.answered_by_email}` : ""}`}
                 </div>
               </div>
             )}
           </li>
         ))}
         {rows.length === 0 && (
-          <li className="muted">Engar meldingar í þessum flokki.</li>
+          <li className="muted">No messages in this filter.</li>
         )}
       </ul>
     </>

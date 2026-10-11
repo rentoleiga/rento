@@ -24,13 +24,13 @@ export default function AdminLog() {
     <>
       <div className="row" style={{ gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
         <select className="admin-select" value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="">Allar tegundir</option>
-          <option value="user.">Notendur</option>
-          <option value="listing.">Auglýsingar</option>
-          <option value="credit.">Kredit</option>
-          <option value="contact.">Samband</option>
+          <option value="">All types</option>
+          <option value="user.">Users</option>
+          <option value="listing.">Listings</option>
+          <option value="credit.">Credit</option>
+          <option value="contact.">Contact</option>
         </select>
-        <span className="muted">{fmt(total)} færslur</span>
+        <span className="muted">{fmt(total)} entries</span>
         {error && <span className="form-error">{error}</span>}
       </div>
 
@@ -38,10 +38,10 @@ export default function AdminLog() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Tími</th>
-              <th>Gerandinn</th>
-              <th>Aðgerð</th>
-              <th>Markmið</th>
+              <th>Time</th>
+              <th>Actor</th>
+              <th>Action</th>
+              <th>Target</th>
               <th>IP</th>
             </tr>
           </thead>
@@ -50,7 +50,7 @@ export default function AdminLog() {
               <tr key={a.id}>
                 <td className="muted">{shortDate(a.created_at)}</td>
                 <td>
-                  {a.admin_id ? (a.admin_email || a.admin_id) : <span className="muted">kerfið</span>}
+                  {a.admin_id ? (a.admin_email || a.admin_id) : <span className="muted">system</span>}
                   {(a.admin_first || a.admin_last) && (
                     <div className="muted" style={{ fontSize: 12 }}>{`${a.admin_first || ""} ${a.admin_last || ""}`.trim()}</div>
                   )}
@@ -61,7 +61,7 @@ export default function AdminLog() {
                 </td>
                 <td>
                   {a.target_type === "user" && a.target_id ? (
-                    <Link to={`/users/${a.target_id}`}>notandi #{a.target_id}</Link>
+                    <Link to={`/users/${a.target_id}`}>user #{a.target_id}</Link>
                   ) : a.target_type ? (
                     `${a.target_type} #${a.target_id}`
                   ) : (
@@ -73,7 +73,7 @@ export default function AdminLog() {
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="muted">Engar færslur ennþá.</td></tr>
+              <tr><td colSpan={5} className="muted">No entries yet.</td></tr>
             )}
           </tbody>
         </table>

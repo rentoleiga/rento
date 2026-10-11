@@ -1,175 +1,181 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../api";
-import { fmt, shortDate } from "./shared";
+import { shortDate, StatusPill, statusLabel, fmt } from "./shared";
 
-const RULE_LABEL = {
-  balance_mismatch: "Kredit stanje se ne poklapa sa knjigom",
-  negative_balance: "Negativno kredit stanje",
-  orphan_balance: "Kredit bez izvora (bez kupovine)",
-  big_purchase: "Kupovina veća od najvećeg paketa",
-  burst_purchase: "Ponovljene kupovine u kratkom vremenu",
-  multi_account_ip: "Više naloga sa iste IP adrese",
-  boost_foreign: "Boost na tuđoj auglýsingu",
-};
-const SEV_CLASS = { critical: "pill pill-danger", warn: "pill pill-warn", info: "pill" };
-const STATUS_LABEL = { open: "Otvoren", reviewed: "Pregledan", dismissed: "Odbačen" };
+const RULES = [
+  ["balance_mismatch", "Balance mismatch"],
+  ["negative_balance", "Negative balance"],
+  ["orphan_balance", "Orphan balance"],
+  ["big_purchase", "Big purchase"],
+  ["burst_purchase", "Burst purchases"],
+  ["multi_account_ip", "Multiple accounts per IP"],
+  ["boost_foreign", "Boost on foreign listing"],
+];
+const ruleLabel = (r) => (RULES.find((x) => x[0] === r) || [null, r])[1];
 
 export default function AdminAlerts() {
   const [alerts, setAlerts] = useState([]);
+  const [counts, setCounts] = useState({});
   const [total, setTotal] = useState(0);
-  const [counts, setCounts] = useState({ open: 0, reviewed: 0, dismissed: 0, critical: 0 });
-  const [status, setStatus] = useState("open");
-  const [rule, setRule] = useState("");
+  const [statusFilter, setStatusFilter] = useState("open");
+  const [ruleFilter, setRuleFilter] = useState("");
+  const [page, setPage] = useState(1);
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState("");
   const [scanning, setScanning] = useState(false);
   const [scanMsg, setScanMsg] = useState("");
+  const [busyId, setBusyId] = useState(null);
 
-  const load = useCallback((s, r) => {
-    const params = new URLSearchParams({ perPage: "30" });
-    if (s) params.set("status", s);
-    if (r) params.set("rule", r);
+  const load = useCallback((p, st, rule) => {
+    const params = new URLSearchParams({ page: String(p), perPage: "50" });
+    if (st && st !== "all") params.set("status", st);
+    if (rule) params.set("rule", rule);
     return api.get(`/api/admin/alerts?${params}`).then((d) => {
       setAlerts(d.alerts || []);
-      setTotal(d.total || 0);
       setCounts(d.counts || {});
+      setTotal(d.total || 0);
     }).catch((e) => setError(e.message));
   }, []);
 
-  useEffect(() => {
-    const h = setTimeout(() => load(status, rule), 250);
-    return () => clearTimeout(h);
-  }, [status, rule, load]);
+  useEffect(() => { setPage(1); load(1, statusFilter, ruleFilter); }, [statusFilter, ruleFilter, load]);
+  useEffect(() => { load(page, statusFilter, ruleFilter); }, [page, load]);
+
+  const setStatus = async (a, st) => {
+    setBusyId(a.id);
+    try {
+      await api.patch(`/api/admin/alerts/${a.id}/status`, { status: st });
+      await load(page, statusFilter, ruleFilter);
+    } catch (e) {
+      window.alert(e.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   const scan = async () => {
     setScanning(true);
     setScanMsg("");
     try {
-      const r = await api.post("/api/admin/credits/scan", {});
-      setScanMsg(`Skeniranje završeno: ${r.created} novih upozorenja (od ${r.rules} pravila).`);
-      await load(status, rule);
+      const d = await api.post("/api/admin/credits/scan", {});
+      setScanMsg(`Scan finished: ${d.created} new alerts (out of ${d.rules} rules).`);
+      await load(page, statusFilter, ruleFilter);
     } catch (e) {
-      setError(e.message);
+      setScanMsg(e.message);
     } finally {
       setScanning(false);
     }
   };
 
-  const handle = async (a, next) => {
-    setBusy(`${a.id}`);
-    try {
-      await api.patch(`/api/admin/alerts/${a.id}/status`, { status: next });
-      await load(status, rule);
-    } catch (e) {
-      window.alert(e.message);
-    } finally {
-      setBusy("");
-    }
-  };
+  const pages = Math.max(1, Math.ceil(total / 50));
 
   return (
     <>
-      <div className="dash-grid" style={{ marginBottom: 16 }}>
+      <div className="dash-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", marginBottom: 16 }}>
         <div className="stat-card">
           <div className="stat-num">{fmt(counts.open)}</div>
-          <div className="stat-label">Otvorena upozorenja</div>
-          <div className="muted" style={{ fontSize: 12 }}>od toga {fmt(counts.critical)} kritičnih</div>
+          <div className="stat-label">Open alerts</div>
+          <div className="muted" style={{ fontSize: 12 }}>{fmt(counts.critical)} critical</div>
         </div>
         <div className="stat-card">
           <div className="stat-num">{fmt(counts.reviewed)}</div>
-          <div className="stat-label">Pregledana</div>
+          <div className="stat-label">Reviewed</div>
         </div>
         <div className="stat-card">
           <div className="stat-num">{fmt(counts.dismissed)}</div>
-          <div className="stat-label">Odbačena</div>
+          <div className="stat-label">Dismissed</div>
         </div>
-        <div className="stat-card">
-          <button className="btn btn-primary btn-block" disabled={scanning} onClick={scan}>
-            {scanning ? "Skeniram…" : "Skeniraj sada"}
+        <div className="stat-card" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <button className="btn btn-primary" onClick={scan} disabled={scanning}>
+            {scanning ? "Scanning…" : "Scan now"}
           </button>
-          {scanMsg && <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>{scanMsg}</div>}
         </div>
       </div>
 
+      {scanMsg && <div className="form-error" style={{ marginBottom: 12 }}>{scanMsg}</div>}
+      {error && <div className="form-error" style={{ marginBottom: 12 }}>{error}</div>}
+
       <div className="row" style={{ gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
-        <select className="admin-select" value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="open">Otvorena</option>
-          <option value="reviewed">Pregledana</option>
-          <option value="dismissed">Odbačena</option>
-          <option value="">Sva</option>
+        <select className="admin-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <option value="open">Open</option>
+          <option value="reviewed">Reviewed</option>
+          <option value="dismissed">Dismissed</option>
+          <option value="all">All</option>
         </select>
-        <select className="admin-select" value={rule} onChange={(e) => setRule(e.target.value)}>
-          <option value="">Sva pravila</option>
-          {Object.keys(RULE_LABEL).map((k) => (
-            <option key={k} value={k}>{RULE_LABEL[k]}</option>
-          ))}
+        <select className="admin-select" value={ruleFilter} onChange={(e) => setRuleFilter(e.target.value)}>
+          <option value="">All rules</option>
+          {RULES.map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        <span className="muted">{fmt(total)} upozorenja</span>
-        {error && <span className="form-error">{error}</span>}
+        <span className="muted">{fmt(total)} results</span>
       </div>
 
       <div className="table-wrap">
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Ozbiljnost</th>
-              <th>Pravilo</th>
-              <th>Korisnik</th>
-              <th>Iznos</th>
+              <th>Rule</th>
+              <th>Severity</th>
+              <th>User</th>
+              <th>Detail</th>
               <th>IP</th>
-              <th>Detalji</th>
-              <th>Otkriveno</th>
-              <th>Akcija</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {alerts.map((a) => (
               <tr key={a.id}>
-                <td><span className={SEV_CLASS[a.severity] || "pill"}>{a.severity}</span></td>
                 <td>
-                  <strong>{RULE_LABEL[a.rule] || a.rule}</strong>
+                  <strong>{ruleLabel(a.rule)}</strong>
                   <div className="muted" style={{ fontSize: 12 }}>{a.rule}</div>
                 </td>
                 <td>
-                  {a.user_id ? (
-                    <Link to={`/users/${a.user_id}`} className="admin-user">{a.user_email || `#${a.user_id}`}</Link>
-                  ) : (
-                    <span className="muted">više naloga</span>
-                  )}
-                  {a.listing_id && <div className="muted" style={{ fontSize: 12 }}>auglýsing #{a.listing_id}</div>}
+                  <span className={`pill ${a.severity === "critical" ? "pill-danger" : "pill-warn"}`}>
+                    {a.severity}
+                  </span>
                 </td>
-                <td>{a.amount === null ? "—" : fmt(a.amount)}</td>
+                <td>
+                  {a.user_id ? <Link to={`/users/${a.user_id}`}>{a.user_email || `user #${a.user_id}`}</Link> : <span className="muted">—</span>}
+                  {a.listing_id && <div className="muted" style={{ fontSize: 12 }}>listing #{a.listing_id}</div>}
+                </td>
+                <td className="muted" style={{ fontSize: 12, maxWidth: 280 }}>
+                  {a.rule === "multi_account_ip" && a.detail?.accounts
+                    ? `${a.detail.accounts} accounts`
+                    : JSON.stringify(a.detail || {})}
+                </td>
                 <td className="muted">{a.ip || "—"}</td>
-                <td className="muted" style={{ fontSize: 12, maxWidth: 260 }}>
-                  {a.detail ? JSON.stringify(a.detail) : "—"}
-                </td>
+                <td><StatusPill status={a.status} label={statusLabel(a.status)} /></td>
                 <td className="muted">{shortDate(a.created_at)}</td>
                 <td>
-                  {a.status === "open" ? (
-                    <div className="admin-row-actions">
-                      <button className="btn btn-sm btn-outline" disabled={busy === `${a.id}`} onClick={() => handle(a, "reviewed")}>
-                        Pregledano
+                  <div className="admin-row-actions">
+                    {a.status !== "reviewed" && (
+                      <button className="btn btn-sm btn-outline" disabled={busyId === a.id} onClick={() => setStatus(a, "reviewed")}>
+                        Reviewed
                       </button>
-                      <button className="btn btn-sm" disabled={busy === `${a.id}`} onClick={() => handle(a, "dismissed")}>
-                        Odbaci
+                    )}
+                    {a.status !== "dismissed" && (
+                      <button className="btn btn-sm btn-outline" disabled={busyId === a.id} onClick={() => setStatus(a, "dismissed")}>
+                        Dismiss
                       </button>
-                    </div>
-                  ) : (
-                    <span className="muted">
-                      {STATUS_LABEL[a.status]}
-                      {a.reviewed_by_email ? ` (${a.reviewed_by_email})` : ""}
-                    </span>
-                  )}
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
             {alerts.length === 0 && (
-              <tr><td colSpan={8} className="muted">Nema upozorenja u ovom filteru. Klikni "Skeniraj sada" da proveriš sve naloge.</td></tr>
+              <tr><td colSpan={8} className="muted">No alerts in this filter. Click "Scan now" to check all accounts.</td></tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {total > 50 && (
+        <div className="row" style={{ gap: 8, marginTop: 12, justifyContent: "center" }}>
+          <button className="btn btn-sm btn-outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>← Prev</button>
+          <span className="muted">Page {page} / {pages}</span>
+          <button className="btn btn-sm btn-outline" disabled={page >= pages} onClick={() => setPage(page + 1)}>Next →</button>
+        </div>
+      )}
     </>
   );
 }

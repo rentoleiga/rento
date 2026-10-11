@@ -42,18 +42,18 @@ export default function AdminUsers() {
 
   const changeRole = (u) => {
     const next = u.role === "admin" ? "user" : "admin";
-    if (!window.confirm(`Breyta hlutverki ${u.email} úr "${u.role}" yfir í "${next}"?`)) return;
+    if (!window.confirm(`Change the role of ${u.email} from "${u.role}" to "${next}"?`)) return;
     setBusyId(u.id);
     patch(`/api/admin/users/${u.id}/role`, { role: next });
   };
 
   const setBanned = (u, banned) => {
     if (banned) {
-      const reason = window.prompt(`Ástæða fyrir geymslu ${u.email}:`, "") || "";
+      const reason = window.prompt(`Reason for suspending ${u.email}:`, "") || "";
       setBusyId(u.id);
       patch(`/api/admin/users/${u.id}/ban`, { reason });
     } else {
-      if (!window.confirm(`Losna ${u.email} úr geymslu?`)) return;
+      if (!window.confirm(`Reinstate ${u.email}?`)) return;
       setBusyId(u.id);
       patch(`/api/admin/users/${u.id}/unban`, {});
     }
@@ -66,16 +66,16 @@ export default function AdminUsers() {
       <div className="row" style={{ gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
         <input
           className="admin-search"
-          placeholder="Leita í netföngum, nöfnum, bæjum…"
+          placeholder="Search emails, names, cities…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
         <select className="admin-select" value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="">Allir</option>
-          <option value="user">Notendur</option>
-          <option value="admin">Stjórnendur</option>
+          <option value="">All</option>
+          <option value="user">Users</option>
+          <option value="admin">Administrators</option>
         </select>
-        <span className="muted">{fmt(total)} niðurstöður</span>
+        <span className="muted">{fmt(total)} results</span>
         {error && <span className="form-error">{error}</span>}
       </div>
 
@@ -83,14 +83,14 @@ export default function AdminUsers() {
         <table className="admin-table">
           <thead>
             <tr>
-              <th>Notandi</th>
-              <th>Staða</th>
-              <th>Kredit</th>
-              <th>Pláss</th>
-              <th>Auglýsingar</th>
-              <th>Bókanir</th>
-              <th>Skráður</th>
-              <th>Aðgerðir</th>
+              <th>User</th>
+              <th>Status</th>
+              <th>Credits</th>
+              <th>Slots</th>
+              <th>Listings</th>
+              <th>Bookings</th>
+              <th>Joined</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -103,20 +103,20 @@ export default function AdminUsers() {
                   <div className="muted" style={{ fontSize: 12 }}>{u.email}{u.city ? ` · ${u.city}` : ""}</div>
                   {(u.email_verified || u.identity_verified || u.business_verified || u.listing_verified) && (
                     <div className="admin-flags">
-                      {u.email_verified && <span className="flag flag-ok">netfang</span>}
-                      {u.identity_verified && <span className="flag flag-ok">auðkenni</span>}
-                      {u.business_verified && <span className="flag flag-ok">fyrirtæki</span>}
-                      {u.listing_verified && <span className="flag flag-ok">augl.</span>}
+                      {u.email_verified && <span className="flag flag-ok">email</span>}
+                      {u.identity_verified && <span className="flag flag-ok">identity</span>}
+                      {u.business_verified && <span className="flag flag-ok">business</span>}
+                      {u.listing_verified && <span className="flag flag-ok">listing</span>}
                     </div>
                   )}
                 </td>
                 <td>
                   <span className={`pill ${u.role === "admin" ? "pill-admin" : ""}`}>
-                    {u.role === "admin" ? "Stjórnandi" : "Notandi"}
+                    {u.role === "admin" ? "Admin" : "User"}
                   </span>
                   {u.banned_at && (
                     <div style={{ marginTop: 4 }}>
-                      <span className="pill pill-danger">Geymdir</span>
+                      <span className="pill pill-danger">Suspended</span>
                       {u.banned_reason && <div className="muted" style={{ fontSize: 12 }}>{u.banned_reason}</div>}
                     </div>
                   )}
@@ -133,21 +133,21 @@ export default function AdminUsers() {
                       disabled={busyId === u.id || u.id === me?.id}
                       onClick={() => changeRole(u)}
                     >
-                      {u.role === "admin" ? "Minnka" : "Stjórnandi"}
+                      {u.role === "admin" ? "Demote" : "Make admin"}
                     </button>
                     <button
                       className={`btn btn-sm ${u.banned_at ? "btn-outline" : "btn-danger"}`}
                       disabled={busyId === u.id || u.id === me?.id}
                       onClick={() => setBanned(u, !u.banned_at)}
                     >
-                      {u.banned_at ? "Losna" : "Geyma"}
+                      {u.banned_at ? "Reinstate" : "Suspend"}
                     </button>
                   </div>
                 </td>
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={8} className="muted">Engir notendur fundust.</td></tr>
+              <tr><td colSpan={8} className="muted">No users found.</td></tr>
             )}
           </tbody>
         </table>
@@ -155,9 +155,9 @@ export default function AdminUsers() {
 
       {total > 25 && (
         <div className="row" style={{ gap: 8, marginTop: 12, justifyContent: "center" }}>
-          <button className="btn btn-outline btn-sm" disabled={page <= 1} onClick={() => { const p = page - 1; setPage(p); load(p, q, role); }}>← Fyrri</button>
-          <span className="muted">Síða {page} / {pages}</span>
-          <button className="btn btn-outline btn-sm" disabled={page >= pages} onClick={() => { const p = page + 1; setPage(p); load(p, q, role); }}>Næsta →</button>
+          <button className="btn btn-sm btn-outline" disabled={page <= 1} onClick={() => { const p = page - 1; setPage(p); load(p, q, role); }}>← Prev</button>
+          <span className="muted">Page {page} / {pages}</span>
+          <button className="btn btn-sm btn-outline" disabled={page >= pages} onClick={() => { const p = page + 1; setPage(p); load(p, q, role); }}>Next →</button>
         </div>
       )}
     </>
