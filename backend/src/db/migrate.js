@@ -48,6 +48,20 @@ async function applyMigrations() {
         id         VARCHAR(100) PRIMARY KEY,
         applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
       );
+
+      CREATE TABLE IF NOT EXISTS admin_actions (
+        id          SERIAL PRIMARY KEY,
+        admin_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,  -- NULL = automatic/user-side event
+        action      VARCHAR(60) NOT NULL,
+        target_type VARCHAR(30),
+        target_id   INTEGER,
+        data        JSONB,
+        ip          VARCHAR(60),
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions (created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_admin_actions_admin   ON admin_actions (admin_id);
+      CREATE INDEX IF NOT EXISTS idx_admin_actions_action  ON admin_actions (action);
     `);
     console.log("Incremental migrations applied.");
 

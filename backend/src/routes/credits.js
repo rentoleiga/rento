@@ -2,6 +2,7 @@ const { Router } = require("express");
 const db = require("../db/pool");
 const { authRequired } = require("../middleware/auth");
 const { asyncHandler, err } = require("../middleware/http");
+const { logAdminAction } = require("../utils/adminLog");
 
 const router = Router();
 
@@ -77,6 +78,14 @@ router.post(
         [req.user.id, pkg.credits, `Keypt ${pkg.label} pakki (${pkg.price} kr.)`]
       );
       await client.query("COMMIT");
+      await logAdminAction({
+        adminId: null,
+        action: "credit.purchase",
+        targetType: "user",
+        targetId: req.user.id,
+        data: { packageId: req.body?.packageId, credits: pkg.credits, price: pkg.price },
+        ip: req.ip,
+      });
       res.status(201).json({ balance: upd.rows[0].credit_balance, credits: pkg.credits });
     } catch (e) {
       await client.query("ROLLBACK");
@@ -111,6 +120,14 @@ router.post(
         [req.user.id, -cost, `${count} varanleg pláss (${cost} kredit)`]
       );
       await client.query("COMMIT");
+      await logAdminAction({
+        adminId: null,
+        action: "credit.slot",
+        targetType: "user",
+        targetId: req.user.id,
+        data: { count, cost },
+        ip: req.ip,
+      });
       res.json({ balance: upd.rows[0].credit_balance, extraSlots: upd.rows[0].extra_slots });
     } catch (e) {
       await client.query("ROLLBACK");
@@ -162,6 +179,14 @@ router.post(
         [req.user.id, -boost.credits, `${boost.label} boost (${boost.days} dagar)`, listingId]
       );
       await client.query("COMMIT");
+      await logAdminAction({
+        adminId: null,
+        action: "credit.boost",
+        targetType: "user",
+        targetId: req.user.id,
+        data: { tier: req.body.tier, credits: boost.credits, days: boost.days, listingId },
+        ip: req.ip,
+      });
       res.json({
         balance: upd.rows[0].credit_balance,
         promotionTier: until.rows[0].promotion_tier,

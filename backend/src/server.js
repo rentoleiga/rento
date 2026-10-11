@@ -7,6 +7,9 @@ const { migrate } = require("./db/migrate");
 
 const app = express();
 
+// Railway/Vercel sit behind a proxy - needed for the audit log to record real IPs.
+app.set("trust proxy", 1);
+
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 
@@ -33,6 +36,7 @@ app.use("/api/favorites", require("./routes/favorites"));
 app.use("/api/home", require("./routes/home"));
 app.use("/api/estimate", require("./routes/estimate"));
 app.use("/api/credits", require("./routes/credits"));
+app.use("/api/admin", require("./routes/admin"));
 
 app.use(notFound);
 app.use(errorHandler);

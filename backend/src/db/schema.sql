@@ -430,3 +430,20 @@ LEFT JOIN category_translations st ON st.category_id = sub.id AND st.language = 
 LEFT JOIN users u ON u.id = l.owner_id
 WHERE l.status = 'published' AND l.verification_status IN ('approved','verified')
 GROUP BY l.id, c.slug, ct.name, sub.slug, st.name, u.first_name, u.last_name, u.avatar, u.rating, u.identity_verified;
+
+-- ---------------------------------------------------------------------------
+-- Admin / superuser audit trail
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admin_actions (
+  id          SERIAL PRIMARY KEY,
+  admin_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,  -- NULL = automatic/user-side event
+  action      VARCHAR(60) NOT NULL,
+  target_type VARCHAR(30),
+  target_id   INTEGER,
+  data        JSONB,
+  ip          VARCHAR(60),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_admin   ON admin_actions (admin_id);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_action  ON admin_actions (action);
