@@ -43,8 +43,30 @@ async function applyMigrations() {
         created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
       );
       CREATE INDEX IF NOT EXISTS idx_credit_tx_user ON credit_transactions (user_id, created_at DESC);
+
+      CREATE TABLE IF NOT EXISTS app_migrations (
+        id         VARCHAR(100) PRIMARY KEY,
+        applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
     `);
     console.log("Incremental migrations applied.");
+
+    // One-time refresh of demo promotions so the boost rules are visible.
+    const ins = await db.query(
+      "INSERT INTO app_migrations (id) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id",
+      ["refresh_demo_promotions_1"]
+    );
+    if (ins.rowCount === 1) {
+      await db.query(`
+        UPDATE listings SET promotion_until = now() + interval '30 days'
+          WHERE promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until <= now());
+        UPDATE listings SET promotion_until = now() + interval '14 days'
+          WHERE promotion_tier = 'gold' AND (promotion_until IS NULL OR promotion_until <= now());
+        UPDATE listings SET promotion_until = now() + interval '7 days'
+          WHERE promotion_tier IN ('silver','featured') AND (promotion_until IS NULL OR promotion_until <= now());
+      `);
+      console.log("Refreshed demo promotions.");
+    }
   } catch (err) {
     console.error("Incremental migration error:", err.message);
   }
