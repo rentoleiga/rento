@@ -3,6 +3,7 @@ const db = require("../db/pool");
 const { authRequired } = require("../middleware/auth");
 const { asyncHandler, err } = require("../middleware/http");
 const { logAdminAction } = require("../utils/adminLog");
+const creditGuard = require("../services/creditGuard");
 
 const router = Router();
 
@@ -58,6 +59,7 @@ router.get(
 );
 
 // POST /api/credits/purchase { packageId }  (no real payment yet - adds credits)
+// Guarded by a rate limit and recorded in credit_payments so every grant has a trail.
 router.post(
   "/purchase",
   authRequired,
@@ -68,14 +70,21 @@ router.post(
     const client = await db.pool.connect();
     try {
       await client.query("BEGIN");
+      await creditGuard.assertPurchaseAllowed(client, req.user.id, req.ip);
+
       const upd = await client.query(
         "UPDATE users SET credit_balance = credit_balance + $1, updated_at = now() WHERE id = $2 RETURNING credit_balance",
         [pkg.credits, req.user.id]
       );
       await client.query(
-        `INSERT INTO credit_transactions (user_id, type, amount, description)
-         VALUES ($1, 'purchase', $2, $3)`,
-        [req.user.id, pkg.credits, `Keypt ${pkg.label} pakki (${pkg.price} kr.)`]
+        `INSERT INTO credit_payments (user_id, package_id, credits, amount, status, provider_reference)
+         VALUES ($1, $2, $3, $4, 'paid', 'mock_payment')`,
+        [req.user.id, req.body.packageId, pkg.credits, pkg.price]
+      );
+      await client.query(
+        `INSERT INTO credit_transactions (user_id, type, amount, description, ip)
+         VALUES ($1, 'purchase', $2, $3, $4)`,
+        [req.user.id, pkg.credits, `Keypt ${pkg.label} pakki (${pkg.price} kr.)`, req.ip]
       );
       await client.query("COMMIT");
       await logAdminAction({
@@ -86,6 +95,7 @@ router.post(
         data: { packageId: req.body?.packageId, credits: pkg.credits, price: pkg.price },
         ip: req.ip,
       });
+      creditGuard.quickChecks(req.user.id, req.ip).catch(() => {});
       res.status(201).json({ balance: upd.rows[0].credit_balance, credits: pkg.credits });
     } catch (e) {
       await client.query("ROLLBACK");
@@ -115,9 +125,9 @@ router.post(
         [cost, count, req.user.id]
       );
       await client.query(
-        `INSERT INTO credit_transactions (user_id, type, amount, description)
-         VALUES ($1, 'slot', $2, $3)`,
-        [req.user.id, -cost, `${count} varanleg pláss (${cost} kredit)`]
+        `INSERT INTO credit_transactions (user_id, type, amount, description, ip)
+         VALUES ($1, 'slot', $2, $3, $4)`,
+        [req.user.id, -cost, `${count} varanleg pláss (${cost} kredit)`, req.ip]
       );
       await client.query("COMMIT");
       await logAdminAction({
@@ -174,9 +184,9 @@ router.post(
       );
       const upd = await client.query("SELECT credit_balance FROM users WHERE id = $1", [req.user.id]);
       await client.query(
-        `INSERT INTO credit_transactions (user_id, type, amount, description, listing_id)
-         VALUES ($1, 'boost', $2, $3, $4)`,
-        [req.user.id, -boost.credits, `${boost.label} boost (${boost.days} dagar)`, listingId]
+        `INSERT INTO credit_transactions (user_id, type, amount, description, listing_id, ip)
+         VALUES ($1, 'boost', $2, $3, $4, $5)`,
+        [req.user.id, -boost.credits, `${boost.label} boost (${boost.days} dagar)`, listingId, req.ip]
       );
       await client.query("COMMIT");
       await logAdminAction({

@@ -4,6 +4,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
 const { asyncHandler, err } = require("../middleware/http");
 const { paginate } = require("../utils/helpers");
 const { logAdminAction } = require("../utils/adminLog");
+const creditGuard = require("../services/creditGuard");
 
 const router = Router();
 
@@ -664,6 +665,160 @@ router.patch(
       ip: req.ip,
     });
     res.json({ message: upd.rows[0] });
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Credit fraud: alerts + on-demand scan
+// ---------------------------------------------------------------------------
+router.get(
+  "/alerts",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 30);
+    const status = String(req.query.status || "").trim();
+    const rule = String(req.query.rule || "").trim();
+    const conds = [];
+    const params = [];
+    if (["open", "reviewed", "dismissed"].includes(status)) {
+      params.push(status);
+      conds.push(`a.status = $${params.length}`);
+    }
+    if (rule && creditGuard.RULES[rule]) {
+      params.push(rule);
+      conds.push(`a.rule = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total, counts] = await Promise.all([
+      db.query(
+        `SELECT a.id, a.rule, a.severity, a.user_id, a.listing_id, a.amount, a.ip,
+                a.detail, a.status, a.created_at, a.reviewed_at, a.reviewed_by,
+                u.email AS user_email, u.first_name AS user_first, u.last_name AS user_last,
+                rv.email AS reviewed_by_email
+         FROM credit_alerts a
+         LEFT JOIN users u ON u.id = a.user_id
+         LEFT JOIN users rv ON rv.id = a.reviewed_by
+         ${where}
+         ORDER BY a.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM credit_alerts a ${where}`, params),
+      db.query(
+        `SELECT count(*) FILTER (WHERE status = 'open')::int AS open,
+                count(*) FILTER (WHERE status = 'reviewed')::int AS reviewed,
+                count(*) FILTER (WHERE status = 'dismissed')::int AS dismissed,
+                count(*) FILTER (WHERE status = 'open' AND severity = 'critical')::int AS critical
+         FROM credit_alerts`
+      ),
+    ]);
+
+    res.json({
+      alerts: list.rows,
+      total: total.rows[0].n,
+      page,
+      perPage,
+      counts: counts.rows[0],
+      rules: creditGuard.RULES,
+    });
+  })
+);
+
+router.patch(
+  "/alerts/:id/status",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const status = req.body?.status;
+    if (!id) throw err("Invalid alert id", 400);
+    if (status !== "reviewed" && status !== "dismissed") throw err("status must be reviewed or dismissed", 400);
+
+    const upd = await db.query(
+      `UPDATE credit_alerts SET status = $1, reviewed_at = now(), reviewed_by = $2
+       WHERE id = $3 AND status = 'open'
+       RETURNING id, status, rule`,
+      [status, req.user.id, id]
+    );
+    if (upd.rowCount === 0) {
+      const exists = await db.query("SELECT id, status FROM credit_alerts WHERE id = $1", [id]);
+      if (exists.rowCount === 0) throw err("Alert not found", 404);
+      throw err("Alert is already handled", 400);
+    }
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: `credit.alert_${status}`,
+      targetType: "alert",
+      targetId: id,
+      data: { rule: upd.rows[0].rule },
+      ip: req.ip,
+    });
+    res.json({ alert: upd.rows[0] });
+  })
+);
+
+router.post(
+  "/credits/scan",
+  asyncHandler(async (req, res) => {
+    const result = await creditGuard.scan();
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "credit.scan",
+      targetType: null,
+      targetId: null,
+      data: result,
+      ip: req.ip,
+    });
+    res.json(result);
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Credit purchases (the "payments" side of kredit packages)
+// ---------------------------------------------------------------------------
+router.get(
+  "/credit-payments",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 30);
+    const status = String(req.query.status || "").trim();
+    const conds = [];
+    const params = [];
+    if (["pending", "paid", "failed"].includes(status)) {
+      params.push(status);
+      conds.push(`p.status = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total, sums] = await Promise.all([
+      db.query(
+        `SELECT p.id, p.user_id, p.package_id, p.credits, p.amount, p.currency, p.status,
+                p.provider_reference, p.created_at,
+                u.email AS user_email, u.first_name AS user_first, u.last_name AS user_last
+         FROM credit_payments p
+         LEFT JOIN users u ON u.id = p.user_id
+         ${where}
+         ORDER BY p.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM credit_payments p ${where}`, params),
+      db.query(
+        `SELECT COALESCE(sum(amount), 0) AS revenue, COALESCE(sum(credits), 0) AS credits,
+                count(*)::int AS n
+         FROM credit_payments WHERE status = 'paid'`
+      ),
+    ]);
+
+    res.json({
+      payments: list.rows,
+      total: total.rows[0].n,
+      page,
+      perPage,
+      summary: {
+        revenue: Number(sums.rows[0].revenue),
+        credits: sums.rows[0].credits,
+        count: sums.rows[0].n,
+      },
+    });
   })
 );
 

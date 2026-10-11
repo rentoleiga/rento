@@ -11,6 +11,9 @@ export default function AdminPayments() {
   const [ledgerTotal, setLedgerTotal] = useState(0);
   const [ledgerType, setLedgerType] = useState("");
   const [ledgerQ, setLedgerQ] = useState("");
+  const [pays, setPays] = useState([]);
+  const [payTotal, setPayTotal] = useState(0);
+  const [paySummary, setPaySummary] = useState(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState("");
 
@@ -33,7 +36,16 @@ export default function AdminPayments() {
     }).catch((e) => setError(e.message));
   }, []);
 
+  const loadPays = useCallback(() => {
+    return api.get("/api/admin/credit-payments?perPage=30").then((d) => {
+      setPays(d.payments || []);
+      setPayTotal(d.total || 0);
+      setPaySummary(d.summary || null);
+    }).catch((e) => setError(e.message));
+  }, []);
+
   useEffect(() => { loadTx(txStatus); }, [txStatus, loadTx]);
+  useEffect(() => { loadPays(); }, [loadPays]);
 
   useEffect(() => {
     const h = setTimeout(() => loadLedger(ledgerType, ledgerQ), 350);
@@ -100,6 +112,48 @@ export default function AdminPayments() {
             ))}
             {tx.length === 0 && (
               <tr><td colSpan={8} className="muted">Engar greiðslur. Bókanaferlið notar enn prufugreiðslur.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="row" style={{ gap: 10, marginBottom: 14, flexWrap: "wrap", alignItems: "center" }}>
+        <h2 style={{ fontSize: 17, margin: 0 }}>Kupovine kredita</h2>
+        <span className="muted">{fmt(payTotal)}</span>
+        {paySummary && (
+          <span className="muted">
+            ukupno {fmtIsk(paySummary.revenue)} · {fmt(paySummary.credits)} kredita
+          </span>
+        )}
+      </div>
+
+      <div className="table-wrap" style={{ marginBottom: 34 }}>
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Korisnik</th>
+              <th>Paket</th>
+              <th>Kredit</th>
+              <th>Iznos</th>
+              <th>Referenca</th>
+              <th>Trenutak</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pays.map((p) => (
+              <tr key={p.id}>
+                <td className="muted">{p.id}</td>
+                <td>{p.user_email ? <Link to={`/users/${p.user_id}`}>{p.user_email}</Link> : <span className="muted">—</span>}</td>
+                <td><StatusPill status={p.status} label={`${p.package_id} (${statusLabel(p.status)})`} /></td>
+                <td>{fmt(p.credits)}</td>
+                <td>{fmtIsk(p.amount)} {p.currency}</td>
+                <td className="muted">{p.provider_reference || "—"}</td>
+                <td className="muted">{shortDate(p.created_at)}</td>
+              </tr>
+            ))}
+            {pays.length === 0 && (
+              <tr><td colSpan={7} className="muted">Još nema kupovina kredita.</td></tr>
             )}
           </tbody>
         </table>

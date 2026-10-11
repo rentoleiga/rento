@@ -467,3 +467,38 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   answered_by INTEGER REFERENCES users(id) ON DELETE SET NULL
 );
 CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages (status, created_at DESC);
+
+-- ---------------------------------------------------------------------------
+-- Credit accounting + fraud detection
+-- ---------------------------------------------------------------------------
+ALTER TABLE credit_transactions ADD COLUMN IF NOT EXISTS ip VARCHAR(60);
+
+CREATE TABLE IF NOT EXISTS credit_payments (
+  id                 SERIAL PRIMARY KEY,
+  user_id            INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  package_id         VARCHAR(30) NOT NULL,
+  credits            INTEGER NOT NULL,
+  amount             INTEGER NOT NULL,                 -- price in ISK
+  currency           VARCHAR(3)   NOT NULL DEFAULT 'ISK',
+  status             VARCHAR(20)  NOT NULL DEFAULT 'paid',  -- pending | paid | failed
+  provider_reference VARCHAR(120),
+  created_at         TIMESTAMPTZ  NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_credit_payments_user ON credit_payments (user_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS credit_alerts (
+  id          SERIAL PRIMARY KEY,
+  rule        VARCHAR(40) NOT NULL,
+  severity    VARCHAR(10) NOT NULL DEFAULT 'warn',   -- info | warn | critical
+  user_id     INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  listing_id  INTEGER REFERENCES listings(id) ON DELETE SET NULL,
+  amount      INTEGER,
+  ip          VARCHAR(60),
+  detail      JSONB,
+  status      VARCHAR(20) NOT NULL DEFAULT 'open',   -- open | reviewed | dismissed
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  reviewed_at TIMESTAMPTZ,
+  reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL
+);
+CREATE INDEX IF NOT EXISTS idx_credit_alerts_status ON credit_alerts (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_credit_alerts_rule   ON credit_alerts (rule);

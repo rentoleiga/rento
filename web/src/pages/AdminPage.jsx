@@ -7,6 +7,7 @@ import AdminUsers from "../components/admin/AdminUsers";
 import AdminListings from "../components/admin/AdminListings";
 import AdminBookings from "../components/admin/AdminBookings";
 import AdminPayments from "../components/admin/AdminPayments";
+import AdminAlerts from "../components/admin/AdminAlerts";
 import AdminMessages from "../components/admin/AdminMessages";
 import AdminLog from "../components/admin/AdminLog";
 
@@ -16,6 +17,7 @@ const TABS = [
   { k: "listings", label: "Auglýsingar", C: AdminListings },
   { k: "bookings", label: "Bókanir", C: AdminBookings },
   { k: "payments", label: "Uppgjör", C: AdminPayments },
+  { k: "alerts", label: "Sumnjivo", C: AdminAlerts },
   { k: "messages", label: "Meldingar", C: AdminMessages },
   { k: "log", label: "Atvikaskrá", C: AdminLog },
 ];
