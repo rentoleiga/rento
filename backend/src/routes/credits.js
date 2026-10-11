@@ -7,10 +7,10 @@ const router = Router();
 
 // 1 kredit = 1 kr. Packages are fixed top-up amounts (like phone credit).
 const PACKAGES = {
-  litill: { credits: 990, price: 990, label: "Litill" },
-  vinsaell: { credits: 2490, price: 2490, label: "Vinsæll" },
-  stor: { credits: 4990, price: 4990, label: "Stór" },
-  fyrirtaeki: { credits: 9990, price: 9990, label: "Fyrirtæki" },
+  litill: { credits: 999, price: 999, label: "Litill" },
+  vinsaell: { credits: 2700, price: 2499, label: "Vinsæll" },
+  stor: { credits: 5800, price: 4999, label: "Stór" },
+  fyrirtaeki: { credits: 12000, price: 9999, label: "Fyrirtæki" },
 };
 
 const BOOSTS = {

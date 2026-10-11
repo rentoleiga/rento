@@ -6,6 +6,7 @@ import { useLang } from "../i18n";
 
 const PKG_ORDER = ["litill", "vinsaell", "stor", "fyrirtaeki"];
 const BOOST_ORDER = ["silver", "gold", "platinum"];
+const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 export default function CreditsPage() {
   const { user, refresh } = useAuth();
@@ -103,10 +104,10 @@ function Credits() {
                 {popular && <div className="plan-ribbon">{t("credit.pk.popular")}</div>}
                 <h3 className="plan-name">{p.label}</h3>
                 <div className="plan-price">
-                  <strong>{p.credits.toLocaleString("is-IS")}</strong>
+                  <strong>{fmt(p.credits)}</strong>
                   <span className="plan-unit">{t("credit.pk.kredit")}</span>
                 </div>
-                <div className="credit-price">{Number(p.price).toLocaleString("is-IS")} {t("credit.pk.currency")}</div>
+                <div className="credit-price">{fmt(p.price)} {t("credit.pk.currency")}</div>
                 <div className="credit-per">{t(`credit.pk.desc.${id}`)}</div>
                 <button
                   className={`btn ${popular ? "btn-primary" : "btn-outline"} btn-block`}

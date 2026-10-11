@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
 import { useAuth } from "../store";
 
+const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 const PACKAGES = [
-  { id: "litill", nameKey: "credit.pk.litill", credits: 990, price: "990", descKey: "credit.pk.desc.litill", popular: false },
-  { id: "vinsaell", nameKey: "credit.pk.vinsaell", credits: 2490, price: "2.490", descKey: "credit.pk.desc.vinsaell", popular: true },
-  { id: "stor", nameKey: "credit.pk.stor", credits: 4990, price: "4.990", descKey: "credit.pk.desc.stor", popular: false },
-  { id: "fyrirtaeki", nameKey: "credit.pk.fyrirtaeki", credits: 9990, price: "9.990", descKey: "credit.pk.desc.fyrirtaeki", popular: false },
+  { id: "litill", nameKey: "credit.pk.litill", credits: 999, price: "999", descKey: "credit.pk.desc.litill", popular: false },
+  { id: "vinsaell", nameKey: "credit.pk.vinsaell", credits: 2700, price: "2.499", descKey: "credit.pk.desc.vinsaell", popular: true },
+  { id: "stor", nameKey: "credit.pk.stor", credits: 5800, price: "4.999", descKey: "credit.pk.desc.stor", popular: false },
+  { id: "fyrirtaeki", nameKey: "credit.pk.fyrirtaeki", credits: 12000, price: "9.999", descKey: "credit.pk.desc.fyrirtaeki", popular: false },
 ];
 
 const BOOSTS = [
@@ -85,7 +87,7 @@ export default function PremiumPage() {
                 {p.popular && <div className="plan-ribbon">{t("credit.pk.popular")}</div>}
                 <h3 className="plan-name">{t(p.nameKey)}</h3>
                 <div className="plan-price">
-                  <strong>{p.credits.toLocaleString("is-IS")}</strong>
+                  <strong>{fmt(p.credits)}</strong>
                   <span className="plan-unit">{t("credit.pk.kredit")}</span>
                 </div>
                 <div className="credit-price">{p.price} {t("credit.pk.currency")}</div>
@@ -120,7 +122,7 @@ export default function PremiumPage() {
               <div key={b.tier} className={`plan-card plan-${b.tier}`}>
                 <h3 className="plan-name">{t(`credit.boost.${b.tier}`)}</h3>
                 <div className="plan-price">
-                  <strong>{b.kredit.toLocaleString("is-IS")}</strong>
+                  <strong>{fmt(b.kredit)}</strong>
                   <span className="plan-unit">{t("credit.boost.kredit")}</span>
                 </div>
                 <div className="credit-price">{t(b.daysKey)}</div>
