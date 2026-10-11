@@ -79,16 +79,6 @@ export default function RegisterPage() {
           <label>{t("auth.city")}</label>
           <input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
         </div>
-        <div className="field">
-          <label className="row" style={{ cursor: "pointer" }}>
-            <input type="checkbox" checked={form.renterEnabled} onChange={(e) => setForm({ ...form, renterEnabled: e.target.checked })} />
-            {t("auth.renter")}
-          </label>
-          <label className="row" style={{ cursor: "pointer" }}>
-            <input type="checkbox" checked={form.ownerEnabled} onChange={(e) => setForm({ ...form, ownerEnabled: e.target.checked })} />
-            {t("auth.owner")}
-          </label>
-        </div>
         <button className="btn btn-primary btn-block" disabled={busy}>
           {busy ? t("search.loading") : t("auth.create")}
         </button>
