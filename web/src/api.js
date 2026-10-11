@@ -41,6 +41,25 @@ export const api = {
   del: (path) => request("DELETE", path),
 };
 
+// Authenticated file download (CSV exports etc.) - a plain <a href> cannot
+// send the Bearer token, so fetch the blob and trigger it from JS.
+export async function downloadFile(path, filename) {
+  const headers = {};
+  const token = getToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const res = await fetch(`${BASE}${path}`, { headers });
+  if (!res.ok) throw new Error(`Download failed (${res.status})`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename || path.split("/").pop();
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 export function formatPrice(n, currency = "ISK") {
   const num = Number(n);
   if (Number.isNaN(num)) return `${n} ${currency}`;

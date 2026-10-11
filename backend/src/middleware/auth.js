@@ -21,7 +21,8 @@ async function loadUser(req) {
               email_verified, phone_verified, identity_verified,
               business_verified, listing_verified,
               rating, review_count, completed_rentals,
-              response_rate, response_time, created_at, credit_balance, extra_slots
+              response_rate, response_time, created_at, credit_balance, extra_slots,
+              banned_at, banned_reason
        FROM users WHERE id = $1`,
       [payload.sub]
     );
@@ -36,6 +37,13 @@ async function authRequired(req, res, next) {
     const user = await loadUser(req);
     if (!user) {
       return res.status(401).json({ error: "Authentication required" });
+    }
+    if (user.banned_at) {
+      return res.status(403).json({
+        error: "Account suspended",
+        reason: user.banned_reason || "",
+        bannedAt: user.banned_at,
+      });
     }
     req.user = user;
     next();

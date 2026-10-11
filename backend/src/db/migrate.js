@@ -62,6 +62,23 @@ async function applyMigrations() {
       CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions (created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_admin_actions_admin   ON admin_actions (admin_id);
       CREATE INDEX IF NOT EXISTS idx_admin_actions_action  ON admin_actions (action);
+
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS banned_at     TIMESTAMPTZ;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS banned_reason VARCHAR(255) NOT NULL DEFAULT '';
+
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id          SERIAL PRIMARY KEY,
+        name        VARCHAR(120)  NOT NULL DEFAULT '',
+        email       VARCHAR(255)  NOT NULL,
+        subject     VARCHAR(200)  NOT NULL DEFAULT '',
+        message     TEXT          NOT NULL,
+        status      VARCHAR(20)   NOT NULL DEFAULT 'new',
+        ip          VARCHAR(60),
+        created_at  TIMESTAMPTZ   NOT NULL DEFAULT now(),
+        answered_at TIMESTAMPTZ,
+        answered_by INTEGER REFERENCES users(id) ON DELETE SET NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages (status, created_at DESC);
     `);
     console.log("Incremental migrations applied.");
 

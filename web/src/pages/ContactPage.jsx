@@ -1,18 +1,34 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n";
+import { api } from "../api";
 
 export default function ContactPage() {
   const { t } = useLang();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!form.email.trim() || !form.message.trim()) return;
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: "", email: "", message: "" });
+    setBusy(true);
+    setError("");
+    try {
+      await api.post("/api/contact", {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        message: form.message.trim(),
+      });
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setSent(false), 5000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -52,6 +68,7 @@ export default function ContactPage() {
         {/* Right form */}
         <div className="card contact-form-card">
           {sent && <div className="form-success">{t("contact.sent")}</div>}
+          {error && <div className="form-error">{error}</div>}
           <form onSubmit={submit}>
             <div className="field">
               <label>{t("contact.name")}</label>
@@ -65,7 +82,9 @@ export default function ContactPage() {
               <label>{t("contact.message")} *</label>
               <textarea rows={6} required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Hvernig getum við hjálpað?" style={{ width: "100%", resize: "vertical" }} />
             </div>
-            <button className="btn btn-primary btn-block" type="submit">{t("contact.send")}</button>
+            <button className="btn btn-primary btn-block" type="submit" disabled={busy}>
+              {busy ? "…" : t("contact.send")}
+            </button>
             <p className="muted" style={{ fontSize: 12, marginTop: 12, textAlign: "center" }}>Með því að senda samþykkir þú <Link to="/terms">skilmála</Link> og <Link to="/privacy">persónuverndarstefnu</Link>.</p>
           </form>
         </div>

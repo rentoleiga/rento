@@ -43,6 +43,9 @@ CREATE TABLE IF NOT EXISTS users (
   credit_balance     INTEGER      NOT NULL DEFAULT 0,   -- Rentó Kredit
   extra_slots        INTEGER      NOT NULL DEFAULT 0,   -- permanent extra listing slots
 
+  banned_at          TIMESTAMPTZ,                       -- NULL = active account
+  banned_reason      VARCHAR(255) NOT NULL DEFAULT '',
+
   created_at         TIMESTAMPTZ  NOT NULL DEFAULT now(),
   updated_at         TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
@@ -447,3 +450,20 @@ CREATE TABLE IF NOT EXISTS admin_actions (
 CREATE INDEX IF NOT EXISTS idx_admin_actions_created ON admin_actions (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_admin   ON admin_actions (admin_id);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_action  ON admin_actions (action);
+
+-- ---------------------------------------------------------------------------
+-- Contact form inbox
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id          SERIAL PRIMARY KEY,
+  name        VARCHAR(120)  NOT NULL DEFAULT '',
+  email       VARCHAR(255)  NOT NULL,
+  subject     VARCHAR(200)  NOT NULL DEFAULT '',
+  message     TEXT          NOT NULL,
+  status      VARCHAR(20)   NOT NULL DEFAULT 'new',   -- new | answered
+  ip          VARCHAR(60),
+  created_at  TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  answered_at TIMESTAMPTZ,
+  answered_by INTEGER REFERENCES users(id) ON DELETE SET NULL
+);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages (status, created_at DESC);

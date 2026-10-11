@@ -271,4 +271,400 @@ router.get(
   })
 );
 
+// ---------------------------------------------------------------------------
+// Users: suspend / reinstate
+// ---------------------------------------------------------------------------
+router.patch(
+  "/users/:id/ban",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) throw err("Invalid user id", 400);
+    if (id === req.user.id) throw err("You cannot suspend yourself", 400);
+    const reason = String(req.body?.reason || "").trim().slice(0, 255);
+
+    const upd = await db.query(
+      `UPDATE users SET banned_at = now(), banned_reason = $1, updated_at = now()
+       WHERE id = $2 AND banned_at IS NULL
+       RETURNING id, email, banned_at, banned_reason`,
+      [reason, id]
+    );
+    if (upd.rowCount === 0) {
+      const exists = await db.query("SELECT id FROM users WHERE id = $1", [id]);
+      if (exists.rowCount === 0) throw err("User not found", 404);
+      throw err("User is already suspended", 400);
+    }
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "user.ban",
+      targetType: "user",
+      targetId: id,
+      data: { reason, email: upd.rows[0].email },
+      ip: req.ip,
+    });
+    res.json({ user: upd.rows[0] });
+  })
+);
+
+router.patch(
+  "/users/:id/unban",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) throw err("Invalid user id", 400);
+
+    const upd = await db.query(
+      `UPDATE users SET banned_at = NULL, banned_reason = '', updated_at = now()
+       WHERE id = $1 AND banned_at IS NOT NULL
+       RETURNING id, email`,
+      [id]
+    );
+    if (upd.rowCount === 0) {
+      const exists = await db.query("SELECT id FROM users WHERE id = $1", [id]);
+      if (exists.rowCount === 0) throw err("User not found", 404);
+      throw err("User is not suspended", 400);
+    }
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "user.unban",
+      targetType: "user",
+      targetId: id,
+      data: { email: upd.rows[0].email },
+      ip: req.ip,
+    });
+    res.json({ user: upd.rows[0] });
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Listings moderation
+// ---------------------------------------------------------------------------
+const LISTING_STATUSES = ["draft", "published", "paused", "suspended", "deleted"];
+
+router.get(
+  "/listings",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 25);
+    const q = String(req.query.q || "").trim();
+    const status = String(req.query.status || "").trim();
+    const conds = [];
+    const params = [];
+    if (q) {
+      params.push(`%${q}%`);
+      const i = params.length;
+      conds.push(`(l.title ILIKE $${i} OR u.email ILIKE $${i} OR u.first_name ILIKE $${i} OR u.last_name ILIKE $${i})`);
+    }
+    if (LISTING_STATUSES.includes(status)) {
+      params.push(status);
+      conds.push(`l.status = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total] = await Promise.all([
+      db.query(
+        `SELECT l.id, l.title, l.slug, l.status, l.verification_status, l.promotion_tier, l.promotion_until,
+                l.price_daily, l.price_hourly, l.currency, l.view_count, l.favorite_count, l.created_at,
+                l.owner_id, u.email AS owner_email,
+                u.first_name AS owner_first, u.last_name AS owner_last
+         FROM listings l
+         LEFT JOIN users u ON u.id = l.owner_id
+         ${where}
+         ORDER BY l.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(
+        `SELECT count(*)::int AS n FROM listings l
+         LEFT JOIN users u ON u.id = l.owner_id ${where}`,
+        params
+      ),
+    ]);
+
+    res.json({ listings: list.rows, total: total.rows[0].n, page, perPage });
+  })
+);
+
+router.patch(
+  "/listings/:id/status",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const status = req.body?.status;
+    if (!id) throw err("Invalid listing id", 400);
+    if (!LISTING_STATUSES.includes(status)) throw err(`status must be one of: ${LISTING_STATUSES.join(", ")}`, 400);
+
+    const upd = await db.query(
+      `UPDATE listings SET status = $1, updated_at = now() WHERE id = $2
+       RETURNING id, title, status`,
+      [status, id]
+    );
+    if (upd.rowCount === 0) throw err("Listing not found", 404);
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "listing.status",
+      targetType: "listing",
+      targetId: id,
+      data: { status, title: upd.rows[0].title },
+      ip: req.ip,
+    });
+    res.json({ listing: upd.rows[0] });
+  })
+);
+
+router.delete(
+  "/listings/:id",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) throw err("Invalid listing id", 400);
+
+    const upd = await db.query(
+      `UPDATE listings SET status = 'deleted', updated_at = now()
+       WHERE id = $1 AND status <> 'deleted'
+       RETURNING id, title`,
+      [id]
+    );
+    if (upd.rowCount === 0) throw err("Listing not found", 404);
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "listing.delete",
+      targetType: "listing",
+      targetId: id,
+      data: { title: upd.rows[0].title },
+      ip: req.ip,
+    });
+    res.json({ ok: true });
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Bookings
+// ---------------------------------------------------------------------------
+const BOOKING_STATUSES = ["pending", "approved", "payment_pending", "active", "returned", "completed", "cancelled", "rejected"];
+
+router.get(
+  "/bookings",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 25);
+    const status = String(req.query.status || "").trim();
+    const conds = [];
+    const params = [];
+    if (BOOKING_STATUSES.includes(status)) {
+      params.push(status);
+      conds.push(`b.status = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total] = await Promise.all([
+      db.query(
+        `SELECT b.id, b.status, b.payment_status, b.pickup_status, b.return_status,
+                b.total, b.currency, b.start_time, b.end_time, b.created_at,
+                b.renter_id, b.owner_id, b.listing_id,
+                l.title AS listing_title,
+                ro.email AS renter_email, ro.first_name AS renter_first, ro.last_name AS renter_last,
+                oo.email AS owner_email, oo.first_name AS owner_first, oo.last_name AS owner_last
+         FROM bookings b
+         LEFT JOIN listings l ON l.id = b.listing_id
+         LEFT JOIN users ro ON ro.id = b.renter_id
+         LEFT JOIN users oo ON oo.id = b.owner_id
+         ${where}
+         ORDER BY b.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM bookings b ${where}`, params),
+    ]);
+
+    res.json({ bookings: list.rows, total: total.rows[0].n, page, perPage });
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Payments: booking transactions + the credit ledger
+// ---------------------------------------------------------------------------
+router.get(
+  "/transactions",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 30);
+    const status = String(req.query.status || "").trim();
+    const conds = [];
+    const params = [];
+    if (["pending", "authorized", "paid", "failed", "refunded", "partially_refunded"].includes(status)) {
+      params.push(status);
+      conds.push(`t.status = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total] = await Promise.all([
+      db.query(
+        `SELECT t.id, t.booking_id, t.payer_id, t.receiver_id, t.amount, t.platform_fee, t.owner_amount,
+                t.currency, t.status, t.provider_reference, t.created_at,
+                p.email AS payer_email, r.email AS receiver_email
+         FROM transactions t
+         LEFT JOIN users p ON p.id = t.payer_id
+         LEFT JOIN users r ON r.id = t.receiver_id
+         ${where}
+         ORDER BY t.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM transactions t ${where}`, params),
+    ]);
+
+    res.json({ transactions: list.rows, total: total.rows[0].n, page, perPage });
+  })
+);
+
+router.get(
+  "/credit-ledger",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 30);
+    const type = String(req.query.type || "").trim();
+    const conds = [];
+    const params = [];
+    if (["purchase", "slot", "boost", "adjustment"].includes(type)) {
+      params.push(type);
+      conds.push(`c.type = $${params.length}`);
+    }
+    const q = String(req.query.q || "").trim();
+    if (q) {
+      params.push(`%${q}%`);
+      const i = params.length;
+      conds.push(`(u.email ILIKE $${i} OR u.first_name ILIKE $${i} OR u.last_name ILIKE $${i})`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total] = await Promise.all([
+      db.query(
+        `SELECT c.id, c.user_id, c.type, c.amount, c.description, c.listing_id, c.created_at,
+                u.email AS user_email, u.first_name AS user_first, u.last_name AS user_last
+         FROM credit_transactions c
+         LEFT JOIN users u ON u.id = c.user_id
+         ${where}
+         ORDER BY c.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(
+        `SELECT count(*)::int AS n FROM credit_transactions c
+         LEFT JOIN users u ON u.id = c.user_id ${where}`,
+        params
+      ),
+    ]);
+
+    res.json({ ledger: list.rows, total: total.rows[0].n, page, perPage });
+  })
+);
+
+// ---------------------------------------------------------------------------
+// CSV export (semicolon separated, UTF-8 BOM for Excel)
+// ---------------------------------------------------------------------------
+const csvCell = (v) => {
+  if (v === null || v === undefined) return "";
+  const s = String(v);
+  return /[",;\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+const toCsv = (rows) => rows.map((r) => r.map(csvCell).join(";")).join("\r\n");
+const iso = (d) => (d ? new Date(d).toISOString() : "");
+
+router.get(
+  "/export/:kind.csv",
+  asyncHandler(async (req, res) => {
+    const kind = req.params.kind;
+    let name;
+    let sql;
+    if (kind === "users") {
+      name = "rento-notendur";
+      sql = `SELECT id, email, first_name, last_name, city, role, credit_balance, extra_slots,
+                    email_verified, identity_verified, banned_at, created_at
+             FROM users ORDER BY created_at DESC`;
+    } else if (kind === "credits") {
+      name = "rento-kredit-faerslur";
+      sql = `SELECT c.id, c.user_id, u.email, c.type, c.amount, c.description, c.listing_id, c.created_at
+             FROM credit_transactions c LEFT JOIN users u ON u.id = c.user_id
+             ORDER BY c.created_at DESC`;
+    } else if (kind === "transactions") {
+      name = "rento-greidslur";
+      sql = `SELECT t.id, t.booking_id, t.amount, t.platform_fee, t.owner_amount, t.currency,
+                    t.status, t.provider_reference, t.created_at
+             FROM transactions t ORDER BY t.created_at DESC`;
+    } else {
+      throw err("Unknown export kind", 400);
+    }
+
+    const { rows } = await db.query(sql);
+    res.set("Content-Type", "text/csv; charset=utf-8");
+    if (rows.length === 0) return res.send("\uFEFF");
+    const cols = Object.keys(rows[0]);
+    const body = [cols, ...rows.map((r) => cols.map((c) => (c === "created_at" || c === "banned_at" ? iso(r[c]) : r[c])))];
+    res.set("Content-Disposition", `attachment; filename="${name}.csv"`);
+    res.send(`\uFEFF${toCsv(body)}`);
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Contact inbox
+// ---------------------------------------------------------------------------
+router.get(
+  "/messages",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 30);
+    const status = String(req.query.status || "").trim();
+    const conds = [];
+    const params = [];
+    if (status === "new" || status === "answered") {
+      params.push(status);
+      conds.push(`m.status = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total, unread] = await Promise.all([
+      db.query(
+        `SELECT m.id, m.name, m.email, m.subject, m.message, m.status, m.ip,
+                m.created_at, m.answered_at, m.answered_by, ua.email AS answered_by_email
+         FROM contact_messages m
+         LEFT JOIN users ua ON ua.id = m.answered_by
+         ${where}
+         ORDER BY m.created_at DESC
+         LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM contact_messages m ${where}`, params),
+      db.query(`SELECT count(*)::int AS n FROM contact_messages WHERE status = 'new'`),
+    ]);
+
+    res.json({ messages: list.rows, total: total.rows[0].n, unread: unread.rows[0].n, page, perPage });
+  })
+);
+
+router.patch(
+  "/messages/:id/answer",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) throw err("Invalid message id", 400);
+
+    const upd = await db.query(
+      `UPDATE contact_messages
+       SET status = 'answered', answered_at = now(), answered_by = $1
+       WHERE id = $2 AND status = 'new'
+       RETURNING id, status`,
+      [req.user.id, id]
+    );
+    if (upd.rowCount === 0) {
+      const exists = await db.query("SELECT id FROM contact_messages WHERE id = $1", [id]);
+      if (exists.rowCount === 0) throw err("Message not found", 404);
+      throw err("Message is already answered", 400);
+    }
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "contact.answer",
+      targetType: "message",
+      targetId: id,
+      ip: req.ip,
+    });
+    res.json({ message: upd.rows[0] });
+  })
+);
+
 module.exports = router;
