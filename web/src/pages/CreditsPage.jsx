@@ -103,13 +103,11 @@ function Credits() {
                 {popular && <div className="plan-ribbon">{t("credit.pk.popular")}</div>}
                 <h3 className="plan-name">{p.label}</h3>
                 <div className="plan-price">
-                  <strong>{p.credits}</strong>
+                  <strong>{p.credits.toLocaleString("is-IS")}</strong>
                   <span className="plan-unit">{t("credit.pk.kredit")}</span>
                 </div>
-                <div className="credit-price">{p.price} {t("credit.pk.currency")}</div>
-                <div className="credit-per">
-                  {Math.round(p.price / p.credits)} {t("credit.pk.perKredit")}
-                </div>
+                <div className="credit-price">{Number(p.price).toLocaleString("is-IS")} {t("credit.pk.currency")}</div>
+                <div className="credit-per">{t(`credit.pk.desc.${id}`)}</div>
                 <button
                   className={`btn ${popular ? "btn-primary" : "btn-outline"} btn-block`}
                   disabled={busy === `pkg-${id}`}
@@ -135,7 +133,7 @@ function Credits() {
               style={{ width: 90 }}
             />
             <button className="btn btn-primary" disabled={busy === "slots"} onClick={buySlots}>
-              {busy === "slots" ? "..." : `${t("credit.dash.buy")} (${slotCount} kredit)`}
+              {busy === "slots" ? "..." : `${t("credit.dash.buy")} (${slotCount * (data?.slotCost || 249)} kredit)`}
             </button>
           </div>
         </div>

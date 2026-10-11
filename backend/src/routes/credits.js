@@ -5,18 +5,22 @@ const { asyncHandler, err } = require("../middleware/http");
 
 const router = Router();
 
+// 1 kredit = 1 kr. Packages are fixed top-up amounts (like phone credit).
 const PACKAGES = {
-  litill: { credits: 5, price: 990, label: "Litill" },
-  vinsaell: { credits: 15, price: 2490, label: "Vinsæll" },
-  stor: { credits: 35, price: 4990, label: "Stór" },
-  fyrirtaeki: { credits: 80, price: 9990, label: "Fyrirtæki" },
+  litill: { credits: 990, price: 990, label: "Litill" },
+  vinsaell: { credits: 2490, price: 2490, label: "Vinsæll" },
+  stor: { credits: 4990, price: 4990, label: "Stór" },
+  fyrirtaeki: { credits: 9990, price: 9990, label: "Fyrirtæki" },
 };
 
 const BOOSTS = {
-  silver: { credits: 2, days: 7, label: "Silver" },
-  gold: { credits: 4, days: 14, label: "Gold" },
-  platinum: { credits: 7, days: 30, label: "Platinum" },
+  silver: { credits: 150, days: 7, label: "Silver" },
+  gold: { credits: 590, days: 14, label: "Gold" },
+  platinum: { credits: 1250, days: 30, label: "Platinum" },
 };
+
+// A permanent extra listing slot costs 249 kredit.
+const SLOT_COST = 249;
 
 function mapTx(r) {
   return {
@@ -44,6 +48,7 @@ router.get(
     res.json({
       balance: me.rows[0]?.credit_balance || 0,
       extraSlots: me.rows[0]?.extra_slots || 0,
+      slotCost: SLOT_COST,
       packages: PACKAGES,
       boosts: BOOSTS,
       transactions: tx.rows.map(mapTx),
@@ -94,15 +99,16 @@ router.post(
     try {
       await client.query("BEGIN");
       const cur = await client.query("SELECT credit_balance FROM users WHERE id = $1 FOR UPDATE", [req.user.id]);
-      if ((cur.rows[0]?.credit_balance || 0) < count) throw err("Not enough credit", 400);
+      const cost = count * SLOT_COST;
+      if ((cur.rows[0]?.credit_balance || 0) < cost) throw err("Not enough credit", 400);
       const upd = await client.query(
-        "UPDATE users SET credit_balance = credit_balance - $1, extra_slots = extra_slots + $1, updated_at = now() WHERE id = $2 RETURNING credit_balance, extra_slots",
-        [count, req.user.id]
+        "UPDATE users SET credit_balance = credit_balance - $1, extra_slots = extra_slots + $2, updated_at = now() WHERE id = $3 RETURNING credit_balance, extra_slots",
+        [cost, count, req.user.id]
       );
       await client.query(
         `INSERT INTO credit_transactions (user_id, type, amount, description)
          VALUES ($1, 'slot', $2, $3)`,
-        [req.user.id, -count, `${count} varanleg aukapláss`]
+        [req.user.id, -cost, `${count} varanleg pláss (${cost} kredit)`]
       );
       await client.query("COMMIT");
       res.json({ balance: upd.rows[0].credit_balance, extraSlots: upd.rows[0].extra_slots });
@@ -124,7 +130,6 @@ router.post(
     const listingId = parseInt(req.body?.listingId, 10);
     if (!boost) throw err("Unknown boost tier", 400);
     if (!listingId) throw err("listingId required", 400);
-
     const client = await db.pool.connect();
     try {
       await client.query("BEGIN");

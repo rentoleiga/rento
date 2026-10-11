@@ -6,9 +6,6 @@ const { publicListing } = require("../utils/helpers");
 
 const router = Router();
 
-const RENTED_SQL = `(SELECT count(*)::int FROM bookings b
-   WHERE b.listing_id = v.id AND b.status IN ('completed','active'))`;
-
 async function annotateFavorites(rows, userId) {
   const out = rows.map((r) => publicListing(r));
   if (userId) {
@@ -39,9 +36,10 @@ router.get(
          LIMIT 8`
       ),
       db.query(
-        `SELECT v.*, ${RENTED_SQL} AS rented_count
+        `SELECT v.*
          FROM v_listing_search v
-         ORDER BY v.view_count + 4 * v.favorite_count + 10 * (${RENTED_SQL}) + 20 * v.rating DESC
+         WHERE v.promotion_tier = 'platinum'
+         ORDER BY v.rating DESC, v.review_count DESC
          LIMIT 8`
       ),
       db.query(

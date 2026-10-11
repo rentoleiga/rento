@@ -4,16 +4,16 @@ import { useLang } from "../i18n";
 import { useAuth } from "../store";
 
 const PACKAGES = [
-  { id: "litill", nameKey: "credit.pk.litill", credits: 5, price: "990", per: "198", popular: false },
-  { id: "vinsaell", nameKey: "credit.pk.vinsaell", credits: 15, price: "2.490", per: "166", popular: true },
-  { id: "stor", nameKey: "credit.pk.stor", credits: 35, price: "4.990", per: "143", popular: false },
-  { id: "fyrirtaeki", nameKey: "credit.pk.fyrirtaeki", credits: 80, price: "9.990", per: "125", popular: false },
+  { id: "litill", nameKey: "credit.pk.litill", credits: 990, price: "990", descKey: "credit.pk.desc.litill", popular: false },
+  { id: "vinsaell", nameKey: "credit.pk.vinsaell", credits: 2490, price: "2.490", descKey: "credit.pk.desc.vinsaell", popular: true },
+  { id: "stor", nameKey: "credit.pk.stor", credits: 4990, price: "4.990", descKey: "credit.pk.desc.stor", popular: false },
+  { id: "fyrirtaeki", nameKey: "credit.pk.fyrirtaeki", credits: 9990, price: "9.990", descKey: "credit.pk.desc.fyrirtaeki", popular: false },
 ];
 
 const BOOSTS = [
-  { tier: "silver", kredit: 2, daysKey: "credit.boost.days7", features: ["credit.boost.marked", "credit.boost.above"] },
-  { tier: "gold", kredit: 4, daysKey: "credit.boost.days14", features: ["credit.boost.allSilver", "credit.boost.prioritySilver", "credit.boost.homepage"] },
-  { tier: "platinum", kredit: 7, daysKey: "credit.boost.days30", features: ["credit.boost.allGold", "credit.boost.maxPriority", "credit.boost.specialArea"] },
+  { tier: "silver", kredit: 150, daysKey: "credit.boost.days7", features: ["credit.boost.marked", "credit.boost.above"] },
+  { tier: "gold", kredit: 590, daysKey: "credit.boost.days14", features: ["credit.boost.allSilver", "credit.boost.prioritySilver", "credit.boost.homepage"] },
+  { tier: "platinum", kredit: 1250, daysKey: "credit.boost.days30", features: ["credit.boost.allGold", "credit.boost.maxPriority", "credit.boost.specialArea"] },
 ];
 
 export default function PremiumPage() {
@@ -85,11 +85,11 @@ export default function PremiumPage() {
                 {p.popular && <div className="plan-ribbon">{t("credit.pk.popular")}</div>}
                 <h3 className="plan-name">{t(p.nameKey)}</h3>
                 <div className="plan-price">
-                  <strong>{p.kredit}</strong>
+                  <strong>{p.credits.toLocaleString("is-IS")}</strong>
                   <span className="plan-unit">{t("credit.pk.kredit")}</span>
                 </div>
                 <div className="credit-price">{p.price} {t("credit.pk.currency")}</div>
-                <div className="credit-per">{p.per} {t("credit.pk.perKredit")}</div>
+                <div className="credit-per">{t(p.descKey)}</div>
                 <Link to={buyPath} className={`btn ${p.popular || p.id === "fyrirtaeki" ? "btn-primary" : "btn-outline"} btn-block`}>{t("credit.pk.buy")}</Link>
               </div>
             ))}
@@ -104,7 +104,7 @@ export default function PremiumPage() {
             <div className="credit-step"><span className="credit-step-n">2</span><h3>{t("credit.slots.s2t")}</h3><p className="muted">{t("credit.slots.s2")}</p></div>
             <div className="credit-step"><span className="credit-step-n">3</span><h3>{t("credit.slots.s3t")}</h3><p className="muted">{t("credit.slots.s3")}</p></div>
           </div>
-          <p className="credit-example"><strong>{t("credit.slots.example")}</strong> · {t("credit.slots.free")} + {t("credit.slots.bought")}</p>
+          <p className="credit-example"><strong>{t("credit.slots.example")}</strong></p>
         </div>
       </section>
 
@@ -120,7 +120,7 @@ export default function PremiumPage() {
               <div key={b.tier} className={`plan-card plan-${b.tier}`}>
                 <h3 className="plan-name">{t(`credit.boost.${b.tier}`)}</h3>
                 <div className="plan-price">
-                  <strong>{b.kredit}</strong>
+                  <strong>{b.kredit.toLocaleString("is-IS")}</strong>
                   <span className="plan-unit">{t("credit.boost.kredit")}</span>
                 </div>
                 <div className="credit-price">{t(b.daysKey)}</div>
