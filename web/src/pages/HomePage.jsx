@@ -9,7 +9,6 @@ export default function HomePage() {
   const { t, lang } = useLang();
   const [categories, setCategories] = useState([]);
   const [platinum, setPlatinum] = useState([]);
-  const [popular, setPopular] = useState([]);
   const [newest, setNewest] = useState([]);
   const catRef = useRef(null);
   const scrollCats = (dir) => {
@@ -26,7 +25,6 @@ export default function HomePage() {
     api.get("/api/home")
       .then((d) => {
         setPlatinum(d.platinum || []);
-        setPopular(d.popular || []);
         setNewest(d.newest || []);
       })
       .catch(() => {});
@@ -88,27 +86,11 @@ export default function HomePage() {
         <section className="section section-flush featured-band">
           <div className="container">
             <div className="section-head">
-              <h2>{t("home.featured")}</h2>
+              <h2>{t("home.popular")}</h2>
               <span className="promo-chip">✦ {t("home.promoted")}</span>
             </div>
             <div className="grid">
               {platinum.map((l) => (
-                <ListingCard key={l.id} listing={l} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {popular.length > 0 && (
-        <section className="section section-flush">
-          <div className="container">
-            <div className="section-head">
-              <h2>{t("home.popular")}</h2>
-              <Link to="/search?sort=views">{t("home.seeAll")}</Link>
-            </div>
-            <div className="grid">
-              {popular.map((l) => (
                 <ListingCard key={l.id} listing={l} />
               ))}
             </div>
