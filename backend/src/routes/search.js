@@ -16,10 +16,21 @@ const SORTS = {
   views: "view_count DESC",
 };
 
-// Paid promotion priority on the default (recommended) view:
-// gold first on category pages, then featured, then platinum, then regular.
-const PROMO_RANK =
-  "CASE promotion_tier WHEN 'platinum' THEN 0 WHEN 'gold' THEN 1 WHEN 'silver' THEN 2 WHEN 'featured' THEN 3 ELSE 4 END";
+// Paid promotion ranking.
+// - On an individual category page: platinum first, then gold, then the rest.
+// - Elsewhere (general search): only platinum is boosted; gold/silver stay inline.
+// Expired promotions never rank.
+const PROMO_RANK_CATEGORY = `CASE
+  WHEN promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until > now()) THEN 0
+  WHEN promotion_tier = 'gold'     AND (promotion_until IS NULL OR promotion_until > now()) THEN 1
+  WHEN promotion_tier = 'silver'   AND (promotion_until IS NULL OR promotion_until > now()) THEN 2
+  WHEN promotion_tier = 'featured' AND (promotion_until IS NULL OR promotion_until > now()) THEN 3
+  ELSE 4
+END`;
+const PROMO_RANK_PLATINUM = `CASE
+  WHEN promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until > now()) THEN 0
+  ELSE 1
+END`;
 
 router.get(
   "/",
@@ -162,8 +173,9 @@ router.get(
            )) AS distance_m`
         : "";
 
-const sortSql = SORTS[sort] || SORTS.recommended;
-    const orderSql = `${PROMO_RANK}, ${sortSql}`;
+    const sortSql = SORTS[sort] || SORTS.recommended;
+    const inCategory = Boolean(category || subcategory);
+    const orderSql = `${inCategory ? PROMO_RANK_CATEGORY : PROMO_RANK_PLATINUM}, ${sortSql}`;
     const countRs = await db.query(
       `SELECT count(*)::int AS total FROM v_listing_search v WHERE ${where.join(" AND ")}`,
       params
