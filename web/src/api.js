@@ -1,5 +1,9 @@
 const BASE = import.meta.env.VITE_API_URL || "";
 
+export function apiBase() {
+  return BASE;
+}
+
 export function getToken() {
   return localStorage.getItem("rento_token") || "";
 }

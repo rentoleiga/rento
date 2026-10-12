@@ -30,11 +30,23 @@ import FaqPage from "./pages/FaqPage";
 import ContactPage from "./pages/ContactPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./store";
+import { trackVisit, startTracking } from "./lib/track";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+function VisitTracker() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    startTracking();
+  }, []);
+  useEffect(() => {
+    trackVisit(pathname);
   }, [pathname]);
   return null;
 }
@@ -48,6 +60,7 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <VisitTracker />
       <Header />
       <main className="main">
         <Routes>

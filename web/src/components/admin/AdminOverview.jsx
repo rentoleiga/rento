@@ -4,10 +4,17 @@ import { fmt, fmtIsk } from "./shared";
 
 export default function AdminOverview() {
   const [o, setO] = useState(null);
+  const [vis, setVis] = useState(null);
   const [error, setError] = useState("");
+
+  const loadVisitors = () =>
+    api.get("/api/admin/visitors").then(setVis).catch(() => {});
 
   useEffect(() => {
     api.get("/api/admin/overview").then(setO).catch((e) => setError(e.message));
+    loadVisitors();
+    const t = setInterval(loadVisitors, 60000);
+    return () => clearInterval(t);
   }, []);
 
   if (error) return <div className="form-error">{error}</div>;
@@ -15,9 +22,57 @@ export default function AdminOverview() {
 
   const bookingsActive = (o.bookings.byStatus.active || 0) + (o.bookings.byStatus.approved || 0);
   const maxReg = Math.max(1, ...o.registrations.map((r) => r.n));
+  const maxVis = Math.max(1, ...(vis?.series || []).map((r) => r.visitors));
 
   return (
     <>
+      <div className="card" style={{ padding: 18, marginBottom: 18 }}>
+        <div className="row" style={{ justifyContent: "space-between", alignItems: "baseline" }}>
+          <h2 style={{ fontSize: 17, marginTop: 0 }}>Visitors</h2>
+          <span className="muted" style={{ fontSize: 12 }}>
+            {vis ? "auto-refresh every 60s" : "loading…"}
+          </span>
+        </div>
+        <div className="dash-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
+          <div className="stat-card">
+            <div className="stat-num">{vis ? fmt(vis.online) : "—"}</div>
+            <div className="stat-label">Online now</div>
+            <div className="muted" style={{ fontSize: 12 }}>last 5 minutes</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-num">{vis ? fmt(vis.today) : "—"}</div>
+            <div className="stat-label">Today</div>
+            <div className="muted" style={{ fontSize: 12 }}>
+              {vis ? `${fmt(vis.views_today)} page views` : ""}
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-num">{vis ? fmt(vis.week) : "—"}</div>
+            <div className="stat-label">Last 7 days</div>
+            <div className="muted" style={{ fontSize: 12 }}>
+              {vis ? `${fmt(vis.views_week)} page views` : ""}
+            </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-num">{vis ? fmt(vis.month) : "—"}</div>
+            <div className="stat-label">Last 30 days</div>
+            <div className="muted" style={{ fontSize: 12 }}>
+              {vis ? `${fmt(vis.views_month)} page views` : ""}
+            </div>
+          </div>
+        </div>
+        {vis && vis.series.length > 0 && (
+          <div className="admin-bars" style={{ marginTop: 14 }}>
+            {vis.series.map((r) => (
+              <div key={r.day} className="admin-bar" title={`${r.day}: ${r.visitors} visitors / ${r.views} views`}>
+                <div className="admin-bar-fill" style={{ height: `${Math.max(6, (r.visitors / maxVis) * 100)}%` }} />
+                <span>{r.visitors}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="dash-grid">
         <div className="stat-card">
           <div className="stat-num">{fmt(o.users.total)}</div>

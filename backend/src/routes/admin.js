@@ -822,4 +822,37 @@ router.get(
   })
 );
 
+// GET /api/admin/visitors -> visitor counters for the overview tab.
+// "online" = distinct sessions seen in the last 5 minutes (client heartbeats
+// every 60s while the tab is open).
+router.get(
+  "/visitors",
+  asyncHandler(async (req, res) => {
+    const [counts, series] = await Promise.all([
+      db.query(
+        `SELECT
+           count(DISTINCT session_id) FILTER (WHERE created_at > now() - interval '5 minutes')::int AS online,
+           count(DISTINCT session_id) FILTER (WHERE created_at >= date_trunc('day', now()))::int AS today,
+           count(DISTINCT session_id) FILTER (WHERE created_at > now() - interval '7 days')::int AS week,
+           count(DISTINCT session_id) FILTER (WHERE created_at > now() - interval '30 days')::int AS month,
+           count(*) FILTER (WHERE created_at >= date_trunc('day', now()))::int AS views_today,
+           count(*) FILTER (WHERE created_at > now() - interval '7 days')::int AS views_week,
+           count(*) FILTER (WHERE created_at > now() - interval '30 days')::int AS views_month,
+           count(DISTINCT session_id)::int AS total_sessions
+         FROM page_visits`
+      ),
+      db.query(
+        `SELECT to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS day,
+                count(DISTINCT session_id)::int AS visitors,
+                count(*)::int AS views
+         FROM page_visits
+         WHERE created_at > now() - interval '30 days'
+         GROUP BY 1 ORDER BY 1`
+      ),
+    ]);
+
+    res.json({ ...counts.rows[0], series: series.rows });
+  })
+);
+
 module.exports = router;

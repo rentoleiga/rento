@@ -37,6 +37,7 @@ app.use("/api/home", require("./routes/home"));
 app.use("/api/estimate", require("./routes/estimate"));
 app.use("/api/credits", require("./routes/credits"));
 app.use("/api/contact", require("./routes/contact"));
+app.use("/api/track", require("./routes/track"));
 app.use("/api/admin", require("./routes/admin"));
 
 app.use(notFound);

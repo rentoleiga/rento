@@ -111,6 +111,18 @@ async function applyMigrations() {
       );
       CREATE INDEX IF NOT EXISTS idx_credit_alerts_status ON credit_alerts (status, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_credit_alerts_rule   ON credit_alerts (rule);
+
+      CREATE TABLE IF NOT EXISTS page_visits (
+        id         SERIAL PRIMARY KEY,
+        session_id VARCHAR(64)  NOT NULL,
+        path       VARCHAR(300) NOT NULL DEFAULT '/',
+        user_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        ip         VARCHAR(60),
+        user_agent VARCHAR(300) NOT NULL DEFAULT '',
+        created_at TIMESTAMPTZ  NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_page_visits_created ON page_visits (created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_page_visits_session ON page_visits (session_id, created_at DESC);
     `);
     console.log("Incremental migrations applied.");
 
