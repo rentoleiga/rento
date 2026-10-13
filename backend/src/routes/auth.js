@@ -7,6 +7,7 @@ const config = require("../config");
 const { signToken, authRequired, optionalAuth } = require("../middleware/auth");
 const { asyncHandler, validate, err } = require("../middleware/http");
 const { publicUser, slugify } = require("../utils/helpers");
+const { logAdminAction } = require("../utils/adminLog");
 
 const router = Router();
 
@@ -39,6 +40,11 @@ const verifySchema = z.object({
   phoneVerified: z.boolean().optional(),
   identityVerified: z.boolean().optional(),
   businessVerified: z.boolean().optional(),
+});
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().default(""),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 router.post(
@@ -239,6 +245,41 @@ router.put(
       vals
     );
     res.json({ user: { ...publicUser(rows[0]), phone: rows[0].phone || "" } });
+  })
+);
+
+// Change password. Google-only accounts (password_hash = '') may set one
+// without knowing a current password.
+router.put(
+  "/me/password",
+  authRequired,
+  validate(changePasswordSchema),
+  asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const { rows } = await db.query(
+      "SELECT id, password_hash FROM users WHERE id = $1",
+      [req.user.id]
+    );
+    const hash = rows[0].password_hash || "";
+    if (hash) {
+      if (!currentPassword) throw err("Current password is required", 400);
+      const ok = await bcrypt.compare(currentPassword, hash);
+      if (!ok) throw err("Current password is incorrect", 403);
+    }
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await db.query(
+      "UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2",
+      [newHash, req.user.id]
+    );
+    await logAdminAction({
+      adminId: null,
+      action: "user.password_change",
+      targetType: "user",
+      targetId: req.user.id,
+      data: { set: !hash },
+      ip: req.ip,
+    });
+    res.json({ ok: true, hasPassword: true });
   })
 );
 

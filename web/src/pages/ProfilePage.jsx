@@ -24,6 +24,11 @@ export default function ProfilePage() {
   const [eform, setEform] = useState({ firstName: "", lastName: "", city: "", phone: "", bio: "", avatar: "" });
   const [saving, setSaving] = useState(false);
   const [editError, setEditError] = useState("");
+  const [pwOpen, setPwOpen] = useState(false);
+  const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
+  const [pwError, setPwError] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwDone, setPwDone] = useState(false);
 
   useEffect(() => {
     api.get(`/api/users/${id}`)
@@ -83,6 +88,39 @@ export default function ProfilePage() {
       setSaving(false);
     }
   };
+  const openPw = () => {
+    setPwForm({ current: "", next: "", confirm: "" });
+    setPwError("");
+    setPwDone(false);
+    setPwOpen(true);
+  };
+
+  const savePw = async () => {
+    const hasPw = user?.hasPassword !== false;
+    if (hasPw && !pwForm.current) { setPwError("Sláðu inn núverandi lykilorð."); return; }
+    if (pwForm.next.length < 8) { setPwError("Nýtt lykilorð verður að vera a.m.k. 8 stafir."); return; }
+    if (pwForm.next !== pwForm.confirm) { setPwError("Nýju lykilorðin passa ekki saman."); return; }
+    setPwSaving(true);
+    setPwError("");
+    try {
+      const d = await api.put("/api/auth/me/password", {
+        currentPassword: pwForm.current,
+        newPassword: pwForm.next,
+      });
+      setUser({ ...user, hasPassword: d.hasPassword });
+      setPwDone(true);
+      setPwForm({ current: "", next: "", confirm: "" });
+    } catch (err) {
+      setPwError(
+        err.status === 403
+          ? "Núverandi lykilorð er rangt."
+          : err.message
+      );
+    } finally {
+      setPwSaving(false);
+    }
+  };
+
   const startMessage = (listing) => {
     if (!user) {
       navigate("/login");
@@ -137,9 +175,14 @@ export default function ProfilePage() {
             </button>
           )}
           {isOwn && (
-            <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={openEdit}>
-              Breyta prófíl
-            </button>
+            <div className="row" style={{ gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+              <button className="btn btn-outline" onClick={openEdit}>
+                Breyta prófíl
+              </button>
+              <button className="btn btn-outline" onClick={openPw}>
+                Breyta lykilorði
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -217,6 +260,53 @@ export default function ProfilePage() {
               <button className="btn btn-primary" disabled={saving} onClick={saveEdit}>
                 {saving ? "Vista…" : "Vista"}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {pwOpen && (
+        <div className="modal-overlay" onClick={() => setPwOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ marginTop: 0 }}>Breyta lykilorði</h3>
+            {user?.hasPassword === false && (
+              <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>
+                Núverandi lykilorð vantar — þú skráðir þig inn með Google. Stilltu hér lykilorð til að geta skráð þig inn með netfangi og lykilorði.
+              </p>
+            )}
+            {pwError && <div className="form-error">{pwError}</div>}
+            {pwDone ? (
+              <div className="form-success" style={{ marginBottom: 12 }}>Lykilorðið hefur verið breytt.</div>
+            ) : (
+              <>
+                {user?.hasPassword !== false && (
+                  <div className="field">
+                    <label>Núverandi lykilorð</label>
+                    <input type="password" autoComplete="current-password" value={pwForm.current}
+                      onChange={(e) => setPwForm({ ...pwForm, current: e.target.value })} />
+                  </div>
+                )}
+                <div className="field">
+                  <label>Nýtt lykilorð (að lágm. 8 stafi)</label>
+                  <input type="password" autoComplete="new-password" value={pwForm.next}
+                    onChange={(e) => setPwForm({ ...pwForm, next: e.target.value })} />
+                </div>
+                <div className="field">
+                  <label>Endurtaka nýtt lykilorð</label>
+                  <input type="password" autoComplete="new-password" value={pwForm.confirm}
+                    onChange={(e) => setPwForm({ ...pwForm, confirm: e.target.value })} />
+                </div>
+              </>
+            )}
+            <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+              <button className="btn btn-outline" onClick={() => setPwOpen(false)}>
+                {pwDone ? "Loka" : "Hætta við"}
+              </button>
+              {!pwDone && (
+                <button className="btn btn-primary" disabled={pwSaving} onClick={savePw}>
+                  {pwSaving ? "Vista…" : "Vista nýtt lykilorð"}
+                </button>
+              )}
             </div>
           </div>
         </div>

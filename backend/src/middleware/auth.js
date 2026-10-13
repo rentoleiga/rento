@@ -16,7 +16,7 @@ async function loadUser(req) {
     const payload = jwt.verify(token, config.jwtSecret);
     const { rows } = await db.query(
       `SELECT id, email, first_name, last_name, avatar, bio, city, phone,
-              language, currency_pref, role,
+              language, currency_pref, role, password_hash,
               renter_enabled, owner_enabled, business_account,
               email_verified, phone_verified, identity_verified,
               business_verified, listing_verified,

@@ -43,6 +43,7 @@ function publicUser(u) {
     creditBalance: u.credit_balance === undefined ? 0 : u.credit_balance,
     extraSlots: u.extra_slots === undefined ? 0 : u.extra_slots,
     memberSince: u.created_at,
+    hasPassword: !!u.password_hash,
   };
 }
 
