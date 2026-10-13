@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext } from "react";
+﻿import React, { createContext, useCallback, useContext } from "react";
 
 const messages = {
   en: {
@@ -295,7 +295,6 @@ const messages = {
     "calc.yourEstimate": "Your estimate",
     "calc.netMonthly": "Net per month",
     "calc.grossMonthly": "Gross per month",
-    "calc.platformFee": "Platform fee ({pct}%)",
     "calc.netYearly": "Net per year",
     "calc.estBookings": "Est. bookings / month",
     "calc.startListing": "Start listing this",
@@ -320,7 +319,7 @@ const messages = {
     "terms.s3.title": "3. Rental Agreements",
     "terms.s3.text": "Rental agreements are between the owner and the renter. Rento is not a party to agreements and is not liable for damage, loss, or disputes. Payments go through Rento, but debts and rights are between the parties.",
     "terms.s4.title": "4. Payments & Fees",
-    "terms.s4.text": "All payments go through secure payment methods. Rento charges a 10% service fee on each rental. The fee is deducted from the payment to the owner.",
+    "terms.s4.text": "All payments go through secure payment methods. Rento does not charge the owner a commission — the full rental payment goes to the owner.",
     "terms.s5.title": "5. Cancellations",
     "terms.s5.text": "Cancellation policies are defined in each listing. If the owner has not defined a policy, Rento's standard cancellation policy applies.",
     "terms.s6.title": "6. Deposits & Insurance",
@@ -418,7 +417,7 @@ const messages = {
     "faq.q1": "How does Rento work?",
     "faq.a1": "Rento connects people who have things with people who need them. Browse listings, book what you need, pick it up, use it, and return it. Simple and secure.",
     "faq.q2": "How do payments work?",
-    "faq.a2": "All payments go through Rento's secure system. The renter pays when booking, and the owner receives payment after the rental is confirmed. Rento charges a 10% service fee.",
+    "faq.a2": "All payments go through Rento's secure system. The renter pays when booking, and the owner receives the full payment after the rental is confirmed — Rento charges no commission.",
     "faq.q3": "What if something is damaged?",
     "faq.a3": "Check the listing's cancellation and deposit rules. Contact the owner first, then Rento support if needed. A security deposit may cover repair costs.",
     "faq.q4": "How do I list my own items?",
@@ -736,7 +735,6 @@ const messages = {
     "calc.yourEstimate": "Áætlun þín",
     "calc.netMonthly": "Hreint á mánuði",
     "calc.grossMonthly": "Brúttó á mánuði",
-    "calc.platformFee": "Gjald vettvangs ({pct}%)",
     "calc.netYearly": "Hreint á ári",
     "calc.estBookings": "Áætl. bókanir / mánuður",
     "calc.startListing": "Byrjaðu að skrá þetta",
@@ -761,7 +759,7 @@ const messages = {
     "terms.s3.title": "3. Leigusamningar",
     "terms.s3.text": "Leigusamningar eru milli eiganda og leigjanda. Rento er ekki aðili samninga og ber ekki ábyrgð á skemmdum, tapi eða ágreiningi. Greiðslur fara í gegnum Rento en skuldir og réttindi eru á milli aðila.",
     "terms.s4.title": "4. Greiðslur og gjöld",
-    "terms.s4.text": "Allar greiðslur fara í gegnum öruggar greiðsluleiðir. Rento leggur 10% þjónustugjald á hverja leigu. Gjaldið er dregið af greiðslunni til eigandans.",
+    "terms.s4.text": "Allar greiðslur fara í gegnum öruggar greiðsluleiðir. Rento tekur enga þjónustugjöld af leigu — greiðslan til eiganda er í heild sinni hans.",
     "terms.s5.title": "5. Afbókanir",
     "terms.s5.text": "Afbókunarreglur eru skilgreindar í hverri skráningu. Ef eigandinn hefur ekki skilgreint reglu gildir staðlað afbókunarregla Rento.",
     "terms.s6.title": "6. Tryggingar og trygging",
@@ -859,7 +857,7 @@ const messages = {
     "faq.q1": "Hvernig virkar Rento?",
     "faq.a1": "Rento tengir fólk sem á hluti við fólk sem þarfnast þeirra. Skoðaðu skráningar, bókaðu það sem þú þarft, sæktu það, notaðu það og skilaðu því. Einfalt og öruggt.",
     "faq.q2": "Hvernig virka greiðslur?",
-    "faq.a2": "Allar greiðslur fara í gegnum öruggt kerfi Rento. Leigjandinn greiðir við bókun og eigandinn fær greiðsluna eftir að leigan er staðfest. Rento leggur 10% þjónustugjald á.",
+    "faq.a2": "Allar greiðslur fara í gegnum öruggt kerfi Rento. Leigjandinn greiðir við bókun og eigandinn fær greiðsluna í heild sinni eftir að leigan er staðfest. Rento tekur enga þjónustugjöld.",
     "faq.q3": "Hvað ef eitthvað skemmist?",
     "faq.a3": "Skoðaðu afbókunar- og tryggingarreglur auglýsingarinnar. Hafðu fyrst samband við eigandann, síðan við Rento þjónustu ef þarf. Tryggingagjald getur þekkt viðgerðarkostnað.",
     "faq.q4": "Hvernig skrái ég mína hluti?",

@@ -71,7 +71,7 @@ export default function HowItWorksPage() {
             </div>
             <div className="card how-info-card">
               <h4>Hvað kostar Rentó?</h4>
-              <p>Rento leggur 10% þjónustugjald á hverja leigu. Gjaldið er dregið af greiðslu til eiganda.</p>
+              <p>Rento tekur enga þjónustugjöld af leigu. Sá hluti sem þú færð greiddan er þinn að fullu — tekjurnar eru þínar.</p>
             </div>
           </div>
         </div>

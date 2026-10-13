@@ -103,7 +103,7 @@ router.get(
 
     res.json({
       currency: "ISK",
-      platformFeePct: 10,
+      platformFeePct: 0,
       defaultDaysPerMonth: 22,
       categories: Array.from(byCat.values()),
       subcategories: subcats,

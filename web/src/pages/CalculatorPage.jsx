@@ -53,9 +53,7 @@ export default function CalculatorPage() {
   };
 
   const grossMonthly = Math.round(price * days * (occupancy / 100));
-  const feePct = data?.platformFeePct ?? 10;
-  const fee = Math.round(grossMonthly * (feePct / 100));
-  const netMonthly = grossMonthly - fee;
+  const netMonthly = grossMonthly;
   const netYearly = netMonthly * 12;
   const estBookings = Math.max(0, Math.round((days * (occupancy / 100)) / AVG_RENTAL_DAYS));
 
@@ -156,14 +154,6 @@ export default function CalculatorPage() {
               <strong>{formatPrice(netMonthly)}</strong>
             </div>
             <ul className="result-lines">
-              <li>
-                <span>{t("calc.grossMonthly")}</span>
-                <span>{formatPrice(grossMonthly)}</span>
-              </li>
-              <li>
-                <span>{t("calc.platformFee").replace("{pct}", feePct)}</span>
-                <span>-{formatPrice(fee)}</span>
-              </li>
               <li className="strong">
                 <span>{t("calc.netYearly")}</span>
                 <span>{formatPrice(netYearly)}</span>
@@ -176,7 +166,7 @@ export default function CalculatorPage() {
             <Link to="/dashboard/listings/new" className="btn btn-primary btn-block">
               {t("calc.startListing")}
             </Link>
-            <p className="muted" style={{ fontSize: 12, marginTop: 12, textAlign: "center" }}>Engin falin gjöld · Greiðslur í gegnum Rentó · 10% þjónustugjald</p>
+            <p className="muted" style={{ fontSize: 12, marginTop: 12, textAlign: "center" }}>Engin falin gjöld · Greiðslur í gegnum Rentó · Engin þjónustugjald</p>
           </div>
         </div>
         </div>
