@@ -1770,6 +1770,14 @@ a:hover {
   font-size: 14px;
   margin-bottom: 14px;
 }
+.form-success {
+  background: #e3efe6;
+  color: #245c3d;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
 .link-switch {
   text-align: center;
   margin-top: 16px;
