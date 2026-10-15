@@ -57,6 +57,19 @@ const LABELS = {
   minAge: "Lágmarksaldur",
 };
 
+const VIS_TIERS = [
+  { key: "none", label: "Staðlaður", price: "Ókeypis", sub: "Venjulegur sýnileiki í leit" },
+  { key: "silver", label: "Silfur", price: "150 kredit", sub: "7 dagar efst í flokki" },
+  { key: "gold", label: "Gull", price: "590 kredit", sub: "14 daga efst í flokki" },
+  { key: "platinum", label: "Platína", price: "1250 kredit", sub: "30 daga efst í öllum leitum" },
+];
+
+const VIS_ADDONS = [
+  { key: "highlight", label: "Áberandi auglýsing", price: 90, sub: "Litræn áhersla í leitarniðurstöðum" },
+  { key: "link", label: "Tengill á skráningu", price: 60, sub: "Smellanlegur tengill (vefsíða, bókun…)", url: true },
+  { key: "video", label: "Myndband", price: 120, sub: "YouTube myndband í skráningunni", url: true },
+];
+
 function msg(field, text) {
   return `${LABELS[field] || field}: ${text}`;
 }
@@ -110,6 +123,10 @@ export default function ListingFormPage() {
   const [fieldOk, setFieldOk] = useState({});
   const [doneSteps, setDoneSteps] = useState({});
   const [errorSteps, setErrorSteps] = useState({});
+  const [visTier, setVisTier] = useState("none");
+  const [visAddons, setVisAddons] = useState({ highlight: false, link: false, video: false });
+  const [visUrls, setVisUrls] = useState({ link: "", video: "" });
+  const [visError, setVisError] = useState("");
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const num = (k, v) => set(k, v === "" ? null : Number(v));
@@ -303,6 +320,15 @@ export default function ListingFormPage() {
       setBusy(false);
       return;
     }
+    if (!id && publish && visTier !== "none") {
+      const missing = VIS_ADDONS.filter((a) => a.url && visAddons[a.key] && !visUrls[a.key].trim());
+      if (missing.length) {
+        setVisError(`Sláðu inn slóð fyrir: ${missing.map((m) => m.label).join(", ")}`);
+        setBusy(false);
+        return;
+      }
+    }
+    setVisError("");
     const attrs = {};
     attrRows.filter((r) => r.k.trim()).forEach((r) => (attrs[r.k.trim()] = r.v));
     const payload = {
@@ -320,9 +346,34 @@ export default function ListingFormPage() {
       else payload[k] = Number(v);
     });
     try {
-      if (id) await api.put(`/api/listings/${id}`, payload);
-      else await api.post("/api/listings", payload);
-      setNotice(`${publish ? "Skráning birt" : "Skráning vistuð sem drög"}!`);
+      let promoNote = "";
+      if (id) {
+        await api.put(`/api/listings/${id}`, payload);
+      } else {
+        const created = await api.post("/api/listings", payload);
+        if (publish && visTier !== "none") {
+          try {
+            const boostRes = await api.post("/api/credits/boost", {
+              listingId: created.listing.id,
+              tier: visTier,
+            });
+            if (boostRes.golden) promoNote = " Gyllt uppgradering!";
+            const addonBody = { listingId: created.listing.id };
+            let addonWant = false;
+            VIS_ADDONS.forEach((a) => {
+              if (visAddons[a.key]) {
+                addonWant = true;
+                addonBody[a.key] = true;
+                if (a.url) addonBody[`${a.key}Url`] = visUrls[a.key].trim();
+              }
+            });
+            if (addonWant) await api.post("/api/credits/addons", addonBody);
+          } catch (pe) {
+            promoNote = ` Kynning tókst ekki: ${pe.message}`;
+          }
+        }
+      }
+      setNotice(`${publish ? "Skráning birt" : "Skráning vistuð sem drög"}!${promoNote}`);
       setTimeout(() => navigate("/dashboard/listings"), 1200);
     } catch (e) {
       if (e.data?.details?.length) {
@@ -642,6 +693,56 @@ export default function ListingFormPage() {
             <p className="muted mb0" style={{ marginTop: 4 }}>📦 {pickupMode === "pickup" ? "Aðeins sótt" : pickupMode === "delivery" ? "Ég afhendi" : "Bæði"}</p>
             {form.phone ? <p className="muted mb0" style={{ marginTop: 4 }}>📞 {form.phone}</p> : null}
           </div>
+          {!id && (
+            <div className="review-card">
+              <div className="review-head"><span>⭐ Sýnileiki og kynning</span></div>
+              <p className="muted" style={{ marginTop: 0, fontSize: 13 }}>
+                Kynning er virkjuð við birtingu og skrifast á Rentó kredit. Staðlaður sýnileiki er ókeypis.
+              </p>
+              <div className="promo-tiers" style={{ margin: "8px 0 4px" }}>
+                {VIS_TIERS.map((t) => (
+                  <button
+                    key={t.key}
+                    type="button"
+                    className={`promo-opt ${visTier === t.key ? "active" : ""}`}
+                    onClick={() => setVisTier(t.key)}
+                  >
+                    <strong>{t.label}</strong>
+                    <span className="muted">{t.price}</span>
+                    <span className="muted">{t.sub}</span>
+                  </button>
+                ))}
+              </div>
+              {visTier !== "none" && (
+                <div className="vis-addons">
+                  <small className="muted">Viðbætur — virka meðan kynningin stendur</small>
+                  {VIS_ADDONS.map((a) => (
+                    <div key={a.key} className="vis-addon">
+                      <label className="row" style={{ cursor: "pointer", gap: 8, margin: 0 }}>
+                        <input
+                          type="checkbox"
+                          checked={!!visAddons[a.key]}
+                          onChange={(e) => setVisAddons((s) => ({ ...s, [a.key]: e.target.checked }))}
+                        />
+                        <span><strong>{a.label}</strong> <span className="muted">· {a.price} kredit</span></span>
+                      </label>
+                      <span className="muted" style={{ display: "block", fontSize: 12, marginLeft: 26 }}>{a.sub}</span>
+                      {a.url && visAddons[a.key] && (
+                        <input
+                          type="url"
+                          style={{ marginTop: 6, marginLeft: 26, width: "calc(100% - 26px)" }}
+                          placeholder="https://…"
+                          value={visUrls[a.key]}
+                          onChange={(e) => setVisUrls((s) => ({ ...s, [a.key]: e.target.value }))}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {visError && <p className="field-msg" style={{ color: "#b3261e", marginBottom: 0 }}>{visError}</p>}
+            </div>
+          )}
           <div className="tip-box tip-success">
             <strong>✓ Skráning tilbúin til birtingar</strong>
             <p className="mb0">Smelltu á „Birta skráningu“ til að gera búnaðinn þinn sýnilegan öllum.</p>

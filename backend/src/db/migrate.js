@@ -123,8 +123,42 @@ async function applyMigrations() {
       );
       CREATE INDEX IF NOT EXISTS idx_page_visits_created ON page_visits (created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_page_visits_session ON page_visits (session_id, created_at DESC);
+
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS golden_until    TIMESTAMPTZ;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_highlight BOOLEAN NOT NULL DEFAULT FALSE;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_link      TEXT;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_video     TEXT;
+      CREATE INDEX IF NOT EXISTS idx_listings_golden ON listings (golden_until) WHERE golden_until IS NOT NULL;
     `);
     console.log("Incremental migrations applied.");
+
+    // v_listing_search selects l.* - recreate it so listings columns added above
+    // after the first deploy become visible to search/home routes.
+    await db.query(`
+      DROP VIEW IF EXISTS v_listing_search;
+      CREATE OR REPLACE VIEW v_listing_search AS
+      SELECT
+        l.*,
+        c.slug AS category_slug,
+        COALESCE(ct.name, '') AS category_name,
+        sub.slug AS subcategory_slug,
+        COALESCE(st.name, '') AS subcategory_name,
+        u.first_name AS owner_first_name,
+        u.last_name  AS owner_last_name,
+        u.avatar     AS owner_avatar,
+        u.rating     AS owner_rating,
+        u.identity_verified AS owner_identity_verified,
+        (0.5 * COALESCE(l.rating,0) + 0.5) * LEAST(1, 1 + l.review_count) AS sort_recommended
+      FROM listings l
+      LEFT JOIN categories c ON c.id = l.category_id
+      LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'en'
+      LEFT JOIN categories sub ON sub.id = l.subcategory_id
+      LEFT JOIN category_translations st ON st.category_id = sub.id AND st.language = 'en'
+      LEFT JOIN users u ON u.id = l.owner_id
+      WHERE l.status = 'published' AND l.verification_status IN ('approved','verified')
+      GROUP BY l.id, c.slug, ct.name, sub.slug, st.name, u.first_name, u.last_name, u.avatar, u.rating, u.identity_verified;
+    `);
+    console.log("v_listing_search recreated.");
 
     // One-time refresh of demo promotions so the boost rules are visible.
     const ins = await db.query(

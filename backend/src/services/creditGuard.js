@@ -163,12 +163,12 @@ async function scan() {
       }))
     );
 
-    // 7. a boost charged to someone who does not own the listing
+    // 7. a listing-tied charge (boost / renewal / add-on) made by someone who does not own the listing
     const foreign = await client.query(
       `SELECT c.id, c.user_id, c.listing_id, c.amount, c.ip, l.owner_id
        FROM credit_transactions c
        JOIN listings l ON l.id = c.listing_id
-       WHERE c.type = 'boost' AND l.owner_id <> c.user_id`
+       WHERE c.type IN ('boost','renew','addon') AND l.owner_id <> c.user_id`
     );
     created += await insertAlerts(
       client,

@@ -69,6 +69,10 @@ function publicListing(row, opts = {}) {
     featured: !!row.featured,
     promotionTier: row.promotion_tier,
     promotionUntil: row.promotion_until,
+    goldenUntil: row.golden_until,
+    addonHighlight: !!row.addon_highlight,
+    addonLink: row.addon_link || null,
+    addonVideo: row.addon_video || null,
     isFavorite:
       opts.isFavorite !== undefined ? !!opts.isFavorite : row.is_favorite === true,
     rentedCount: row.rented_count ? Number(row.rented_count) : 0,

@@ -896,6 +896,17 @@ a:hover {
   background: linear-gradient(135deg, #9e6b5a, #dea193);
   border: 1px solid #e8c4b0;
 }
+.badge-golden {
+  background: linear-gradient(135deg, #8a6d0b, #ffd700);
+  color: #2b2200;
+  border: 1px solid #ffeaa0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.badge-hl {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  border: 1px solid #bfdbfe;
+}
 .badge-featured {
   background: linear-gradient(135deg, #c75d3e, #e08a67);
 }
@@ -1003,6 +1014,56 @@ a:hover {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+.promo-subhead {
+  width: 100%;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.promo-addons {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vis-addons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+.vis-addon {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+}
+.vis-addon input[type="url"] {
+  font-family: inherit;
+}
+.listing-card-hl {
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+.addon-video {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+.addon-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 .title .badge {
   margin-left: 8px;

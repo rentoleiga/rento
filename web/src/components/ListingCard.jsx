@@ -41,9 +41,13 @@ export default function ListingCard({ listing }) {
 
   const tier = listing.promotionTier && listing.promotionTier !== "none" ? listing.promotionTier : null;
   const tierClass = tier === "featured" ? "silver" : tier;
+  const promoActive = !listing.promotionUntil || new Date(listing.promotionUntil).getTime() > Date.now();
+  const goldenActive = !!listing.goldenUntil && new Date(listing.goldenUntil).getTime() > Date.now();
+  const hlActive = !!listing.addonHighlight && promoActive && !goldenActive;
+  const showTier = tier && promoActive;
 
   return (
-    <Link to={`/listing/${listing.slug}`} className="card listing-card">
+    <Link to={`/listing/${listing.slug}`} className={`card listing-card${hlActive ? " listing-card-hl" : ""}`}>
       <div className="card-img-wrap">
         {listing.mainImage ? (
           <img src={listing.mainImage} alt={listing.title} loading="lazy" />
@@ -54,7 +58,8 @@ export default function ListingCard({ listing }) {
           {listing.verificationStatus === "verified" && (
             <span className="badge badge-verified">Staðfest</span>
           )}
-          {tier && <span className={`badge badge-tier badge-${tierClass}`}>{TIER_BADGE[tier]}</span>}
+          {goldenActive && <span className="badge badge-golden">Gyllt</span>}
+          {!goldenActive && showTier && <span className={`badge badge-tier badge-${tierClass}`}>{TIER_BADGE[tier]}</span>}
         </div>
         <button
           type="button"

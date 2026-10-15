@@ -138,6 +138,21 @@ export default function PremiumPage() {
         </div>
       </section>
 
+      {/* Extra services: renew / add-ons / golden */}
+      <section className="section">
+        <div className="container">
+          <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+            <h2>{t("credit.extra.title")}</h2>
+            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 720 }}>{t("credit.extra.sub")}</p>
+          </div>
+          <div className="perks-grid" style={{ marginTop: 24 }}>
+            <div className="perk-card"><div className="perk-icon">🔁</div><h3>{t("credit.extra.renew.title")}</h3><p className="muted">{t("credit.extra.renew.text")}</p></div>
+            <div className="perk-card"><div className="perk-icon">🧩</div><h3>{t("credit.extra.addons.title")}</h3><p className="muted">{t("credit.extra.addons.text")}</p></div>
+            <div className="perk-card"><div className="perk-icon">✨</div><h3>{t("credit.extra.golden.title")}</h3><p className="muted">{t("credit.extra.golden.text")}</p></div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="section">
         <div className="container">

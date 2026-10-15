@@ -67,8 +67,8 @@ function Credits() {
   const boost = () =>
     run("boost", async () => {
       if (!selectedListing) throw new Error("Veldu auglýsingu");
-      await api.post("/api/credits/boost", { listingId: Number(selectedListing), tier });
-      setMsg(t("credit.dash.boosted"));
+      const res = await api.post("/api/credits/boost", { listingId: Number(selectedListing), tier });
+      setMsg(res.golden ? t("credit.dash.boostedGolden") : t("credit.dash.boosted"));
     });
 
   const balance = data?.balance ?? 0;
@@ -159,6 +159,11 @@ function Credits() {
             </button>
           </div>
           <p className="muted" style={{ margin: 0 }}>{t("credit.boostPage.sub")}</p>
+          <p className="muted" style={{ margin: "8px 0 0", fontSize: 13 }}>
+            {t("credit.dash.goldenProgress")
+              .replace("{n}", String(data?.recentBoosts ?? 0))
+              .replace("{max}", String(data?.goldenRequired ?? 10))}
+          </p>
         </div>
 
         <h2 style={{ fontSize: 19, marginTop: 40 }}>{t("credit.dash.history")}</h2>

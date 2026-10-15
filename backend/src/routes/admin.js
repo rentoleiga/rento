@@ -523,7 +523,7 @@ router.get(
     const type = String(req.query.type || "").trim();
     const conds = [];
     const params = [];
-    if (["purchase", "slot", "boost", "adjustment"].includes(type)) {
+    if (["purchase", "slot", "boost", "renew", "addon", "adjustment"].includes(type)) {
       params.push(type);
       conds.push(`c.type = $${params.length}`);
     }

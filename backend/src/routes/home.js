@@ -29,17 +29,21 @@ router.get(
       db.query(
         `SELECT v.*
          FROM v_listing_search v
-         WHERE v.promotion_tier = 'platinum'
-           AND v.promotion_until IS NOT NULL
-           AND v.promotion_until > now()
-         ORDER BY v.rating DESC, v.review_count DESC
+         WHERE (v.promotion_tier = 'platinum'
+                AND v.promotion_until IS NOT NULL
+                AND v.promotion_until > now())
+            OR (v.golden_until IS NOT NULL AND v.golden_until > now())
+         ORDER BY (CASE WHEN v.golden_until IS NOT NULL AND v.golden_until > now() THEN 0 ELSE 1 END),
+                  v.rating DESC, v.review_count DESC
          LIMIT 8`
       ),
       db.query(
         `SELECT v.*
          FROM v_listing_search v
          WHERE v.promotion_tier = 'platinum'
-         ORDER BY v.rating DESC, v.review_count DESC
+            OR (v.golden_until IS NOT NULL AND v.golden_until > now())
+         ORDER BY (CASE WHEN v.golden_until IS NOT NULL AND v.golden_until > now() THEN 0 ELSE 1 END),
+                  v.rating DESC, v.review_count DESC
          LIMIT 8`
       ),
       db.query(

@@ -17,19 +17,22 @@ const SORTS = {
 };
 
 // Paid promotion ranking.
+// - Golden upgrade (free after 10 boosts in 30 days) outranks everything.
 // - On an individual category page: platinum first, then gold, then the rest.
 // - Elsewhere (general search): only platinum is boosted; gold/silver stay inline.
 // Expired promotions never rank.
 const PROMO_RANK_CATEGORY = `CASE
-  WHEN promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until > now()) THEN 0
-  WHEN promotion_tier = 'gold'     AND (promotion_until IS NULL OR promotion_until > now()) THEN 1
-  WHEN promotion_tier = 'silver'   AND (promotion_until IS NULL OR promotion_until > now()) THEN 2
-  WHEN promotion_tier = 'featured' AND (promotion_until IS NULL OR promotion_until > now()) THEN 3
-  ELSE 4
+  WHEN golden_until IS NOT NULL AND golden_until > now() THEN 0
+  WHEN promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until > now()) THEN 1
+  WHEN promotion_tier = 'gold'     AND (promotion_until IS NULL OR promotion_until > now()) THEN 2
+  WHEN promotion_tier = 'silver'   AND (promotion_until IS NULL OR promotion_until > now()) THEN 3
+  WHEN promotion_tier = 'featured' AND (promotion_until IS NULL OR promotion_until > now()) THEN 4
+  ELSE 5
 END`;
 const PROMO_RANK_PLATINUM = `CASE
-  WHEN promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until > now()) THEN 0
-  ELSE 1
+  WHEN golden_until IS NOT NULL AND golden_until > now() THEN 0
+  WHEN promotion_tier = 'platinum' AND (promotion_until IS NULL OR promotion_until > now()) THEN 1
+  ELSE 2
 END`;
 
 router.get(

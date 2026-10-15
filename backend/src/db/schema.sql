@@ -202,6 +202,13 @@ ALTER TABLE listings ADD COLUMN IF NOT EXISTS promotion_tier      VARCHAR(20)  N
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS promotion_until     TIMESTAMPTZ;
 CREATE INDEX IF NOT EXISTS idx_listings_promotion ON listings (promotion_tier, promotion_until);
 
+-- Golden upgrade (free after 10 boosts in 30 days) + paid add-ons tied to a promotion.
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS golden_until    TIMESTAMPTZ;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_highlight BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_link      TEXT;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_video     TEXT;
+CREATE INDEX IF NOT EXISTS idx_listings_golden ON listings (golden_until) WHERE golden_until IS NOT NULL;
+
 -- ------------------------------------------------------------
 -- LISTING IMAGES (explicit gallery table as well as jsonb)
 -- ------------------------------------------------------------

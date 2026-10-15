@@ -56,6 +56,11 @@ export default function ListingPage() {
   }
 
   const gallery = listing.gallery && listing.gallery.length ? listing.gallery : [listing.mainImage];
+  const promoActive = !listing.promotionUntil || new Date(listing.promotionUntil).getTime() > Date.now();
+  const ytMatch = listing.addonVideo
+    ? String(listing.addonVideo).match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/)
+    : null;
+  const addonsActive = promoActive && !!(listing.addonLink || listing.addonVideo);
 
   const submitQuote = (e) => {
     e.preventDefault();
@@ -176,6 +181,36 @@ export default function ListingPage() {
             <h3>{t("listing.description")}</h3>
             <p className="mb0">{listing.description}</p>
           </div>
+
+          {addonsActive && (
+            <div className="detail-section">
+              <h3>Viðbætur</h3>
+              {listing.addonVideo &&
+                (ytMatch ? (
+                  <div className="addon-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${ytMatch[1]}`}
+                      title="Myndband"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <p className="mb0">
+                    <a className="btn btn-outline btn-sm" href={listing.addonVideo} target="_blank" rel="noreferrer">
+                      Opna myndband →
+                    </a>
+                  </p>
+                ))}
+              {listing.addonLink && (
+                <p style={{ marginTop: listing.addonVideo ? 12 : 0 }}>
+                  <a className="btn btn-outline btn-sm" href={listing.addonLink} target="_blank" rel="noreferrer">
+                    Opna tengil →
+                  </a>
+                </p>
+              )}
+            </div>
+          )}
 
           {attrs.length > 0 && (
             <div className="detail-section">

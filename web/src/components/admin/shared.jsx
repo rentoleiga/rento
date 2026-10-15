@@ -62,6 +62,8 @@ export const STATUS_LABEL = {
   purchase: "Purchase",
   slot: "Slot",
   boost: "Boost",
+  renew: "Renew",
+  addon: "Add-on",
   adjustment: "Adjustment",
   open: "Open",
   reviewed: "Reviewed",
