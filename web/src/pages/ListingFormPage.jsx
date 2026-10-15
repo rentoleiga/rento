@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, getToken } from "../api";
+import { api, apiBase, getToken } from "../api";
 import { useAuth } from "../store";
 
 const STEPS = ["Myndir", "Grunnupplýsingar", "Verð", "Staðsetning", "Yfirlit"];
@@ -199,13 +199,14 @@ export default function ListingFormPage() {
       const fd = new FormData();
       fd.append("file", file);
       try {
-        const r = await fetch("/api/listings/upload", {
+        const r = await fetch(`${apiBase()}/api/listings/upload`, {
           method: "POST",
           headers: { Authorization: `Bearer ${getToken()}` },
           body: fd,
         });
-        const d = await r.json();
-        if (!r.ok) throw new Error(d.error || "Upphleðsla mistókst");
+        let d = {};
+        try { d = await r.json(); } catch { /* non-JSON response (proxy/404 page) */ }
+        if (!r.ok) throw new Error(d.error || `Upphleðsla mistókst (${r.status})`);
         urls.push(d.url);
       } catch (e) {
         setError(e.message);
