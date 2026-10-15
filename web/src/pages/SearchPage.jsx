@@ -18,6 +18,7 @@ const REGION_IS = {
   "Capital Region": "Höfuðborgarsvæðið",
   "Southern Peninsula": "Suðurnes",
   "Northeastern Region": "Norðurland eystra",
+  "Northwestern Region": "Norðurland vestra",
   "Southern Region": "Suðurland",
   "Eastern Region": "Austurland",
   "Western Region": "Vesturland",
