@@ -14,6 +14,17 @@ const SORTS = [
   ["views", "search.sort.views"],
 ];
 
+const REGION_IS = {
+  "Capital Region": "Höfuðborgarsvæðið",
+  "Southern Peninsula": "Suðurnes",
+  "Northeastern Region": "Norðurland eystra",
+  "Southern Region": "Suðurland",
+  "Eastern Region": "Austurland",
+  "Western Region": "Vesturland",
+  "Westfjords": "Vestfirðir",
+  "Annað": "Annað",
+};
+
 export default function SearchPage() {
   const { t, lang } = useLang();
   const [params, setParams] = useSearchParams();
@@ -28,15 +39,7 @@ export default function SearchPage() {
       category: params.get("category") || "",
       subcategory: params.get("subcategory") || "",
       location: params.get("location") || "",
-      start: params.get("start") || "",
-      end: params.get("end") || "",
-      min_price: params.get("min_price") || "",
-      max_price: params.get("max_price") || "",
       radius: params.get("radius") || "",
-      rating: params.get("rating") || "",
-      verified: params.get("verified") === "1",
-      delivery: params.get("delivery") === "1",
-      instant: params.get("instant") === "1",
       sort: params.get("sort") || "recommended",
     };
     return p;
@@ -155,7 +158,7 @@ export default function SearchPage() {
                   onClick={() => toggleRegion(region)}
                 >
                   <span className="tree-toggle">{openRegions[region] ? "−" : "+"}</span>
-                  {region}
+                  {lang === "is" ? REGION_IS[region] || region : region}
                   <span className="tree-count">{locs.length}</span>
                 </button>
                 {openRegions[region] && (
@@ -175,62 +178,6 @@ export default function SearchPage() {
               </div>
             ))}
           </div>
-
-          <h4>{t("listing.check")}</h4>
-          <div className="field">
-            <label className="muted">{t("hero.from")} ({t("search.filter.dateOpt")})</label>
-            <input
-              type="date"
-              lang="is"
-              value={query.start ? query.start.slice(0, 10) : ""}
-              onChange={(e) => update("start", e.target.value ? `${e.target.value}T10:00:00` : "")}
-            />
-          </div>
-          <div className="field">
-            <label className="muted">{t("hero.to")} ({t("search.filter.dateOpt")})</label>
-            <input
-              type="date"
-              lang="is"
-              value={query.end ? query.end.slice(0, 10) : ""}
-              onChange={(e) => update("end", e.target.value ? `${e.target.value}T10:00:00` : "")}
-            />
-          </div>
-
-          <h4>{t("search.filter.price")}</h4>
-          <div className="row">
-            <div className="field grow">
-              <input
-                type="number"
-                min="0"
-                placeholder={t("search.filter.min")}
-                value={query.min_price}
-                onChange={(e) => update("min_price", e.target.value)}
-              />
-            </div>
-            <div className="field grow">
-              <input
-                type="number"
-                min="0"
-                placeholder={t("search.filter.max")}
-                value={query.max_price}
-                onChange={(e) => update("max_price", e.target.value)}
-              />
-            </div>
-          </div>
-
-          <h4>{t("search.filter.features")}</h4>
-          <label className="row" style={{ cursor: "pointer" }}>
-            <input type="checkbox" checked={query.verified} onChange={(e) => update("verified", e.target.checked ? "1" : "")} />
-            {t("search.filter.verified")}
-          </label>
-          <label className="row" style={{ cursor: "pointer" }}>
-            <input type="checkbox" checked={query.delivery} onChange={(e) => update("delivery", e.target.checked ? "1" : "")} />
-            {t("search.filter.delivery")}
-          </label>
-          <label className="row" style={{ cursor: "pointer" }}>
-            <input type="checkbox" checked={query.instant} onChange={(e) => update("instant", e.target.checked ? "1" : "")} />
-            {t("search.filter.instant")}
-          </label>
         </aside>
 
         <div>

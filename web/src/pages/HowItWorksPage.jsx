@@ -9,13 +9,7 @@ export default function HowItWorksPage() {
       {/* Hero - dark */}
       <section className="how-hero">
         <div className="container" style={{ textAlign: "center" }}>
-          <div className="how-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Leiðarvísir
-          </div>
           <h1>Hvernig virkar Rentó?</h1>
-          <p className="how-hero-sub">Leigðu það sem þú þarft eða fáðu tekjur af hlutunum sem þú átt.</p>
-          <p className="how-hero-desc">Rentó er leigumarkaðstorg þar sem einstaklingar og fyrirtæki geta leigt hluti sín á milli.</p>
         </div>
       </section>
 
@@ -71,7 +65,7 @@ export default function HowItWorksPage() {
             </div>
             <div className="card how-info-card">
               <h4>Hvað kostar Rentó?</h4>
-              <p>Rento tekur enga þjónustugjöld af leigu. Sá hluti sem þú færð greiddan er þinn að fullu — tekjurnar eru þínar.</p>
+              <p>Rentó tekur enga þjónustugjald af leigum. Þrjár auglýsingar eru ókeypis. Fleiri pláss og boost eru keypt með <Link to="/promote">Rentó Kredit</Link>.</p>
             </div>
           </div>
         </div>

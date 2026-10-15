@@ -57,6 +57,9 @@ export default function CookieConsent() {
               <button className="btn btn-primary btn-sm" onClick={() => save(true)}>
                 {t("cookie.banner.accept")}
               </button>
+              <button className="btn btn-outline btn-sm" onClick={() => save(false)}>
+                {t("cookie.banner.reject")}
+              </button>
             </div>
           </div>
         </div>
