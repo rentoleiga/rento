@@ -9,7 +9,7 @@ export default function LoginPage() {
   const { t } = useLang();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [form, setForm] = useState({ email: "demo.renter@rento.is", password: "password123" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -66,9 +66,6 @@ export default function LoginPage() {
       <p className="link-switch">
         {t("auth.noAccount")}{" "}
         <Link to="/register">{t("nav.register")}</Link>
-      </p>
-      <p className="muted" style={{ textAlign: "center", fontSize: 13, marginTop: 12 }}>
-        {t("auth.demo")}
       </p>
     </div>
     </div>
