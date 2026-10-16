@@ -49,13 +49,7 @@ function errorHandler(err, req, res, next) {
   if (err.code === "22P02") {
     return res.status(400).json({ error: "Invalid value format" });
   }
-  // TEMP DEBUG (remove after diagnosis)
-  return res.status(500).json({
-    error: "Internal server error",
-    debugMessage: err.message,
-    debugCode: err.code || null,
-    debugStack: (err.stack || "").split("\n").slice(0, 4).join(" | "),
-  });
+  return res.status(500).json({ error: "Internal server error" });
 }
 
 function err(message, status = 400, details) {

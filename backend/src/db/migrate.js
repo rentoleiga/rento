@@ -124,6 +124,13 @@ async function applyMigrations() {
       CREATE INDEX IF NOT EXISTS idx_page_visits_created ON page_visits (created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_page_visits_session ON page_visits (session_id, created_at DESC);
 
+      -- listings columns added to schema.sql after the first deploy but never migrated
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS phone              VARCHAR(32) DEFAULT '';
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS featured           BOOLEAN     NOT NULL DEFAULT FALSE;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS seo_title          VARCHAR(200) DEFAULT '';
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS seo_description    TEXT         DEFAULT '';
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS unique_view_count  INTEGER      NOT NULL DEFAULT 0;
+
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS golden_until    TIMESTAMPTZ;
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_highlight BOOLEAN NOT NULL DEFAULT FALSE;
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_link      TEXT;
