@@ -75,7 +75,11 @@ export default function MyListingsPage() {
           </div>
           <div className="slot-squares">
             {Array.from({ length: slots.freeSlots }).map((_, i) => (
-              <span key={`free-${i}`} className="slot-sq sq-free" title="Ókeypis" />
+              <span
+                key={`free-${i}`}
+                className={`slot-sq ${i < slots.freeUsed ? "sq-free-used" : "sq-free"}`}
+                title={i < slots.freeUsed ? "Ókeypis — í notkun" : "Ókeypis — laust"}
+              />
             ))}
             {slots.slots.map((s) => (
               <span
@@ -86,7 +90,7 @@ export default function MyListingsPage() {
             ))}
           </div>
           <div className="muted" style={{ fontSize: 13 }}>
-            {slots.freeSlots} ókeypis · {slots.boughtTotal} keypt · {slots.available} laust
+            {slots.freeUsed}/{slots.freeSlots} ókeypis í notkun · {slots.available} keypt laust · {slots.boughtTotal} keypt alls
           </div>
           {slots.slots.length > 0 && (
             <ul className="slot-list">

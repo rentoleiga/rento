@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { api, timeAgo } from "../api";
 import { useAuth } from "../store";
 
 export default function ConversationPage() {
   const { conversationId } = useParams();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [conv, setConv] = useState(null);
   const [msgs, setMsgs] = useState([]);
   const [text, setText] = useState("");
@@ -14,14 +13,10 @@ export default function ConversationPage() {
   const bottom = useRef(null);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login?next=/messages/" + conversationId);
-      return;
-    }
     api.get(`/api/conversations/${conversationId}/messages`)
       .then((d) => { setConv(d.conversation); setMsgs(d.messages || []); })
       .catch((e) => alert(e.message));
-  }, [conversationId, user, navigate]);
+  }, [conversationId]);
 
   useEffect(() => {
     if (bottom.current) bottom.current.scrollIntoView({ behavior: "auto" });

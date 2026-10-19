@@ -2814,6 +2814,10 @@ a:hover {
 }
 
 /* ---------- Cookie consent ---------- */
+body.has-cookie-banner { padding-bottom: 120px; }
+@media (max-width: 560px) {
+  body.has-cookie-banner { padding-bottom: 190px; }
+}
 .footer-link-btn {
   background: none;
   border: none;
@@ -3097,6 +3101,7 @@ a:hover {
   flex: 0 0 auto;
 }
 .sq-free { background: #22a06b; }
+.sq-free-used { background: #dfe4e2; border: 1px solid #b7c1bd; }
 .sq-used { background: #2f6fdb; }
 .sq-avail { background: #dbe8fb; border: 1px dashed #2f6fdb; }
 .slot-list {

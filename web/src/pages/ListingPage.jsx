@@ -6,6 +6,54 @@ import { useLang } from "../i18n";
 import ListingCard from "../components/ListingCard";
 import { StarRating } from "../components/ListingCard";
 
+const ATTR_LABELS = {
+  brand: "Vörumerki",
+  model: "Gerð",
+  frame: "Grind",
+  range: "Drægni",
+  battery: "Rafhlaða",
+  condition: "Ástand",
+  year: "Árgerð",
+  size: "Stærð",
+  weight: "Þyngd",
+  dimensions: "Mál",
+  color: "Litur",
+  material: "Efni",
+  capacity: "Rymd",
+  power: "Afl",
+  type: "Tegund",
+  fuel: "Eldsneyti",
+  transmission: "Skipting",
+  seats: "Sæti",
+  doors: "Hurðir",
+  engine: "Vél",
+  mileage: "Kílómetrar",
+  max_load: "Hámarksþyngd",
+  length: "Lengd",
+  width: "Breidd",
+  height: "Hæð",
+};
+
+const ATTR_VALUES = {
+  like_new: "eins og nýtt",
+  new: "nýtt",
+  good: "gott",
+  fair: "ásættanlegt",
+  poor: "slæmt",
+  excellent: "frábært",
+};
+
+const attrLabel = (k) =>
+  ATTR_LABELS[k] || k.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+const attrValue = (v) => (typeof v === "string" && ATTR_VALUES[v] ? ATTR_VALUES[v] : String(v));
+
+const UNIT_LABELS = { hour: ["klst.", "klst."], day: ["dagur", "dagar"], week: ["vika", "vikur"] };
+const unitLabel = (unit, n) => {
+  const pair = UNIT_LABELS[unit];
+  if (!pair) return unit;
+  return Number(n) === 1 ? pair[0] : pair[1];
+};
+
 export default function ListingPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -218,8 +266,8 @@ export default function ListingPage() {
               <dl className="spec-grid">
                 {attrs.map(([k, v]) => (
                   <div key={k}>
-                    <dt>{k.replace(/_/g, " ")}</dt>
-                    <dd>{String(v)}</dd>
+                    <dt>{attrLabel(k)}</dt>
+                    <dd>{attrValue(v)}</dd>
                   </div>
                 ))}
               </dl>
@@ -232,11 +280,11 @@ export default function ListingPage() {
             <p className="price-line" style={{ margin: 0 }}>
               {formatPrice(listing.priceDaily || listing.priceHourly, listing.currency)}
               <span className="muted" style={{ fontSize: 14, fontWeight: 400 }}>
-                {" "}/ {listing.priceDaily ? t("listing.perDay") : t("listing.perHour")}
+                {" "}{listing.priceDaily ? t("listing.perDay") : t("listing.perHour")}
               </span>
             </p>
             <p className="muted small" style={{ margin: "6px 0 14px" }}>
-              {t("listing.depositShort")} {formatPrice(listing.depositAmount, listing.currency)} · {t("listing.minimum").replace("{n}", listing.minimumDuration).replace("{unit}", listing.minimumDurationUnit)}
+              {t("listing.depositShort")} {formatPrice(listing.depositAmount, listing.currency)} · {t("listing.minimum").replace("{n}", listing.minimumDuration).replace("{unit}", unitLabel(listing.minimumDurationUnit, listing.minimumDuration))}
               {listing.instantBooking ? ` · ${t("listing.instant")}` : ` · ${t("listing.requiresApproval")}`}
             </p>
             <div className="field-label" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--muted)", marginBottom: 6 }}>TÍMABIL</div>
@@ -262,7 +310,7 @@ export default function ListingPage() {
 
           {quote && (
             <div style={{ marginTop: 14 }}>
-              <div className="cost-line"><span>{quote.duration} {quote.durationUnit}(s) × {t("listing.base")}</span><span>{formatPrice(quote.base, listing.currency)}</span></div>
+              <div className="cost-line"><span>{quote.duration} {unitLabel(quote.durationUnit, quote.duration)} × {t("listing.base")}</span><span>{formatPrice(quote.base, listing.currency)}</span></div>
               {quote.cleaningFee > 0 && <div className="cost-line"><span>{t("listing.cleaning")}</span><span>{formatPrice(quote.cleaningFee, listing.currency)}</span></div>}
               {quote.deliveryFee > 0 && <div className="cost-line"><span>{t("listing.delivery")}</span><span>{formatPrice(quote.deliveryFee, listing.currency)}</span></div>}
               {quote.pickupFee > 0 && <div className="cost-line"><span>{t("listing.pickup")}</span><span>{formatPrice(quote.pickupFee, listing.currency)}</span></div>}

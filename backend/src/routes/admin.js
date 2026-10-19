@@ -921,4 +921,52 @@ router.post(
   })
 );
 
+// GET /api/admin/payments -> slot and promotion purchases.
+router.get(
+  "/payments",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 25);
+    const kind = String(req.query.kind || "").trim();
+    const conds = [];
+    const params = [];
+    if (["slot", "promotion"].includes(kind)) {
+      params.push(kind);
+      conds.push(`p.kind = $${params.length}`);
+    }
+    const where = conds.length ? `WHERE ${conds.join(" AND ")}` : "";
+
+    const [list, total, sums] = await Promise.all([
+      db.query(
+        `SELECT p.id, p.kind, p.reference_id, p.package_id, p.amount, p.currency,
+                p.status, p.provider_reference, p.created_at,
+                u.id AS user_id, u.email, u.first_name, u.last_name,
+                l.title AS listing_title, l.slug AS listing_slug
+           FROM payments p
+           LEFT JOIN users u ON u.id = p.user_id
+           LEFT JOIN listings l ON l.id = p.reference_id
+           ${where}
+           ORDER BY p.created_at DESC
+           LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM payments p ${where}`, params),
+      db.query(
+        `SELECT COALESCE(sum(p.amount) FILTER (WHERE p.kind = 'slot'), 0)::int AS slot_total,
+                COALESCE(sum(p.amount) FILTER (WHERE p.kind = 'promotion'), 0)::int AS promotion_total,
+                COALESCE(sum(p.amount), 0)::int AS total
+           FROM payments p ${where}`,
+        params
+      ),
+    ]);
+
+    res.json({
+      payments: list.rows,
+      total: total.rows[0].n,
+      page,
+      perPage,
+      sums: sums.rows[0],
+    });
+  })
+);
+
 module.exports = router;

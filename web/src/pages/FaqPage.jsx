@@ -33,9 +33,12 @@ const GROUPS = [
   {
     title: "Greiðslur og verð",
     items: [
-      { q: "Hvernig virka greiðslur?", a: "Greiðsla vegna leigu fer fram í gegnum greiðslukerfi Rentó. Áður en þú staðfestir bókun sérðu hvað leigan kostar og hvaða gjöld eiga við.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
-      { q: "Hvað kostar að nota Rentó?", a: "Það kostar ekkert að stofna aðgang eða skoða hluti á Rentó. Gjöld vegna bókunar eða útleigu koma skýrt fram áður en viðskipti eru staðfest.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
-      { q: "Hvenær fær leigusali greitt?", a: "Greiðsla til leigusala fer fram samkvæmt greiðsluferli Rentó eftir að skilyrði viðskiptanna hafa verið uppfyllt.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
+      { q: "Hvernig virka greiðslur?", a: "Rentó sér um greiðslur fyrir auglýsingapláss og kynningar. Leigugreiðslan sjálf fer fram beint á milli leigjanda og leigusala við afhendingu, nema annað sé samið. Áður en þú staðfestir bókun sérðu hvað leigan kostar og hvaða gjöld eiga við.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
+      { q: "Hvað kostar að auglýsa hlut?", a: "Þú færð þrjú ókeypis auglýsingapláss í 30 daga í senn. Þegar þau eru uppnotuð geturðu keypt viðbótarpláss fyrir 490 kr. hvert og gildir það í 30 daga frá notkun. Einnig eru til pakkar: 3 pláss fyrir 1.290 kr., 5 pláss fyrir 1.990 kr. og 10 pláss fyrir 3.490 kr.", link: { to: "/promote", label: "Sjá verð og pláss" } },
+      { q: "Hvað er kynning á auglýsingu?", a: "Kynning setur auglýsinguna þína ofar í leit og merkir hana sem „Kynnt“. Þú getur valið Silfur í 7 daga fyrir 1.290 kr., Gull í 14 daga fyrir 1.990 kr. eða Platína í 30 daga fyrir 2.990 kr.", link: { to: "/promote", label: "Kynna auglýsingu" } },
+      { q: "Hvað gerist þegar auglýsingin rennur út?", a: "Auglýsingin birtist ekki lengur og plássið sem hún notaði verður laust. Þú getur endurbirt auglýsinguna úr stjórnborðinu ef pláss er laust. Keypt pláss sem ekki hefur verið notuð halda gildi sínu þar til þau eru notuð.", link: { to: "/dashboard/listings", label: "Fara í mínar auglýsingar" } },
+      { q: "Hvað kostar að nota Rentó?", a: "Það kostar ekkert að stofna aðgang, skoða hluti eða leigja. Leigusala eru aðeins gjaldfærð auglýsingapláss og kynningar sem hann velur sjálfur.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
+      { q: "Hvenær fær leigusali greitt?", a: "Leigugreiðsla fer fram beint milli leigjanda og leigusala samkvæmt því sem þeir semja um, oftast við afhendingu. Rentó heldur ekki um leiguféð.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
       { q: "Þarf ég að greiða skatt af tekjum sem ég fæ í gegnum Rentó?", a: "Leigusalar bera sjálfir ábyrgð á að standa skil á sköttum og öðrum opinberum gjöldum sem kunna að eiga við um tekjur þeirra. Reglur geta verið mismunandi eftir tegund útleigu, umfangi hennar og því hvort þú starfar sem einstaklingur eða fyrirtæki." },
     ],
   },

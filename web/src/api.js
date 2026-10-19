@@ -66,8 +66,11 @@ export async function downloadFile(path, filename) {
 
 export function formatPrice(n, currency = "ISK") {
   const num = Number(n);
-  if (Number.isNaN(num)) return `${n} ${currency}`;
-  return `${num.toLocaleString("en-US")} ${currency === "EUR" ? "€" : "ISK"}`;
+  if (!Number.isFinite(num)) return `${n} ${currency === "EUR" ? "€" : "kr."}`;
+  if (currency === "EUR") {
+    return `${num.toLocaleString("de-DE", { maximumFractionDigits: 2 })} €`;
+  }
+  return `${Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} kr.`;
 }
 
 export function timeAgo(iso) {

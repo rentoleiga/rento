@@ -41,6 +41,11 @@ export default function CookieConsent() {
 
   const showBanner = !consent && !open;
 
+  useEffect(() => {
+    document.body.classList.toggle("has-cookie-banner", showBanner);
+    return () => document.body.classList.remove("has-cookie-banner");
+  }, [showBanner]);
+
   return (
     <>
       {showBanner && (

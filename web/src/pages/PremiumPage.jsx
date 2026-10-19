@@ -20,6 +20,18 @@ const TIERS = [
 const isActive = (l) =>
   l.status === "published" && (!l.expiresAt || new Date(l.expiresAt).getTime() > Date.now());
 
+const fmtDate = (d) => {
+  const dt = new Date(d);
+  if (Number.isNaN(dt.getTime())) return "";
+  return `${String(dt.getDate()).padStart(2, "0")}.${String(dt.getMonth() + 1).padStart(2, "0")}.${dt.getFullYear()}`;
+};
+
+const promotionLabel = (l) => {
+  if (!l.promotionTier || !l.promotionUntil) return "";
+  if (new Date(l.promotionUntil).getTime() <= Date.now()) return "";
+  return `Kynnt til ${fmtDate(l.promotionUntil)}`;
+};
+
 export default function PremiumPage() {
   const { t } = useLang();
   const { user } = useAuth();
@@ -30,16 +42,19 @@ export default function PremiumPage() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!user) return;
+  const loadListings = () =>
     api
       .get("/api/dashboard/owner/listings")
       .then((d) => {
         const active = (d.listings || []).filter(isActive);
         setListings(active);
-        if (active.length) setPickId(String(active[0].id));
+        setPickId((prev) => (active.some((l) => String(l.id) === prev) ? prev : String(active[0]?.id || "")));
       })
       .catch(() => {});
+
+  useEffect(() => {
+    if (!user) return;
+    loadListings();
   }, [user]);
 
   const needLogin = () => navigate("/login?next=/promote");
@@ -48,6 +63,7 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
+    if (!window.confirm(`Kaupa 1 auglýsingapláss fyrir ${fmt(SLOT_PRICE)} kr.? Plássið gildir í 30 daga frá notkun.`)) return;
     setBusy("slots");
     try {
       const r = await api.post("/api/slots/purchase", { count: 1 });
@@ -63,6 +79,7 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
+    if (!window.confirm(`Kaupa ${pkg.slots} auglýsingapláss fyrir ${fmt(pkg.amount)} kr.?`)) return;
     setBusy(pkg.id);
     try {
       const r = await api.post("/api/slots/purchase", { packageId: pkg.id });
@@ -82,10 +99,18 @@ export default function PremiumPage() {
       setError("Veldu auglýsingu fyrst.");
       return;
     }
+    const chosen = listings.find((l) => String(l.id) === String(pickId));
+    const extend = chosen && promotionLabel(chosen);
+    const tierName = t(`credit.boost.${tier.key}`);
+    const msg = extend
+      ? `Framlengja ${tierName.toLowerCase()} kynningu um ${tier.days} daga fyrir ${fmt(tier.amount)} kr.? Núverandi kynning gildir til ${fmtDate(chosen.promotionUntil)}.`
+      : `Kaupa ${tierName.toLowerCase()} kynningu í ${tier.days} daga fyrir ${fmt(tier.amount)} kr.?`;
+    if (!window.confirm(msg)) return;
     setBusy(tier.key);
     try {
       await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key });
-      setNotice(`${t(`credit.boost.${tier.key}`)} kynning virkjuð · ${fmt(tier.amount)} kr.`);
+      setNotice(`${tierName} kynning virkjuð · ${fmt(tier.amount)} kr.`);
+      loadListings();
     } catch (e) {
       setError(e.message);
     } finally {
@@ -211,7 +236,9 @@ export default function PremiumPage() {
               <label style={{ color: "#bfe3d8" }}>{t("adv.boost.pick")}</label>
               <select value={pickId} onChange={(e) => setPickId(e.target.value)}>
                 {listings.map((l) => (
-                  <option key={l.id} value={l.id}>{l.title}</option>
+                  <option key={l.id} value={l.id}>
+                    {l.title}{promotionLabel(l) ? ` — ${promotionLabel(l)}` : ""}
+                  </option>
                 ))}
               </select>
             </div>

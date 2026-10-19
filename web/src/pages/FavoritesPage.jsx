@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { api } from "../api";
-import { useAuth } from "../store";
 import ListingCard from "../components/ListingCard";
 
 export default function FavoritesPage() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login?next=/favorites");
-      return;
-    }
     api.get("/api/favorites").then((d) => setRows(d.favorites)).catch(() => []).finally(() => setLoading(false));
-  }, [user, navigate]);
+  }, []);
 
   return (
     <div className="container section">

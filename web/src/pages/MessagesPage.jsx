@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api, timeAgo } from "../api";
 import { useAuth } from "../store";
 
 export default function MessagesPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [convs, setConvs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login?next=/messages");
-      return;
-    }
     let alive = true;
     api.get("/api/conversations").then((d) => alive && setConvs(d.conversations || [])).catch(() => {}).finally(() => alive && setLoading(false));
     return () => { alive = false; };
-  }, [user, navigate]);
+  }, []);
 
   const other = (c) => (user && user.id === c.renter_id ? c : c);
 

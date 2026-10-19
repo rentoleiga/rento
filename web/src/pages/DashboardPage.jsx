@@ -1,32 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
 import ListingCard from "../components/ListingCard";
 
-function RequireAuth({ children }) {
-  const { user, refresh } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!user) refresh().then(() => {});
-  }, [user, refresh]);
-  useEffect(() => {
-    if (!user) navigate("/login?next=/dashboard");
-  }, [user, navigate]);
-  if (!user) return null;
-  return children;
-}
-
-export default function DashboardPage() {
-  return (
-    <RequireAuth>
-      <Dashboard />
-    </RequireAuth>
-  );
-}
-
-function Dashboard() {
+export default function Dashboard() {
   const { user } = useAuth();
   const { t } = useLang();
   const [stats, setStats] = useState(null);

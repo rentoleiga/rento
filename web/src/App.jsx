@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import CookieConsent from "./components/CookieConsent";
+import RequireAuth from "./components/RequireAuth";
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import ListingPage from "./pages/ListingPage";
@@ -30,6 +31,8 @@ import BannedPage from "./pages/BannedPage";
 import SafetyPage from "./pages/SafetyPage";
 import FaqPage from "./pages/FaqPage";
 import ContactPage from "./pages/ContactPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import MyPaymentsPage from "./pages/MyPaymentsPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./store";
 import { trackVisit, startTracking } from "./lib/track";
@@ -73,16 +76,17 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/dashboard/listings" element={<MyListingsPage />} />
-          <Route path="/dashboard/listings/:id" element={<ListingFormPage />} />
-          <Route path="/dashboard/listings/new" element={<ListingFormPage />} />
-          <Route path="/dashboard/calendar/:listingId" element={<CalendarPage />} />
-          <Route path="/dashboard/bookings" element={<MyBookingsPage />} />
+          <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+          <Route path="/dashboard/listings" element={<RequireAuth><MyListingsPage /></RequireAuth>} />
+          <Route path="/dashboard/listings/:id" element={<RequireAuth><ListingFormPage /></RequireAuth>} />
+          <Route path="/dashboard/listings/new" element={<RequireAuth><ListingFormPage /></RequireAuth>} />
+          <Route path="/dashboard/calendar/:listingId" element={<RequireAuth><CalendarPage /></RequireAuth>} />
+          <Route path="/dashboard/bookings" element={<RequireAuth><MyBookingsPage /></RequireAuth>} />
+          <Route path="/dashboard/payments" element={<RequireAuth><MyPaymentsPage /></RequireAuth>} />
           <Route path="/dashboard/credits" element={<CreditsPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/messages/:conversationId" element={<ConversationPage />} />
+          <Route path="/favorites" element={<RequireAuth><FavoritesPage /></RequireAuth>} />
+          <Route path="/messages" element={<RequireAuth><MessagesPage /></RequireAuth>} />
+          <Route path="/messages/:conversationId" element={<RequireAuth><ConversationPage /></RequireAuth>} />
           <Route path="/users/:id" element={<ProfilePage />} />
           <Route path="/promote" element={<PremiumPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />
@@ -94,7 +98,8 @@ export default function App() {
           <Route path="/safety" element={<SafetyPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin" element={<RequireAuth><AdminPage /></RequireAuth>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />

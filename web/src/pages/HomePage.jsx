@@ -69,11 +69,21 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="promo-banner-icons">
-                <span className="promo-icon" style={{ background: "#e0f0f0" }}>🔑</span>
-                <span className="promo-icon" style={{ background: "#fde8d8", marginTop: 20 }}>⚠️</span>
-                <span className="promo-icon" style={{ background: "#fef3d5" }}>📷</span>
-                <span className="promo-icon" style={{ background: "#f0e6f6" }}>🚲</span>
-                <span className="promo-icon" style={{ background: "#e6f6fd" }}>🔊</span>
+                <span className="promo-icon" style={{ background: "#e0f0f0" }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4M18 5l2 2M15 8l2 2"/></svg>
+                </span>
+                <span className="promo-icon" style={{ background: "#fde8d8", marginTop: 20 }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                </span>
+                <span className="promo-icon" style={{ background: "#fef3d5" }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+                </span>
+                <span className="promo-icon" style={{ background: "#f0e6f6" }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 17.5h-4l-2-5h5l2-5h3"/></svg>
+                </span>
+                <span className="promo-icon" style={{ background: "#e6f6fd" }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+                </span>
               </div>
             </div>
             <div className="promo-foot">{t("home.promoFoot")}</div>
@@ -87,7 +97,6 @@ export default function HomePage() {
           <div className="container">
             <div className="section-head">
               <h2>{t("home.popular")}</h2>
-              <span className="promo-chip">✦ {t("home.promoted")}</span>
             </div>
             <div className="grid">
               {platinum.map((l) => (

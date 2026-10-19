@@ -48,7 +48,7 @@ function Denied({ user }) {
 }
 
 export default function AdminPage() {
-  const { user } = useAuth();
+  const { user, ready } = useAuth();
   const [tab, setTab] = useState("overview");
   const [unread, setUnread] = useState(0);
 
@@ -59,6 +59,7 @@ export default function AdminPage() {
     api.get("/api/admin/messages?perPage=1").then((d) => setUnread(d.unread || 0)).catch(() => {});
   }, [isAdmin, tab]);
 
+  if (!ready) return <div className="container section"><div className="empty">Hleður…</div></div>;
   if (!user || !isAdmin) return <Denied user={user} />;
 
   const Active = TABS.find((x) => x.k === tab)?.C || AdminOverview;

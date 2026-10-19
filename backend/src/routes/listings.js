@@ -438,7 +438,11 @@ router.post(
     await db.query(
       `UPDATE listings
          SET promotion_tier = $1,
-             promotion_until = now() + make_interval(days => $2),
+             promotion_until = ${listing.promotion_tier === PROMO_TIERS[tierIn] &&
+      listing.promotion_until &&
+      new Date(listing.promotion_until) > new Date()
+        ? "promotion_until"
+        : "now()"} + make_interval(days => $2),
              updated_at = now()
        WHERE id = $3`,
       [PROMO_TIERS[tierIn], pricing.days, listing.id]

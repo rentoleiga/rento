@@ -14,10 +14,26 @@ function Pagination({ page, pages, setPage, load, extraArgs }) {
   );
 }
 
+const KIND_LABEL = { slot: "Ad slot", promotion: "Promotion" };
+const PACKAGE_LABEL = {
+  single: "Single slot",
+  pkg3: "3 slots",
+  pkg5: "5 slots",
+  pkg10: "10 slots",
+  silver: "Silver (7 days)",
+  gold: "Gold (14 days)",
+  platinum: "Platinum (30 days)",
+};
+
 export default function AdminPayments() {
   const [payments, setPayments] = useState([]);
   const [paymentsTotal, setPaymentsTotal] = useState(0);
   const [payPage, setPayPage] = useState(1);
+
+  const [sales, setSales] = useState([]);
+  const [salesTotal, setSalesTotal] = useState(0);
+  const [salesSums, setSalesSums] = useState({ slot_total: 0, promotion_total: 0, total: 0 });
+  const [salesPage, setSalesPage] = useState(1);
 
   const [purchases, setPurchases] = useState([]);
   const [purchasesTotal, setPurchasesTotal] = useState(0);
@@ -36,6 +52,14 @@ export default function AdminPayments() {
     return api.get(`/api/admin/transactions?page=${p}&perPage=25`).then((d) => {
       setPayments(d.transactions || []);
       setPaymentsTotal(d.total || 0);
+    }).catch((e) => setError(e.message));
+  }, []);
+
+  const loadSales = useCallback((p) => {
+    return api.get(`/api/admin/payments?page=${p}&perPage=25`).then((d) => {
+      setSales(d.payments || []);
+      setSalesTotal(d.total || 0);
+      setSalesSums(d.sums || { slot_total: 0, promotion_total: 0, total: 0 });
     }).catch((e) => setError(e.message));
   }, []);
 
@@ -59,6 +83,7 @@ export default function AdminPayments() {
   }, []);
 
   useEffect(() => { loadPayments(payPage); }, [payPage, loadPayments]);
+  useEffect(() => { loadSales(salesPage); }, [salesPage, loadSales]);
   useEffect(() => {
     const h = setTimeout(() => { setPurPage(1); loadPurchases(1, purUser); }, 350);
     return () => clearTimeout(h);
@@ -71,12 +96,58 @@ export default function AdminPayments() {
   useEffect(() => { loadLedger(ledPage, ledUser); }, [ledPage, loadLedger]);
 
   const payPages = Math.max(1, Math.ceil(paymentsTotal / 25));
+  const salesPages = Math.max(1, Math.ceil(salesTotal / 25));
   const purPages = Math.max(1, Math.ceil(purchasesTotal / 25));
   const ledPages = Math.max(1, Math.ceil(ledgerTotal / 25));
 
   return (
     <>
       {error && <div className="form-error" style={{ marginBottom: 12 }}>{error}</div>}
+
+      <div className="card" style={{ padding: 18, marginBottom: 18 }}>
+        <div className="row" style={{ justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+          <h2 style={{ fontSize: 17, margin: 0 }}>
+            Ad slots &amp; promotions
+            <span className="muted" style={{ fontSize: 13, fontWeight: "normal", marginLeft: 10 }}>
+              {fmt(salesTotal)} sales · slots {fmtIsk(salesSums.slot_total)} · promotions {fmtIsk(salesSums.promotion_total)} · total {fmtIsk(salesSums.total)}
+            </span>
+          </h2>
+        </div>
+        <div className="table-wrap" style={{ marginTop: 10 }}>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Kind</th>
+                <th>Package</th>
+                <th>Listing</th>
+                <th>Amount</th>
+                <th>Reference</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sales.map((p) => (
+                <tr key={p.id}>
+                  <td>#{p.id}</td>
+                  <td>{p.email ? <Link to={`/users/${p.user_id}`}>{p.email}</Link> : <span className="muted">—</span>}</td>
+                  <td><span className="pill">{KIND_LABEL[p.kind] || p.kind}</span></td>
+                  <td>{PACKAGE_LABEL[p.package_id] || p.package_id || "—"}</td>
+                  <td>{p.listing_title ? <Link to={`/listing/${p.listing_slug || p.reference_id}`}>{p.listing_title}</Link> : <span className="muted">—</span>}</td>
+                  <td>{fmtIsk(p.amount)}</td>
+                  <td className="muted">{p.provider_reference || "—"}</td>
+                  <td className="muted">{shortDate(p.created_at)}</td>
+                </tr>
+              ))}
+              {sales.length === 0 && (
+                <tr><td colSpan={8} className="muted">No slot or promotion sales yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <Pagination page={salesPage} pages={salesPages} setPage={setSalesPage} load={loadSales} extraArgs={[]} />
+      </div>
 
       <div className="card" style={{ padding: 18, marginBottom: 18 }}>
         <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>

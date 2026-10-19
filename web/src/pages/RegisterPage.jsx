@@ -40,7 +40,7 @@ export default function RegisterPage() {
     setError("");
     try {
       await register(form);
-      navigate("/dashboard");
+      navigate(params.get("next") || "/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {
