@@ -1,5 +1,7 @@
 const { Router } = require("express");
+const crypto = require("crypto");
 const db = require("../db/pool");
+const config = require("../config");
 const { authRequired, adminRequired } = require("../middleware/auth");
 const { asyncHandler, err } = require("../middleware/http");
 const { paginate } = require("../utils/helpers");
@@ -852,6 +854,64 @@ router.get(
     ]);
 
     res.json({ ...counts.rows[0], series: series.rows });
+  })
+);
+
+// GET /api/admin/password-resets -> recent forgot-password requests.
+router.get(
+  "/password-resets",
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT pr.id, pr.user_id, pr.created_at, pr.expires_at, pr.used_at, pr.emailed_at,
+              u.email, u.first_name, u.last_name
+       FROM password_resets pr
+       JOIN users u ON u.id = pr.user_id
+       WHERE pr.created_at > now() - interval '30 days'
+       ORDER BY pr.created_at DESC
+       LIMIT 200`
+    );
+    res.json({ resets: rows });
+  })
+);
+
+// POST /api/admin/password-resets/:id/link -> generate a fresh 60-minute
+// one-time reset link for the user behind this request. The admin sends it to
+// the user manually (email/phone) - used while no mail provider is configured.
+router.post(
+  "/password-resets/:id/link",
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT pr.id, pr.user_id, u.email
+       FROM password_resets pr
+       JOIN users u ON u.id = pr.user_id
+       WHERE pr.id = $1`,
+      [req.params.id]
+    );
+    if (!rows.length) throw err("Reset request not found", 404);
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const hash = crypto.createHash("sha256").update(token).digest("hex");
+    await db.query(
+      `INSERT INTO password_resets (user_id, token_hash, expires_at, ip)
+       VALUES ($1, $2, now() + interval '60 minutes', $3)`,
+      [rows[0].user_id, hash, req.ip]
+    );
+
+    let base = (config.webOrigin || "").replace(/\/+$/, "");
+    if (!base) base = "https://www.rento.is";
+    if (/localhost|127\.0\.0\.1/.test(base)) base = "https://www.rento.is";
+    const link = `${base}/reset-password?token=${encodeURIComponent(token)}`;
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "password.link",
+      targetType: "user",
+      targetId: rows[0].user_id,
+      data: { email: rows[0].email },
+      ip: req.ip,
+    });
+
+    res.json({ link, email: rows[0].email, expiresInMinutes: 60 });
   })
 );
 

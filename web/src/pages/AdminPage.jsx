@@ -10,6 +10,7 @@ import AdminPayments from "../components/admin/AdminPayments";
 import AdminAlerts from "../components/admin/AdminAlerts";
 import AdminMessages from "../components/admin/AdminMessages";
 import AdminLog from "../components/admin/AdminLog";
+import AdminPasswordResets from "../components/admin/AdminPasswordResets";
 
 const TABS = [
   { k: "overview", label: "Overview", C: AdminOverview },
@@ -19,6 +20,7 @@ const TABS = [
   { k: "payments", label: "Payments", C: AdminPayments },
   { k: "alerts", label: "Suspicious", C: AdminAlerts },
   { k: "messages", label: "Messages", C: AdminMessages },
+  { k: "resets", label: "Password resets", C: AdminPasswordResets },
   { k: "log", label: "Audit log", C: AdminLog },
 ];
 

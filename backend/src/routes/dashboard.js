@@ -4,6 +4,7 @@ const { authRequired } = require("../middleware/auth");
 const { asyncHandler } = require("../middleware/http");
 const { publicListing } = require("../utils/helpers");
 const { serializeBooking } = require("./bookings");
+const { expireListings } = require("../utils/slots");
 
 const router = Router();
 
@@ -133,6 +134,7 @@ router.get(
   "/owner/listings",
   authRequired,
   asyncHandler(async (req, res) => {
+    await expireListings();
     const { rows } = await db.query(
       `SELECT l.*, c.slug AS category_slug, COALESCE(ct.name,'') AS category_name
        FROM listings l

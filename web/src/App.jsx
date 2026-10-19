@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import ListingPage from "./pages/ListingPage";
 import LoginPage from "./pages/LoginPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import MyListingsPage from "./pages/MyListingsPage";
@@ -68,6 +70,8 @@ export default function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/listing/:slug" element={<ListingPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/dashboard/listings" element={<MyListingsPage />} />

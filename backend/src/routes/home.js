@@ -3,6 +3,7 @@ const db = require("../db/pool");
 const { optionalAuth } = require("../middleware/auth");
 const { asyncHandler } = require("../middleware/http");
 const { publicListing } = require("../utils/helpers");
+const { expireListings } = require("../utils/slots");
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.get(
   "/",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    await expireListings();
     const [platinum, popular, newest] = await Promise.all([
       db.query(
         `SELECT v.*
@@ -40,9 +42,13 @@ router.get(
       db.query(
         `SELECT v.*
          FROM v_listing_search v
-         WHERE v.promotion_tier = 'platinum'
+         WHERE (v.promotion_tier IN ('platinum', 'gold')
+                AND v.promotion_until IS NOT NULL
+                AND v.promotion_until > now())
             OR (v.golden_until IS NOT NULL AND v.golden_until > now())
-         ORDER BY (CASE WHEN v.golden_until IS NOT NULL AND v.golden_until > now() THEN 0 ELSE 1 END),
+         ORDER BY (CASE WHEN v.golden_until IS NOT NULL AND v.golden_until > now() THEN 0
+                        WHEN v.promotion_tier = 'platinum' THEN 1
+                        ELSE 2 END),
                   v.rating DESC, v.review_count DESC
          LIMIT 8`
       ),

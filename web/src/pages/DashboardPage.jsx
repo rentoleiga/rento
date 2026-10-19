@@ -45,7 +45,7 @@ function Dashboard() {
         {t("dash.greeting").replace("{name}", user?.firstName || "")}
       </h1>
       <p className="muted" style={{ marginTop: 0 }}>
-        {stats?.unreadNotifications > 0 && `${t("dash.notifs").replace("{n}", stats.unreadNotifications)} · `}
+        {stats?.unreadNotifications > 0 && `${t("dash.notifs").replace("{n}", stats.unreadNotifications)} Â· `}
         {stats?.unreadMessages > 0 && t("dash.unread").replace("{n}", stats.unreadMessages)}
       </p>
 
@@ -53,7 +53,7 @@ function Dashboard() {
         <Link to="/dashboard/listings">{t("dash.nav.listings")}</Link>
         <Link to="/dashboard/listings/new">{t("dash.nav.add")}</Link>
         <Link to="/dashboard/bookings">{t("dash.nav.bookings")}</Link>
-        <Link to="/dashboard/credits">Kredit &amp; Boost</Link>
+        <Link to="/promote">Auglýsingapláss</Link>
         <Link to="/favorites">{t("dash.nav.favorites")}</Link>
         <Link to="/messages">{t("dash.nav.messages")}</Link>
       </nav>
@@ -97,7 +97,7 @@ function Dashboard() {
                 <div className="grow">
                   <div className="title"><Link to={`/listing/${b.listing.slug}`}>{b.listing.title}</Link></div>
                   <div className="sub">
-                    {b.start.slice(0, 10)} → {b.end.slice(0, 10)} · {formatPrice(b.total, b.currency)}
+                    {b.start.slice(0, 10)} â†’ {b.end.slice(0, 10)} Â· {formatPrice(b.total, b.currency)}
                   </div>
                 </div>
                 <span className={`status-pill status-${b.status}`}>{t(`status.${b.status}`)}</span>
@@ -114,8 +114,8 @@ function Dashboard() {
         </div>
         {listings.length === 0 ? (
           <div className="empty">
-            <h3>Engar skráningar ennþá</h3>
-            <p>Skráðu hlutina þína og byrjaðu að græða.</p>
+            <h3>Engar skrÃ¡ningar ennÃ¾Ã¡</h3>
+            <p>SkrÃ¡Ã°u hlutina Ã¾Ã­na og byrjaÃ°u aÃ° grÃ¦Ã°a.</p>
             <Link className="btn btn-primary" to="/dashboard/listings/new">{t("dash.nav.add")}</Link>
           </div>
         ) : (

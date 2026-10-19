@@ -124,6 +124,55 @@ async function applyMigrations() {
       CREATE INDEX IF NOT EXISTS idx_page_visits_created ON page_visits (created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_page_visits_session ON page_visits (session_id, created_at DESC);
 
+      -- Paid listing slots (3 free per user; bought slots cover one ad for 30 days)
+      CREATE TABLE IF NOT EXISTS listing_slots (
+        id           SERIAL PRIMARY KEY,
+        user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        package_id   VARCHAR(20) NOT NULL DEFAULT 'single',
+        amount       INTEGER NOT NULL DEFAULT 0,
+        purchased_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        used_at      TIMESTAMPTZ,
+        listing_id   INTEGER REFERENCES listings(id) ON DELETE SET NULL,
+        expires_at   TIMESTAMPTZ
+      );
+      CREATE INDEX IF NOT EXISTS idx_listing_slots_user ON listing_slots (user_id, used_at);
+      CREATE INDEX IF NOT EXISTS idx_listing_slots_listing ON listing_slots (listing_id);
+
+      -- Purchases: slots and promotions (mock payment for now).
+      CREATE TABLE IF NOT EXISTS payments (
+        id                 SERIAL PRIMARY KEY,
+        user_id            INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        kind               VARCHAR(20) NOT NULL,             -- slot | promotion
+        reference_id       INTEGER,
+        package_id         VARCHAR(30) NOT NULL DEFAULT '',
+        amount             INTEGER NOT NULL,
+        currency           VARCHAR(3) NOT NULL DEFAULT 'ISK',
+        status             VARCHAR(20) NOT NULL DEFAULT 'paid',
+        provider_reference VARCHAR(120) NOT NULL DEFAULT 'mock_payment',
+        created_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_payments_user ON payments (user_id, created_at DESC);
+
+      -- Listings run for 30 days. Grant existing published ads a full 30-day run.
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+      UPDATE listings
+         SET expires_at = now() + interval '30 days'
+       WHERE status = 'published' AND expires_at IS NULL;
+
+      -- Password reset tokens (forgot-password flow)
+      CREATE TABLE IF NOT EXISTS password_resets (
+        id         SERIAL PRIMARY KEY,
+        user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        token_hash VARCHAR(64) NOT NULL,
+        expires_at TIMESTAMPTZ NOT NULL,
+        used_at    TIMESTAMPTZ,
+        emailed_at TIMESTAMPTZ,
+        ip         VARCHAR(60),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_password_resets_token ON password_resets (token_hash);
+      CREATE INDEX IF NOT EXISTS idx_password_resets_user ON password_resets (user_id, created_at DESC);
+
       -- listings columns added to schema.sql after the first deploy but never migrated
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS phone              VARCHAR(32) DEFAULT '';
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS featured           BOOLEAN     NOT NULL DEFAULT FALSE;

@@ -18,6 +18,7 @@ export const ACTION_LABEL = {
   "credit.scan": "Ran credit scan",
   "credit.alert_reviewed": "Alert marked reviewed",
   "credit.alert_dismissed": "Alert dismissed",
+  "password.link": "Generated password reset link",
 };
 export const actionLabel = (a) => ACTION_LABEL[a] || a;
 

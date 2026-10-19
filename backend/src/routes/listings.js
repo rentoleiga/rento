@@ -8,6 +8,14 @@ const config = require("../config");
 const { authRequired, optionalAuth } = require("../middleware/auth");
 const { asyncHandler, validate, err } = require("../middleware/http");
 const { slugify, paginate, publicUser, publicListing } = require("../utils/helpers");
+const {
+  AD_DAYS,
+  PROMO_PRICES,
+  expireListings,
+  reserveSlotForPublish,
+  attachSlot,
+  releaseSlotForListing,
+} = require("../utils/slots");
 
 const router = Router();
 
@@ -194,6 +202,18 @@ router.post(
     const slug = existing.rowCount > 0
       ? `${slugify(req.body.title)}-${Date.now().toString(36).slice(-6)}`
       : slugify(req.body.title);
+
+    let slotReserve = null;
+    if (req.body.publish) {
+      slotReserve = await reserveSlotForPublish(req.user.id, null);
+      if (slotReserve.mode === "none") {
+        throw err(
+          "Öll ókeypis pláss eru í notkun. Kauptu aukapláss til að birta fleiri auglýsingar.",
+          409
+        );
+      }
+    }
+
     const values = buildListingValues(req.body, req.user.id, slug);
     const placeholders = LISTING_COLS.map((_, i) => `$${i + 1}`).join(",");
     const { rows } = await db.query(
@@ -201,6 +221,14 @@ router.post(
       values
     );
     const id = rows[0].id;
+
+    if (req.body.publish) {
+      await db.query(
+        "UPDATE listings SET expires_at = now() + make_interval(days => $1) WHERE id = $2",
+        [AD_DAYS, id]
+      );
+      if (slotReserve.mode === "slot") await attachSlot(slotReserve.slotId, id);
+    }
 
     if (Array.isArray(req.body.gallery)) {
       for (let i = 0; i < req.body.gallery.length; i++) {
@@ -219,8 +247,15 @@ router.get(
   "/:id",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    await expireListings();
     const listing = await getListingOr404(req, res);
     if (!listing) return res.status(404).json({ error: "Listing not found" });
+    if (
+      listing.status === "expired" ||
+      (listing.expires_at && new Date(listing.expires_at) <= new Date())
+    ) {
+      return res.status(404).json({ error: "Listing not found" });
+    }
 
     if (req.user) {
       const fav = await db.query(
@@ -276,6 +311,23 @@ router.put(
     if (req.user.role !== "admin" && req.user.id !== listing.owner_id) {
       throw err("You can only edit your own listings", 403);
     }
+    const publishing = req.body.publish === true;
+    let publishSlot = null;
+    if (publishing) {
+      const held = await db.query(
+        "SELECT 1 FROM listing_slots WHERE listing_id = $1",
+        [listing.id]
+      );
+      if (!held.rowCount) {
+        publishSlot = await reserveSlotForPublish(req.user.id, listing.id);
+        if (publishSlot.mode === "none") {
+          throw err(
+            "Öll ókeypis pláss eru í notkun. Kauptu aukapláss til að birta fleiri auglýsingar.",
+            409
+          );
+        }
+      }
+    }
     const cols = [];
     const vals = [];
     let i = 1;
@@ -318,6 +370,15 @@ router.put(
       `UPDATE listings SET ${cols.join(", ")} WHERE id = $${vals.length + 1}`,
       [...vals, req.params.id]
     );
+    if (publishing) {
+      await db.query(
+        "UPDATE listings SET expires_at = now() + make_interval(days => $1) WHERE id = $2",
+        [AD_DAYS, listing.id]
+      );
+      if (publishSlot && publishSlot.mode === "slot") {
+        await attachSlot(publishSlot.slotId, listing.id);
+      }
+    }
     if (req.body.gallery) {
       await db.query(`DELETE FROM listing_images WHERE listing_id = $1`, [listing.id]);
       const gallery = req.body.gallery.filter(Boolean);
@@ -343,6 +404,7 @@ router.delete(
       throw err("You can only delete your own listings", 403);
     }
     await db.query(`UPDATE listings SET status='deleted' WHERE id = $1`, [listing.id]);
+    await releaseSlotForListing(listing.id);
     res.json({ ok: true });
   })
 );
@@ -360,19 +422,29 @@ router.post(
       throw err("You can only promote your own listings", 403);
     }
     const tierIn = String(req.body.tier || "").toLowerCase();
-    const dbTier = PROMO_TIERS[tierIn];
-    if (!dbTier) throw err("Tier must be silver, gold or platinum", 400);
-    const days = Math.max(1, parseInt(req.body.days, 10) || 7);
+    const pricing = PROMO_PRICES[tierIn];
+    if (!pricing) throw err("Tier must be silver, gold or platinum", 400);
+    if (
+      listing.status !== "published" ||
+      (listing.expires_at && new Date(listing.expires_at) <= new Date())
+    ) {
+      throw err("Only published listings can be promoted", 400);
+    }
+    await db.query(
+      `INSERT INTO payments (user_id, kind, reference_id, package_id, amount)
+       VALUES ($1, 'promotion', $2, $3, $4)`,
+      [req.user.id, listing.id, tierIn, pricing.amount]
+    );
     await db.query(
       `UPDATE listings
          SET promotion_tier = $1,
              promotion_until = now() + make_interval(days => $2),
              updated_at = now()
        WHERE id = $3`,
-      [dbTier, days, listing.id]
+      [PROMO_TIERS[tierIn], pricing.days, listing.id]
     );
     const updated = await getListingOr404(req, res);
-    res.json({ listing: publicListing(updated, { detail: true }) });
+    res.json({ listing: publicListing(updated, { detail: true }), paid: pricing.amount });
   })
 );
 

@@ -8,6 +8,7 @@ const { signToken, authRequired, optionalAuth } = require("../middleware/auth");
 const { asyncHandler, validate, err } = require("../middleware/http");
 const { publicUser, slugify } = require("../utils/helpers");
 const { logAdminAction } = require("../utils/adminLog");
+const { sendMail } = require("../services/mail");
 
 const router = Router();
 
@@ -100,6 +101,138 @@ router.post(
     }
     const token = signToken(user.id);
     res.json({ token, user: publicUser(user) });
+  })
+);
+
+// --- Password reset -------------------------------------------------------
+
+function tokenHash(token) {
+  return crypto.createHash("sha256").update(String(token)).digest("hex");
+}
+
+// Reset links always point at the public web app. In production a legacy
+// localhost WEB_ORIGIN would produce unusable links, so fall back to the
+// canonical domain.
+function webBase() {
+  let origin = (config.webOrigin || "").replace(/\/+$/, "");
+  if (!origin) origin = "http://localhost:5173";
+  if (process.env.NODE_ENV === "production" && /localhost|127\.0\.0\.1/.test(origin)) {
+    origin = "https://www.rento.is";
+  }
+  return origin;
+}
+
+function resetLink(token) {
+  return `${webBase()}/reset-password?token=${encodeURIComponent(token)}`;
+}
+
+// Very small in-memory throttle so the public endpoint cannot be used to spam
+// reset requests. Good enough for a single-instance deployment.
+const forgotHits = new Map();
+function forgotThrottled(key) {
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000;
+  const hits = (forgotHits.get(key) || []).filter((t) => now - t < windowMs);
+  if (hits.length >= 5) {
+    forgotHits.set(key, hits);
+    return true;
+  }
+  hits.push(now);
+  forgotHits.set(key, hits);
+  if (forgotHits.size > 5000) forgotHits.clear();
+  return false;
+}
+
+router.post(
+  "/forgot-password",
+  validate(z.object({ email: z.string().email() })),
+  asyncHandler(async (req, res) => {
+    const email = req.body.email.toLowerCase();
+    if (!forgotThrottled(`${req.ip}|${email}`)) {
+      const { rows } = await db.query(
+        "SELECT id, email, first_name FROM users WHERE email = $1",
+        [email]
+      );
+      if (rows.length) {
+        const user = rows[0];
+        const token = crypto.randomBytes(32).toString("hex");
+        const ins = await db.query(
+          `INSERT INTO password_resets (user_id, token_hash, expires_at, ip)
+           VALUES ($1, $2, now() + interval '60 minutes', $3)
+           RETURNING id`,
+          [user.id, tokenHash(token), req.ip]
+        );
+        const link = resetLink(token);
+        try {
+          const sent = await sendMail({
+            to: user.email,
+            subject: "Endurstilla lykilorð — Rentó",
+            html: `<p>Halló ${user.first_name || ""}!</p>
+<p>Þú baðst um að endurstilla lykilorðið þitt á Rentó. Hlekkurinn gildir í 60 mínútur:</p>
+<p><a href="${link}">${link}</a></p>
+<p>Ef þú baðst ekki um þetta máttu hunsa þennan póst.</p>`,
+            text: `Endurstilla lykilorð á Rentó: ${link} (gildir í 60 mínútur)`,
+          });
+          if (sent.ok) {
+            await db.query("UPDATE password_resets SET emailed_at = now() WHERE id = $1", [
+              ins.rows[0].id,
+            ]);
+          }
+        } catch (e) {
+          console.error("password reset email failed:", e.message);
+        }
+      }
+    }
+    // Always the same answer - never reveal whether an account exists.
+    res.json({
+      ok: true,
+      message:
+        "If the email is registered, a reset link has been sent. Check your spam folder.",
+    });
+  })
+);
+
+router.get(
+  "/reset-password/:token",
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT id FROM password_resets
+       WHERE token_hash = $1 AND used_at IS NULL AND expires_at > now()
+       LIMIT 1`,
+      [tokenHash(req.params.token)]
+    );
+    res.json({ valid: rows.length > 0 });
+  })
+);
+
+router.post(
+  "/reset-password",
+  validate(
+    z.object({
+      token: z.string().min(16),
+      password: z.string().min(8, "Password must be at least 8 characters"),
+    })
+  ),
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT id, user_id FROM password_resets
+       WHERE token_hash = $1 AND used_at IS NULL AND expires_at > now()
+       LIMIT 1`,
+      [tokenHash(req.body.token)]
+    );
+    if (!rows.length) {
+      throw err("This reset link is invalid or has expired", 400);
+    }
+    const passwordHash = await bcrypt.hash(req.body.password, 10);
+    await db.query(
+      "UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2",
+      [passwordHash, rows[0].user_id]
+    );
+    await db.query(
+      "UPDATE password_resets SET used_at = now() WHERE user_id = $1 AND used_at IS NULL",
+      [rows[0].user_id]
+    );
+    res.json({ ok: true });
   })
 );
 

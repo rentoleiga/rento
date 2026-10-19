@@ -1,167 +1,264 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api } from "../api";
 import { useLang } from "../i18n";
 import { useAuth } from "../store";
 
 const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
+const SLOT_PRICE = 490;
 const PACKAGES = [
-  { id: "litill", nameKey: "credit.pk.litill", credits: 999, price: "999", descKey: "credit.pk.desc.litill", popular: false },
-  { id: "vinsaell", nameKey: "credit.pk.vinsaell", credits: 2700, price: "2.499", descKey: "credit.pk.desc.vinsaell", popular: true },
-  { id: "stor", nameKey: "credit.pk.stor", credits: 5800, price: "4.999", descKey: "credit.pk.desc.stor", popular: false },
-  { id: "fyrirtaeki", nameKey: "credit.pk.fyrirtaeki", credits: 12000, price: "9.999", descKey: "credit.pk.desc.fyrirtaeki", popular: false },
+  { id: "pkg3", slots: 3, amount: 1290, per: 430, popular: false },
+  { id: "pkg5", slots: 5, amount: 1990, per: 398, popular: true },
+  { id: "pkg10", slots: 10, amount: 3490, per: 349, popular: false },
+];
+const TIERS = [
+  { key: "silver", amount: 1290, days: 7, features: ["adv.f.silverMarked", "adv.f.silverRank"] },
+  { key: "gold", amount: 1990, days: 14, features: ["adv.f.goldAll", "adv.f.goldRank", "adv.f.goldHome"] },
+  { key: "platinum", amount: 2990, days: 30, features: ["adv.f.platAll", "adv.f.platRank", "adv.f.platZone"] },
 ];
 
-const BOOSTS = [
-  { tier: "silver", kredit: 150, daysKey: "credit.boost.days7", features: ["credit.boost.marked", "credit.boost.above"] },
-  { tier: "gold", kredit: 590, daysKey: "credit.boost.days14", features: ["credit.boost.allSilver", "credit.boost.prioritySilver", "credit.boost.homepage"] },
-  { tier: "platinum", kredit: 1250, daysKey: "credit.boost.days30", features: ["credit.boost.allGold", "credit.boost.maxPriority", "credit.boost.specialArea"] },
-];
+const isActive = (l) =>
+  l.status === "published" && (!l.expiresAt || new Date(l.expiresAt).getTime() > Date.now());
 
 export default function PremiumPage() {
   const { t } = useLang();
   const { user } = useAuth();
-  const buyPath = user ? "/dashboard/credits" : "/login?next=/dashboard/credits";
+  const navigate = useNavigate();
+  const [count, setCount] = useState(1);
+  const [listings, setListings] = useState([]);
+  const [pickId, setPickId] = useState("");
+  const [busy, setBusy] = useState("");
+  const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!user) return;
+    api
+      .get("/api/dashboard/owner/listings")
+      .then((d) => {
+        const active = (d.listings || []).filter(isActive);
+        setListings(active);
+        if (active.length) setPickId(String(active[0].id));
+      })
+      .catch(() => {});
+  }, [user]);
+
+  const needLogin = () => navigate("/login?next=/promote");
+
+  const buySlots = async () => {
+    setNotice("");
+    setError("");
+    if (!user) return needLogin();
+    setBusy("slots");
+    try {
+      const r = await api.post("/api/slots/purchase", { count });
+      setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const buyPackage = async (pkg) => {
+    setNotice("");
+    setError("");
+    if (!user) return needLogin();
+    setBusy(pkg.id);
+    try {
+      const r = await api.post("/api/slots/purchase", { packageId: pkg.id });
+      setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const promote = async (tier) => {
+    setNotice("");
+    setError("");
+    if (!user) return needLogin();
+    if (!pickId) {
+      setError("Veldu auglýsingu fyrst.");
+      return;
+    }
+    setBusy(tier.key);
+    try {
+      await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key });
+      setNotice(`${t(`credit.boost.${tier.key}`)} kynning virkjuð · ${fmt(tier.amount)} kr.`);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy("");
+    }
+  };
 
   return (
     <>
       <section className="hero hero-premium">
         <div className="container">
-          <h1>{t("credit.hero.title")}</h1>
-          <p>{t("credit.hero.sub")}</p>
+          <span className="adv-badge">{t("adv.badge")}</span>
+          <h1>{t("adv.hero.title")}</h1>
+          <p>{t("adv.hero.sub")}</p>
           <div className="credit-stats">
-            <div className="credit-stat"><strong>0%</strong><span>{t("credit.stat.commission")}</span></div>
-            <div className="credit-stat"><strong>3</strong><span>{t("credit.stat.free")}</span></div>
-            <div className="credit-stat"><strong>0</strong><span>{t("credit.stat.sub")}</span></div>
+            <div className="credit-stat"><strong>0%</strong><span>{t("adv.stat.commission")}</span></div>
+            <div className="credit-stat"><strong>3</strong><span>{t("adv.stat.free")}</span></div>
+            <div className="credit-stat"><strong>30</strong><span>{t("adv.stat.days")}</span></div>
           </div>
-          <a href="#kreditpakar" className="btn btn-primary">{t("credit.hero.cta")}</a>
+          <a href="#plass" className="btn btn-primary">{t("adv.hero.cta")}</a>
         </div>
       </section>
 
-      <section className="section">
+      {(notice || error) && (
+        <div className="container" style={{ marginTop: 18 }}>
+          {notice && <div className="form-success">{notice}</div>}
+          {error && <div className="form-error">{error}</div>}
+        </div>
+      )}
+
+      <section className="section" id="plass">
         <div className="container">
-          <div className="perks-grid">
-            <div className="perk-card">
-              <div className="perk-icon">🎁</div>
-              <h3>{t("credit.free.title")}</h3>
-              <p className="muted">{t("credit.free.text")}</p>
+          <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+            <h2>{t("adv.slots.title")}</h2>
+            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 760 }}>{t("adv.slots.sub")}</p>
+          </div>
+
+          <div className="adv-grid" style={{ marginTop: 28 }}>
+            <div className="plan-card plan-free adv-slider">
+              <h3 className="plan-name">{t("adv.slider.title")}</h3>
+              <span className="muted" style={{ fontSize: 13 }}>{t("adv.slider.range")}</span>
+              <div className="adv-stepper">
+                <button type="button" onClick={() => setCount(Math.max(1, count - 1))}>−</button>
+                <strong>{count}</strong>
+                <button type="button" onClick={() => setCount(Math.min(10, count + 1))}>+</button>
+              </div>
+              <div className="plan-price">
+                <strong>{fmt(count * SLOT_PRICE)}</strong>
+                <span className="plan-unit">kr.</span>
+              </div>
+              <div className="credit-per">{fmt(SLOT_PRICE)} kr. á pláss</div>
+              <button className="btn btn-primary btn-block" disabled={!!busy} onClick={buySlots}>
+                {busy === "slots" ? "…" : t("adv.buy.slot")}
+              </button>
             </div>
-            <div className="perk-card">
-              <div className="perk-icon">🪙</div>
-              <h3>{t("credit.credit.title")}</h3>
-              <p className="muted">{t("credit.credit.text")}</p>
-            </div>
-            <div className="perk-card">
-              <div className="perk-icon">🚀</div>
-              <h3>{t("credit.boost.title")}</h3>
-              <p className="muted">{t("credit.boost.text")}</p>
-            </div>
+
+            {PACKAGES.map((p) => (
+              <div key={p.id} className={`plan-card plan-${p.popular ? "gold" : "free"}`}>
+                {p.popular && <div className="plan-ribbon">{t("adv.popular")}</div>}
+                <h3 className="plan-name">{t(`adv.pkg.${p.id}`)}</h3>
+                <div className="credit-per">{t(`adv.pkg.slots`).replace("{n}", p.slots)}</div>
+                <div className="plan-price">
+                  <strong>{fmt(p.amount)}</strong>
+                  <span className="plan-unit">kr.</span>
+                </div>
+                <div className="credit-price">{fmt(p.per)} kr. á pláss</div>
+                <ul className="plan-features">
+                  <li><span className="plan-check">✓</span><span>{t("adv.f.days")}</span></li>
+                  <li><span className="plan-check">✓</span><span>{t("adv.f.keep")}</span></li>
+                  <li><span className="plan-check">✓</span><span>{t("adv.f.noSub")}</span></li>
+                </ul>
+                <button
+                  className={`btn ${p.popular ? "btn-primary" : "btn-outline"} btn-block`}
+                  disabled={!!busy}
+                  onClick={() => buyPackage(p)}
+                >
+                  {busy === p.id ? "…" : t("adv.buy.pkg")}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* What is credit */}
       <section className="section section-flush" style={{ background: "#f6f8f7" }}>
         <div className="container">
           <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-            <h2>{t("credit.what.title")}</h2>
-            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 720 }}>{t("credit.what.text")}</p>
-          </div>
-          <div className="perks-grid" style={{ marginTop: 24 }}>
-            <div className="perk-card"><div className="perk-icon">♾️</div><h3>{t("credit.what.k1")}</h3><p className="muted">{t("credit.what.k1t")}</p></div>
-            <div className="perk-card"><div className="perk-icon">🚫</div><h3>{t("credit.what.k2")}</h3><p className="muted">{t("credit.what.k2t")}</p></div>
-            <div className="perk-card"><div className="perk-icon">🧾</div><h3>{t("credit.what.k3")}</h3><p className="muted">{t("credit.what.k3t")}</p></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Kreditpakar */}
-      <section className="section" id="kreditpakar">
-        <div className="container">
-          <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-            <h2>{t("credit.pk.title")}</h2>
-          </div>
-          <div className="plans-grid" style={{ marginTop: 28 }}>
-            {PACKAGES.map((p) => (
-              <div key={p.id} className={`plan-card plan-${p.id === "fyrirtaeki" ? "platinum" : p.popular ? "gold" : "free"}`}>
-                {p.popular && <div className="plan-ribbon">{t("credit.pk.popular")}</div>}
-                <h3 className="plan-name">{t(p.nameKey)}</h3>
-                <div className="plan-price">
-                  <strong>{fmt(p.credits)}</strong>
-                  <span className="plan-unit">{t("credit.pk.kredit")}</span>
-                </div>
-                <div className="credit-price">{p.price} {t("credit.pk.currency")}</div>
-                <div className="credit-per">{t(p.descKey)}</div>
-                <Link to={buyPath} className={`btn ${p.popular || p.id === "fyrirtaeki" ? "btn-primary" : "btn-outline"} btn-block`}>{t("credit.pk.buy")}</Link>
-              </div>
-            ))}
-          </div>
-
-          {/* How slots work */}
-          <div className="section-head" style={{ justifyContent: "center", marginTop: 56 }}>
-            <h2>{t("credit.slots.title")}</h2>
+            <h2>{t("adv.how.title")}</h2>
           </div>
           <div className="credit-steps">
-            <div className="credit-step"><span className="credit-step-n">1</span><h3>{t("credit.slots.s1t")}</h3><p className="muted">{t("credit.slots.s1")}</p></div>
-            <div className="credit-step"><span className="credit-step-n">2</span><h3>{t("credit.slots.s2t")}</h3><p className="muted">{t("credit.slots.s2")}</p></div>
-            <div className="credit-step"><span className="credit-step-n">3</span><h3>{t("credit.slots.s3t")}</h3><p className="muted">{t("credit.slots.s3")}</p></div>
+            <div className="credit-step">
+              <span className="credit-step-n">1</span>
+              <h3>{t("adv.how.1t")}</h3>
+              <p className="muted">{t("adv.how.1")}</p>
+              <span className="adv-tag">{t("adv.how.1tag")}</span>
+            </div>
+            <div className="credit-step">
+              <span className="credit-step-n">2</span>
+              <h3>{t("adv.how.2t")}</h3>
+              <p className="muted">{t("adv.how.2")}</p>
+              <span className="adv-tag">{t("adv.how.2tag")}</span>
+            </div>
+            <div className="credit-step">
+              <span className="credit-step-n">3</span>
+              <h3>{t("adv.how.3t")}</h3>
+              <p className="muted">{t("adv.how.3")}</p>
+              <span className="adv-tag">{t("adv.how.3tag")}</span>
+            </div>
           </div>
-          <p className="credit-example"><strong>{t("credit.slots.example")}</strong></p>
         </div>
       </section>
 
-      {/* Boost */}
       <section className="section section-flush" style={{ background: "#0f2b24", color: "#e6f6f0" }}>
         <div className="container">
           <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-            <h2 style={{ color: "#fff" }}>{t("credit.boostPage.title")}</h2>
-            <p style={{ margin: "8px 0 0", maxWidth: 680, color: "#bfe3d8" }}>{t("credit.boostPage.sub")}</p>
+            <span className="adv-badge adv-badge-light">{t("adv.boost.badge")}</span>
+            <h2 style={{ color: "#fff" }}>{t("adv.boost.title")}</h2>
+            <p style={{ margin: "8px 0 0", maxWidth: 700, color: "#bfe3d8" }}>{t("adv.boost.sub")}</p>
           </div>
+
+          {user && listings.length > 0 ? (
+            <div className="adv-pick">
+              <label style={{ color: "#bfe3d8" }}>{t("adv.boost.pick")}</label>
+              <select value={pickId} onChange={(e) => setPickId(e.target.value)}>
+                {listings.map((l) => (
+                  <option key={l.id} value={l.id}>{l.title}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <p className="muted" style={{ textAlign: "center", marginTop: 14, color: "#bfe3d8" }}>
+              {t("adv.boost.none")}{" "}
+              <Link to="/dashboard/listings/new" style={{ color: "#fff", textDecoration: "underline" }}>
+                {t("adv.cta.btn")}
+              </Link>
+            </p>
+          )}
+
           <div className="plans-grid" style={{ marginTop: 28 }}>
-            {BOOSTS.map((b) => (
-              <div key={b.tier} className={`plan-card plan-${b.tier}`}>
-                <h3 className="plan-name">{t(`credit.boost.${b.tier}`)}</h3>
+            {TIERS.map((tier) => (
+              <div key={tier.key} className={`plan-card plan-${tier.key}`}>
+                <h3 className="plan-name">{t(`credit.boost.${tier.key}`)}</h3>
                 <div className="plan-price">
-                  <strong>{fmt(b.kredit)}</strong>
-                  <span className="plan-unit">{t("credit.boost.kredit")}</span>
+                  <strong>{fmt(tier.amount)}</strong>
+                  <span className="plan-unit">kr.</span>
                 </div>
-                <div className="credit-price">{t(b.daysKey)}</div>
+                <div className="credit-price">{t(`adv.days.${tier.days}`)}</div>
                 <ul className="plan-features">
-                  {b.features.map((k) => (
-                    <li key={k}><span className="plan-check" aria-hidden="true">✓</span><span>{t(k)}</span></li>
+                  {tier.features.map((k) => (
+                    <li key={k}><span className="plan-check">✓</span><span>{t(k)}</span></li>
                   ))}
                 </ul>
-                <Link to={buyPath} className="btn btn-primary btn-block">{t("credit.dash.boostListing")}</Link>
+                <button
+                  className="btn btn-primary btn-block"
+                  disabled={!!busy || (!!user && !listings.length)}
+                  onClick={() => promote(tier)}
+                >
+                  {busy === tier.key ? "…" : `${t("adv.buyTier")} ${t(`credit.boost.${tier.key}`)}`}
+                </button>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Extra services: renew / add-ons / golden */}
-      <section className="section">
-        <div className="container">
-          <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-            <h2>{t("credit.extra.title")}</h2>
-            <p className="muted" style={{ margin: "8px 0 0", maxWidth: 720 }}>{t("credit.extra.sub")}</p>
-          </div>
-          <div className="perks-grid" style={{ marginTop: 24 }}>
-            <div className="perk-card"><div className="perk-icon">🔁</div><h3>{t("credit.extra.renew.title")}</h3><p className="muted">{t("credit.extra.renew.text")}</p></div>
-            <div className="perk-card"><div className="perk-icon">🧩</div><h3>{t("credit.extra.addons.title")}</h3><p className="muted">{t("credit.extra.addons.text")}</p></div>
-            <div className="perk-card"><div className="perk-icon">✨</div><h3>{t("credit.extra.golden.title")}</h3><p className="muted">{t("credit.extra.golden.text")}</p></div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
       <section className="section">
         <div className="container">
           <div className="detail-section" style={{ textAlign: "center" }}>
-            <h2>{t("credit.cta.title")}</h2>
-            <p className="muted">{t("credit.cta.sub")}</p>
+            <h2>{t("adv.cta.title")}</h2>
+            <p className="muted">{t("adv.cta.sub")}</p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
-              <Link to="/dashboard/listings/new" className="btn btn-primary">{t("credit.cta.list")}</Link>
-              <Link to="/how-it-works" className="btn btn-outline">{t("credit.cta.how")}</Link>
+              <Link to="/dashboard/listings/new" className="btn btn-primary">{t("adv.cta.btn")}</Link>
             </div>
           </div>
         </div>

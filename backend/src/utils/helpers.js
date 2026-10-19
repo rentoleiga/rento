@@ -70,6 +70,7 @@ function publicListing(row, opts = {}) {
     promotionTier: row.promotion_tier,
     promotionUntil: row.promotion_until,
     goldenUntil: row.golden_until,
+    expiresAt: row.expires_at || null,
     addonHighlight: !!row.addon_highlight,
     addonLink: row.addon_link || null,
     addonVideo: row.addon_video || null,

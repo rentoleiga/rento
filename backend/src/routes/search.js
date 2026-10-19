@@ -3,6 +3,7 @@ const db = require("../db/pool");
 const { optionalAuth } = require("../middleware/auth");
 const { asyncHandler } = require("../middleware/http");
 const { paginate, publicListing } = require("../utils/helpers");
+const { expireListings } = require("../utils/slots");
 
 const router = Router();
 
@@ -39,6 +40,7 @@ router.get(
   "/",
   optionalAuth,
   asyncHandler(async (req, res) => {
+    await expireListings();
     const {
       keyword,
       category,

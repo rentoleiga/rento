@@ -13,4 +13,6 @@ module.exports = {
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
   googleRedirectUri:
     process.env.GOOGLE_REDIRECT_URI || "http://localhost:4000/api/auth/google/callback",
+  resendApiKey: process.env.RESEND_API_KEY || "",
+  mailFrom: process.env.MAIL_FROM || "Rentó <no-reply@rento.is>",
 };

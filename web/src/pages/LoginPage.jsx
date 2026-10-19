@@ -58,6 +58,7 @@ export default function LoginPage() {
           <label>{t("auth.password")}</label>
           <input type="password" required value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })} />
+          <Link className="forgot-link" to="/forgot-password">{t("auth.forgot")}</Link>
         </div>
         <button className="btn btn-primary btn-block" disabled={busy}>
           {busy ? t("search.loading") : t("auth.login")}
