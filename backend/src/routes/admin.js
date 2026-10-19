@@ -899,7 +899,13 @@ router.post(
 
     let base = (config.webOrigin || "").replace(/\/+$/, "");
     if (!base) base = "https://www.rento.is";
-    if (/localhost|127\.0\.0\.1/.test(base)) base = "https://www.rento.is";
+    try {
+      const u = new URL(base);
+      const local = /^(localhost|127\.0\.0\.1)$/.test(u.hostname);
+      base = local ? "https://www.rento.is" : `https://${u.hostname}`;
+    } catch (e) {
+      if (/localhost|127\.0\.0\.1/.test(base)) base = "https://www.rento.is";
+    }
     const link = `${base}/reset-password?token=${encodeURIComponent(token)}`;
 
     await logAdminAction({

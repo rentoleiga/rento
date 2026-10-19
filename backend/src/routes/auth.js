@@ -116,10 +116,17 @@ function tokenHash(token) {
 function webBase() {
   let origin = (config.webOrigin || "").replace(/\/+$/, "");
   if (!origin) origin = "http://localhost:5173";
-  if (process.env.NODE_ENV === "production" && /localhost|127\.0\.0\.1/.test(origin)) {
-    origin = "https://www.rento.is";
+  try {
+    const u = new URL(origin);
+    const local = /^(localhost|127\.0\.0\.1)$/.test(u.hostname);
+    if (local) {
+      return process.env.NODE_ENV === "production" ? "https://www.rento.is" : origin;
+    }
+    u.protocol = "https:";
+    return `${u.protocol}//${u.hostname}`;
+  } catch (e) {
+    return origin;
   }
-  return origin;
 }
 
 function resetLink(token) {
