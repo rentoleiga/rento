@@ -24,7 +24,6 @@ export default function PremiumPage() {
   const { t } = useLang();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [count, setCount] = useState(1);
   const [listings, setListings] = useState([]);
   const [pickId, setPickId] = useState("");
   const [busy, setBusy] = useState("");
@@ -45,13 +44,13 @@ export default function PremiumPage() {
 
   const needLogin = () => navigate("/login?next=/promote");
 
-  const buySlots = async () => {
+  const buySlot = async () => {
     setNotice("");
     setError("");
     if (!user) return needLogin();
     setBusy("slots");
     try {
-      const r = await api.post("/api/slots/purchase", { count });
+      const r = await api.post("/api/slots/purchase", { count: 1 });
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
@@ -125,20 +124,20 @@ export default function PremiumPage() {
           </div>
 
           <div className="adv-grid" style={{ marginTop: 28 }}>
-            <div className="plan-card plan-free adv-slider">
-              <h3 className="plan-name">{t("adv.slider.title")}</h3>
-              <span className="muted" style={{ fontSize: 13 }}>{t("adv.slider.range")}</span>
-              <div className="adv-stepper">
-                <button type="button" onClick={() => setCount(Math.max(1, count - 1))}>−</button>
-                <strong>{count}</strong>
-                <button type="button" onClick={() => setCount(Math.min(10, count + 1))}>+</button>
-              </div>
+            <div className="plan-card plan-free">
+              <h3 className="plan-name">{t("adv.single.title")}</h3>
+              <div className="credit-per">{t("adv.single.sub")}</div>
               <div className="plan-price">
-                <strong>{fmt(count * SLOT_PRICE)}</strong>
+                <strong>{fmt(SLOT_PRICE)}</strong>
                 <span className="plan-unit">kr.</span>
               </div>
-              <div className="credit-per">{fmt(SLOT_PRICE)} kr. á pláss</div>
-              <button className="btn btn-primary btn-block" disabled={!!busy} onClick={buySlots}>
+              <div className="credit-price">{t("adv.single.unit")}</div>
+              <ul className="plan-features">
+                <li><span className="plan-check">✓</span><span>{t("adv.f.days")}</span></li>
+                <li><span className="plan-check">✓</span><span>{t("adv.f.keep")}</span></li>
+                <li><span className="plan-check">✓</span><span>{t("adv.f.noSub")}</span></li>
+              </ul>
+              <button className="btn btn-outline btn-block" disabled={!!busy} onClick={buySlot}>
                 {busy === "slots" ? "…" : t("adv.buy.slot")}
               </button>
             </div>
