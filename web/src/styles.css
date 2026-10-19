@@ -3171,4 +3171,4 @@ a:hover {
   background: #123a30;
   color: #fff;
   min-width: 260px;
-}
+}.plain-list .title .badge-tier { margin-left: 8px; }

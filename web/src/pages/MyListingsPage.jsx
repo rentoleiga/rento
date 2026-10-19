@@ -16,6 +16,10 @@ const daysLabel = (iso) => {
   if (d <= 0) return "rennur út í dag";
   return `rennur út eftir ${d} ${d === 1 ? "dag" : "daga"}`;
 };
+const fmtDate = (iso) => {
+  const d = new Date(iso);
+  return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
+};
 
 export default function MyListingsPage() {
   const [rows, setRows] = useState([]);
@@ -138,7 +142,7 @@ export default function MyListingsPage() {
                 <div className="sub">
                   {l.viewCount} skoðanir · {l.favoriteCount} vistuð
                   {l.status === "published" && l.expiresAt && ` · ${daysLabel(l.expiresAt)}`}
-                  {activePromo(l) && ` · kynning til ${new Date(l.promotionUntil).toLocaleDateString("is-IS")}`}
+                  {activePromo(l) && ` · kynning til ${fmtDate(l.promotionUntil)}`}
                 </div>
               </div>
               <span className={`status-pill status-${l.status}`}>
