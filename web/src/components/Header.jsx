@@ -137,6 +137,7 @@ export default function Header() {
   };
 
   const initial = ((user?.firstName || user?.email || "R")[0] || "R").toUpperCase();
+  const badgeCount = Math.max(unreadNotifications, unreadMessages);
 
   const mainLinks = [
     { to: "/dashboard/listings", label: t("dash.nav.listings"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>) },
@@ -190,7 +191,7 @@ export default function Header() {
               <div className="notif-wrap" ref={notifRef}>
                 <button className={`icon-btn ${notifOpen ? "active" : ""}`} title="Tilkynningar" onClick={toggleNotifs} aria-label="Tilkynningar" aria-expanded={notifOpen}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-                  {unreadNotifications > 0 && <span className="unread-badge">{unreadNotifications > 9 ? "9+" : unreadNotifications}</span>}
+                  {badgeCount > 0 && <span className="unread-badge">{badgeCount > 9 ? "9+" : badgeCount}</span>}
                 </button>
                 {notifOpen && (
                   <div className="notif-panel">
@@ -218,7 +219,7 @@ export default function Header() {
               </div>
               <button className={`avatar-btn ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Account" aria-expanded={menuOpen}>
                 <span className="avatar-face">{initial}</span>
-                {unreadNotifications > 0 && <span className="unread-badge avatar-badge">{unreadNotifications > 9 ? "9+" : unreadNotifications}</span>}
+                {badgeCount > 0 && <span className="unread-badge avatar-badge">{badgeCount > 9 ? "9+" : badgeCount}</span>}
               </button>
             </div>
           ) : (
