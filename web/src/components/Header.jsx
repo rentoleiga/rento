@@ -138,6 +138,20 @@ export default function Header() {
 
   const initial = ((user?.firstName || user?.email || "R")[0] || "R").toUpperCase();
   const badgeCount = Math.max(unreadNotifications, unreadMessages);
+  const notifLabel = (n) => ({
+    new_message: "Ný skilaboð",
+    booking_request: "Ný bókunabeiðni",
+    booking_confirmed: "Ný bókun",
+    booking_approved: "Bókun samþykkt",
+    booking_rejected: "Bókun hafnað",
+    payment_success: "Greiðsla móttekin",
+    new_review: "Ný umsögn",
+    review_reply: "Svar við umsögn",
+    saved_search_match: "Ný auglýsing passar við leit",
+    listing_expiring: "Auglýsing rennur út",
+    listing_expired: "Auglýsing runnin út",
+    phone_verified: "Símanúmer staðfest",
+  }[n.type] || n.title);
 
   const mainLinks = [
     { to: "/dashboard/listings", label: t("dash.nav.listings"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>) },
@@ -182,10 +196,10 @@ export default function Header() {
         <div className="header-actions">
           {user ? (
             <div className="user-wrap">
-              <Link to="/dashboard/listings/new" className="icon-btn" title={t("nav.list")} onClick={closeMenu}>
+              <Link to="/dashboard/listings/new" className="icon-btn header-quick" title={t("nav.list")} onClick={closeMenu}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
               </Link>
-              <Link to="/favorites" className="icon-btn" title={t("dash.nav.favorites")} onClick={closeMenu}>
+              <Link to="/favorites" className="icon-btn header-quick" title={t("dash.nav.favorites")} onClick={closeMenu}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               </Link>
               <div className="notif-wrap" ref={notifRef}>
@@ -205,14 +219,17 @@ export default function Header() {
                       ) : notifs.length === 0 ? (
                         <div className="notif-empty">Engar tilkynningar</div>
                       ) : (
-                        notifs.map((n) => (
+                        notifs.slice(0, 8).map((n) => (
                           <button key={n.id} className={`notif-item ${n.read_at ? "" : "unread"}`} onClick={() => openNotif(n)}>
-                            <span className="notif-item-title">{n.title}</span>
+                            <span className="notif-item-title">{notifLabel(n)}</span>
                             {n.body && <span className="notif-item-body">{n.body}</span>}
                             <span className="notif-item-time">{timeAgo(n.created_at)}</span>
                           </button>
                         ))
                       )}
+                    </div>
+                    <div className="notif-foot">
+                      <Link to="/notifications" onClick={closeMenu}>Sjá allar tilkynningar</Link>
                     </div>
                   </div>
                 )}

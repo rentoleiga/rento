@@ -82,8 +82,6 @@ async function createBooking(user, listingId, body) {
     await notify(listing.owner_id, "booking_request", "New booking request",
       `${who} requested "${listing.title}"`, { bookingId });
   }
-  await notify(user.id, "booking_created", "Booking request sent",
-    `Your booking request for "${listing.title}" was sent to the owner.`, { bookingId });
 
   const booking = await getBookingRow(bookingId);
   return booking;

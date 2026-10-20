@@ -11,11 +11,33 @@ function wrap(body) {
 async function notify(userId, type, title, body, data = {}) {
   if (!userId) return;
   try {
-    await db.query(
-      `INSERT INTO notifications (user_id, type, title, body, data)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [userId, type, title, body, JSON.stringify(data)]
-    );
+    let deduped = false;
+    if (type === "new_message" && data.conversationId) {
+      const upd = await db.query(
+        `UPDATE notifications
+         SET title = $3, body = $4, created_at = now()
+         WHERE user_id = $1 AND type = $2 AND read_at IS NULL
+           AND data->>'conversationId' = $5`,
+        [userId, type, title, body, String(data.conversationId)]
+      );
+      deduped = upd.rowCount > 0;
+    } else if (data.bookingId) {
+      const upd = await db.query(
+        `UPDATE notifications
+         SET title = $3, body = $4, created_at = now()
+         WHERE user_id = $1 AND type = $2 AND read_at IS NULL
+           AND data->>'bookingId' = $5`,
+        [userId, type, title, body, String(data.bookingId)]
+      );
+      deduped = upd.rowCount > 0;
+    }
+    if (!deduped) {
+      await db.query(
+        `INSERT INTO notifications (user_id, type, title, body, data)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [userId, type, title, body, JSON.stringify(data)]
+      );
+    }
   } catch (err) {
     console.error("notify failed:", err.message);
   }

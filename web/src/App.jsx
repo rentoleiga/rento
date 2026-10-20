@@ -36,6 +36,7 @@ import MyPaymentsPage from "./pages/MyPaymentsPage";
 import SavedSearchesPage from "./pages/SavedSearchesPage";
 import ListingStatsPage from "./pages/ListingStatsPage";
 import ReceiptPage from "./pages/ReceiptPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./store";
 import { trackVisit, startTracking } from "./lib/track";
@@ -93,6 +94,7 @@ export default function App() {
           <Route path="/favorites" element={<RequireAuth><FavoritesPage /></RequireAuth>} />
           <Route path="/messages" element={<RequireAuth><MessagesPage /></RequireAuth>} />
           <Route path="/messages/:conversationId" element={<RequireAuth><ConversationPage /></RequireAuth>} />
+          <Route path="/notifications" element={<RequireAuth><NotificationsPage /></RequireAuth>} />
           <Route path="/users/:id" element={<ProfilePage />} />
           <Route path="/promote" element={<PremiumPage />} />
           <Route path="/how-it-works" element={<HowItWorksPage />} />

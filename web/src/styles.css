@@ -3415,3 +3415,55 @@ body.has-cookie-banner { padding-bottom: 120px; }
 @media (max-width: 640px) {
   .notif-panel { position: fixed; top: 108px; left: 10px; right: 10px; width: auto; }
 }
+.notif-foot {
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  background: var(--bg-soft);
+}
+.notif-foot a { font-size: 13px; font-weight: 700; color: var(--primary); }
+
+.notif-page { max-width: 760px; }
+.notif-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.notif-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.notif-filter {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.notif-filter:hover { border-color: var(--primary); color: var(--primary); }
+.notif-filter.active { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+.notif-history {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.notif-row { padding-left: 20px; }
+.notif-row.unread::before { left: 8px; }
+
+@media (max-width: 640px) {
+  .brand, .brand-img { width: 108px; min-width: 108px; }
+  .header-quick { display: none; }
+  .notif-panel { top: 104px; }
+  .notif-page-head { flex-direction: column; gap: 10px; }
+  .notif-filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .notif-filter { flex: 0 0 auto; }
+  .notif-row { padding-left: 20px; }
+  .cookie-banner { left: 8px; right: 8px; bottom: 8px; }
+  .cookie-banner-inner { padding: 12px; gap: 10px; }
+  .cookie-banner-inner p { font-size: 12.5px; line-height: 1.4; flex-basis: 100%; }
+  .cookie-actions { gap: 8px; }
+  .cookie-actions .btn { padding: 8px 10px; font-size: 13px; }
+}
