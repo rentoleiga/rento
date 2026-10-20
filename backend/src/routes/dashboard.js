@@ -82,6 +82,11 @@ router.get(
        ORDER BY b.created_at DESC LIMIT 200`,
       [req.user.id]
     );
+    await db.query(
+      `UPDATE notifications SET read_at = now()
+       WHERE user_id = $1 AND read_at IS NULL AND (type LIKE 'booking%' OR type = 'payment_success')`,
+      [req.user.id]
+    );
     res.json({
       bookings: rows.map((r) => ({
         ...serializeBooking({
@@ -116,6 +121,11 @@ router.get(
        WHERE ${conds.join(" AND ")}
        ORDER BY b.created_at DESC LIMIT 200`,
       params
+    );
+    await db.query(
+      `UPDATE notifications SET read_at = now()
+       WHERE user_id = $1 AND read_at IS NULL AND (type LIKE 'booking%' OR type = 'payment_success')`,
+      [req.user.id]
     );
     res.json({
       bookings: rows.map((r) =>

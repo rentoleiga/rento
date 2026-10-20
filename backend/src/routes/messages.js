@@ -115,6 +115,12 @@ router.get(
        WHERE conversation_id = $1 AND receiver_id = $2 AND read_at IS NULL`,
       [req.params.id, req.user.id]
     );
+    await db.query(
+      `UPDATE notifications SET read_at = now()
+       WHERE user_id = $2 AND read_at IS NULL AND type = 'new_message'
+         AND data->>'conversationId' = $1`,
+      [String(req.params.id), req.user.id]
+    );
     const { rows } = await db.query(
       `SELECT id, sender_id, receiver_id, message, attachment, read_at, created_at
        FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC LIMIT 500`,

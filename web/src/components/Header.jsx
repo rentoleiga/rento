@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
-import { api, formatPrice } from "../api";
+import { api, formatPrice, timeAgo } from "../api";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -15,8 +15,12 @@ export default function Header() {
   const [revenue, setRevenue] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifs, setNotifs] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const notifRef = useRef(null);
 
-  const closeMenu = useCallback(() => { setMenuOpen(false); }, []);
+  const closeMenu = useCallback(() => { setMenuOpen(false); setNotifOpen(false); }, []);
 
   useEffect(() => {
     closeMenu();
@@ -53,6 +57,68 @@ export default function Header() {
     }
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!notifOpen) return;
+    const onDoc = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
+    };
+    document.addEventListener("pointerdown", onDoc);
+    return () => document.removeEventListener("pointerdown", onDoc);
+  }, [notifOpen]);
+
+  const loadNotifs = () => {
+    setNotifLoading(true);
+    api.get("/api/notifications")
+      .then((d) => setNotifs(d.notifications || []))
+      .catch(() => {})
+      .finally(() => setNotifLoading(false));
+  };
+
+  const toggleNotifs = () => {
+    const next = !notifOpen;
+    setNotifOpen(next);
+    setMenuOpen(false);
+    if (next) loadNotifs();
+  };
+
+  const notifData = (n) => {
+    try {
+      return typeof n.data === "string" ? JSON.parse(n.data) : (n.data || {});
+    } catch {
+      return {};
+    }
+  };
+
+  const openNotif = async (n) => {
+    if (!n.read_at) {
+      try {
+        await api.put(`/api/notifications/${n.id}/read`);
+        setNotifs((prev) => prev.map((x) => (x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x)));
+        setUnreadNotifications((c) => Math.max(0, c - 1));
+      } catch {}
+    }
+    const data = notifData(n);
+    setNotifOpen(false);
+    if (data.conversationId) {
+      navigate(`/messages/${data.conversationId}`);
+    } else if (data.bookingId || n.type?.startsWith("booking") || n.type === "payment_success") {
+      navigate("/dashboard/bookings");
+    } else if (n.type === "new_review") {
+      navigate(`/users/${user.id}`);
+    } else if (n.type === "saved_search_match" || n.type === "search_alert") {
+      navigate("/dashboard/searches");
+    }
+  };
+
+  const markAllNotifs = async () => {
+    try {
+      await api.put("/api/notifications/read-all");
+      const now = new Date().toISOString();
+      setNotifs((prev) => prev.map((x) => ({ ...x, read_at: x.read_at || now })));
+      setUnreadNotifications(0);
+    } catch {}
+  };
 
   const submitHeaderSearch = (e) => {
     e.preventDefault();
@@ -114,10 +180,35 @@ export default function Header() {
               <Link to="/favorites" className="icon-btn" title={t("dash.nav.favorites")} onClick={closeMenu}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               </Link>
-              <Link to="/messages" className="icon-btn" title={t("nav.messages")} onClick={closeMenu}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-                {unreadNotifications > 0 && <span className="unread-badge">{unreadNotifications > 9 ? "9+" : unreadNotifications}</span>}
-              </Link>
+              <div className="notif-wrap" ref={notifRef}>
+                <button className={`icon-btn ${notifOpen ? "active" : ""}`} title="Tilkynningar" onClick={toggleNotifs} aria-label="Tilkynningar" aria-expanded={notifOpen}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+                  {unreadNotifications > 0 && <span className="unread-badge">{unreadNotifications > 9 ? "9+" : unreadNotifications}</span>}
+                </button>
+                {notifOpen && (
+                  <div className="notif-panel">
+                    <div className="notif-head">
+                      <strong>Tilkynningar</strong>
+                      {unreadNotifications > 0 && <button className="linklike" onClick={markAllNotifs}>Merkja allt lesið</button>}
+                    </div>
+                    <div className="notif-list">
+                      {notifLoading ? (
+                        <div className="notif-empty">Hleður…</div>
+                      ) : notifs.length === 0 ? (
+                        <div className="notif-empty">Engar tilkynningar</div>
+                      ) : (
+                        notifs.map((n) => (
+                          <button key={n.id} className={`notif-item ${n.read_at ? "" : "unread"}`} onClick={() => openNotif(n)}>
+                            <span className="notif-item-title">{n.title}</span>
+                            {n.body && <span className="notif-item-body">{n.body}</span>}
+                            <span className="notif-item-time">{timeAgo(n.created_at)}</span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
               <button className={`avatar-btn ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Account" aria-expanded={menuOpen}>
                 <span className="avatar-face">{initial}</span>
                 {unreadNotifications > 0 && <span className="unread-badge avatar-badge">{unreadNotifications > 9 ? "9+" : unreadNotifications}</span>}
