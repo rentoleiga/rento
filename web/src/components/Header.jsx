@@ -260,7 +260,7 @@ export default function Header() {
                   <span>{revenue != null ? formatPrice(revenue, "ISK") : "…"}</span>
                 </div>
               </div>
-              <Link to="/" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Heim</Link>
+              <Link to="/dashboard" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Heim</Link>
               {mainLinks.map((l) => (
                 <Link key={l.to} to={l.to} onClick={closeMenu}>{l.icon}{l.label}
                   {l.badge > 0 && <span className="drawer-badge">{l.badge > 9 ? "9+" : l.badge}</span>}
