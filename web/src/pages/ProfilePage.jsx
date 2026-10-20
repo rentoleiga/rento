@@ -12,6 +12,14 @@ export default function ProfilePage() {
   const { t } = useLang();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [referral, setReferral] = useState(null);
+  const [phoneOpen, setPhoneOpen] = useState(false);
+  const [phoneCode, setPhoneCode] = useState("");
+  const [phoneMsg, setPhoneMsg] = useState("");
+  const [replyFor, setReplyFor] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [replyMsg, setReplyMsg] = useState("");
   const [reviews, setReviews] = useState([]);
   const [listings, setListings] = useState([]);
   const [error, setError] = useState("");
@@ -32,12 +40,42 @@ export default function ProfilePage() {
 
   useEffect(() => {
     api.get(`/api/users/${id}`)
-      .then((d) => { setProfile(d.user); setListings(d.listings || []); })
+      .then((d) => { setProfile(d.user); setStats(d.stats || null); setListings(d.listings || []); })
       .catch((e) => setError(e.message));
     api.get(`/api/reviews/user/${id}`)
       .then((d) => setReviews(d.reviews || []))
       .catch(() => {});
   }, [id]);
+
+  useEffect(() => {
+    if (!user || !id || String(user.id) !== String(id)) return;
+    api.get("/api/users/me/referrals").then(setReferral).catch(() => {});
+  }, [user, id]);
+
+  const verifyPhone = async () => {
+    setPhoneMsg("");
+    try {
+      await api.post("/api/users/me/verify-phone", { code: phoneCode });
+      setProfile((p) => ({ ...p, phoneVerified: true }));
+      setUser((u) => ({ ...u, phoneVerified: true }));
+      setPhoneOpen(false);
+      setPhoneCode("");
+    } catch (e) {
+      setPhoneMsg(e.message);
+    }
+  };
+
+  const sendReply = async () => {
+    setReplyMsg("");
+    try {
+      await api.put(`/api/reviews/${replyFor.id}/reply`, { reply: replyText.trim() });
+      setReviews((rs) => rs.map((r) => (r.id === replyFor.id ? { ...r, ownerReply: replyText.trim() } : r)));
+      setReplyFor(null);
+      setReplyText("");
+    } catch (e) {
+      setReplyMsg(e.message);
+    }
+  };
 
   if (error) return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
   if (!profile) return <div className="container section"><div className="empty">Hleður…</div></div>;
@@ -166,9 +204,17 @@ export default function ProfilePage() {
             <span><StarRating rating={profile.rating} /> {Number(profile.rating).toFixed(1)} ({profile.reviewCount})</span>
             {profile.identityVerified && <span>Auðkenni staðfest</span>}
             {profile.businessVerified && <span>Fyrirtæki staðfest</span>}
+            {profile.phoneVerified && <span>Sími staðfestur</span>}
             {profile.responseRate > 0 && <span>{profile.responseRate}% svarhlutfall</span>}
             <span className="muted">Meðlimur síðan {timeAgo(profile.memberSince)}</span>
           </div>
+          {stats && (
+            <div className="muted" style={{ fontSize: 13, marginTop: 4 }}>
+              {stats.ownerBookings.total} bókanir sem leigusali
+              {stats.ownerBookings.completed ? ` · ${stats.ownerBookings.completed} lokið` : ""}
+              {" · "}{stats.renterBookings.total} sem leigjandi
+            </div>
+          )}
           {user && user.id !== profile.id && listings.length > 0 && (
             <button className="btn btn-outline" style={{ marginTop: 12 }} onClick={() => startMessage(listings[0])}>
               {t("listing.sendMessage")}
@@ -182,6 +228,11 @@ export default function ProfilePage() {
               <button className="btn btn-outline" onClick={openPw}>
                 Breyta lykilorði
               </button>
+              {!profile.phoneVerified && (
+                <button className="btn btn-outline" onClick={() => { setPhoneOpen(true); setPhoneMsg(""); }}>
+                  Staðfesta síma
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -218,9 +269,83 @@ export default function ProfilePage() {
               <p className="muted mb0" style={{ marginTop: 6, fontSize: 13 }}>{r.rating}/5 — engin athugasemd</p>
             )}
             <div className="muted" style={{ fontSize: 13, marginTop: 4 }}>fyrir &ldquo;{r.listingTitle}&rdquo;</div>
+            {r.ownerReply && (
+              <div style={{ marginTop: 8, paddingLeft: 12, borderLeft: "3px solid var(--border, #e5e7eb)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>Svar eiganda</div>
+                <p className="mb0" style={{ fontSize: 14 }}>{r.ownerReply}</p>
+              </div>
+            )}
+            {isOwn && !r.ownerReply && (
+              <button
+                className="btn btn-outline btn-sm"
+                style={{ marginTop: 8 }}
+                onClick={() => { setReplyFor(r); setReplyText(""); setReplyMsg(""); }}
+              >
+                Svara umsögn
+              </button>
+            )}
           </div>
         ))}
       </div>
+
+      {isOwn && referral && (
+        <div className="detail-section">
+          <h3>Tilkynningarkóði</h3>
+          <p className="mb0" style={{ fontSize: 14 }}>
+            Deildu tenglinum og fáðu yfirlit yfir skráningar: <strong>{referral.code}</strong> · {referral.referrals} skráning(ar)
+          </p>
+          <div className="row" style={{ marginTop: 8 }}>
+            <input readOnly value={referral.link} style={{ maxWidth: 420 }} onFocus={(e) => e.target.select()} />
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(referral.link);
+                  alert("Tengill afritaður");
+                } catch {}
+              }}
+            >
+              Afrita
+            </button>
+          </div>
+        </div>
+      )}
+
+      {phoneOpen && (
+        <div className="modal-overlay" onClick={() => setPhoneOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ marginTop: 0 }}>Staðfesta símanúmer</h3>
+            <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>
+              Þessi útgáfa notar prufukóðann <strong>1234</strong>.
+            </p>
+            {phoneMsg && <div className="form-error">{phoneMsg}</div>}
+            <div className="field">
+              <label>Staðfestingarkóði</label>
+              <input value={phoneCode} onChange={(e) => setPhoneCode(e.target.value)} inputMode="numeric" />
+            </div>
+            <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+              <button className="btn btn-outline" onClick={() => setPhoneOpen(false)}>Hætta við</button>
+              <button className="btn btn-primary" disabled={!phoneCode.trim()} onClick={verifyPhone}>Staðfesta</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {replyFor && (
+        <div className="modal-overlay" onClick={() => setReplyFor(null)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ marginTop: 0 }}>Svara umsögn</h3>
+            {replyMsg && <div className="form-error">{replyMsg}</div>}
+            <div className="field">
+              <textarea rows={3} value={replyText} onChange={(e) => setReplyText(e.target.value)} style={{ width: "100%", resize: "vertical" }} />
+            </div>
+            <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+              <button className="btn btn-outline" onClick={() => setReplyFor(null)}>Hætta við</button>
+              <button className="btn btn-primary" disabled={!replyText.trim()} onClick={sendReply}>Senda svar</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {editOpen && (
         <div className="modal-overlay" onClick={() => setEditOpen(false)}>

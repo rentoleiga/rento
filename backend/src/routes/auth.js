@@ -23,6 +23,7 @@ const registerSchema = z.object({
   currencyPref: z.enum(["ISK", "EUR"]).default("ISK"),
   renterEnabled: z.boolean().default(true),
   ownerEnabled: z.boolean().default(true),
+  ref: z.string().trim().max(16).optional(),
 });
 
 const profileSchema = z.object({
@@ -78,6 +79,22 @@ router.post(
       ]
     );
     const user = rows[0];
+    if (rest.ref) {
+      try {
+        const ref = await db.query(
+          "SELECT id FROM users WHERE upper(referral_code) = upper($1) AND id <> $2",
+          [rest.ref, user.id]
+        );
+        if (ref.rowCount > 0) {
+          await db.query(
+            "INSERT INTO referrals (referrer_id, referred_id) VALUES ($1, $2) ON CONFLICT (referred_id) DO NOTHING",
+            [ref.rows[0].id, user.id]
+          );
+        }
+      } catch (e) {
+        console.error("referral failed:", e.message);
+      }
+    }
     const token = signToken(user.id);
     const { rows: fullRows } = await db.query(
       `SELECT * FROM users WHERE id = $1`,

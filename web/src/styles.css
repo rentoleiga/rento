@@ -3159,3 +3159,22 @@ body.has-cookie-banner { padding-bottom: 120px; }
   color: #fff;
   min-width: 260px;
 }.plain-list .title .badge-tier { margin-left: 8px; }
+
+.linklike {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--brand, #0f2b24);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+.cms-content p { line-height: 1.65; }
+.cms-content h3 { margin-top: 22px; }
+
+@media print {
+  .no-print, .site-header, .site-footer, .cookie-banner { display: none !important; }
+  .main { padding: 0 !important; }
+  body { background: #fff !important; }
+}

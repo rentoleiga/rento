@@ -74,7 +74,11 @@ export default function MyPaymentsPage() {
                 </div>
                 <div className="text-right">
                   <strong>{formatPrice(p.amount, p.currency)}</strong>
-                  <div className="muted" style={{ fontSize: 12 }}>{p.status === "paid" ? "Greitt" : p.status}</div>
+                  {Number(p.discount) > 0 && (
+                    <div className="muted" style={{ fontSize: 12 }}>afsláttur {formatPrice(p.discount, p.currency)}</div>
+                  )}
+                  <div className="muted" style={{ fontSize: 12 }}>{p.status === "paid" ? "Greitt" : p.status === "refunded" ? "Endurgreitt" : p.status}</div>
+                  <Link className="btn btn-outline btn-sm" to={`/receipt/${p.id}`} style={{ marginTop: 6 }}>Kvittun</Link>
                 </div>
               </li>
             ))}

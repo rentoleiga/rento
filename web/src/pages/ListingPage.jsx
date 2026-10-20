@@ -75,6 +75,10 @@ export default function ListingPage() {
   const [msgText, setMsgText] = useState("");
   const [msgSending, setMsgSending] = useState(false);
   const [msgSent, setMsgSent] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportForm, setReportForm] = useState({ reason: "", details: "" });
+  const [reportDone, setReportDone] = useState(false);
+  const [reportError, setReportError] = useState("");
 
   useEffect(() => {
     setListing(null);
@@ -94,6 +98,25 @@ export default function ListingPage() {
     api.get(`/api/search?category=${listing.categorySlug}&facet=0&per_page=4`)
       .then((d) => setSimilar((d.results || []).filter((l) => l.id !== listing.id).slice(0, 4)))
       .catch(() => {});
+  }, [listing]);
+
+  useEffect(() => {
+    if (!listing) return;
+    document.title = `${listing.title} · Rentó`;
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "description";
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", String(listing.subtitle || listing.description || "").slice(0, 160));
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = window.location.href;
   }, [listing]);
 
   if (error) {
@@ -185,6 +208,38 @@ export default function ListingPage() {
     }
   };
 
+  const shareListing = async () => {
+    const url = window.location.href;
+    const data = { title: listing.title, text: listing.subtitle || "", url };
+    try {
+      if (navigator.share) {
+        await navigator.share(data);
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert("Tengill afritaður");
+      }
+    } catch {}
+  };
+
+  const sendReport = async () => {
+    if (!user) {
+      navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`));
+      return;
+    }
+    setReportError("");
+    try {
+      await api.post("/api/reports", {
+        targetType: "listing",
+        targetId: listing.id,
+        reason: reportForm.reason,
+        details: reportForm.details,
+      });
+      setReportDone(true);
+    } catch (err) {
+      setReportError(err.message);
+    }
+  };
+
   const attrs = Object.entries(listing.attributes || {}).filter(([k]) => k !== "registration_number");
 
   return (
@@ -220,14 +275,22 @@ export default function ListingPage() {
                 {listing.distanceKm != null && <span>• {listing.distanceKm} km</span>}
               </div>
             </div>
-            <button className="btn btn-outline btn-sm" onClick={toggleFav} style={{ borderRadius: 999 }} >
-              {isFav ? `★ ${t("listing.saved")}` : `☆ Vista`}
-            </button>
+            <div className="row" style={{ gap: 8 }}>
+              <button className="btn btn-outline btn-sm" onClick={toggleFav} style={{ borderRadius: 999 }} >
+                {isFav ? `♥ ${t("listing.saved")}` : `♡ Vista`}
+              </button>
+              <button className="btn btn-outline btn-sm" style={{ borderRadius: 999 }} onClick={shareListing}>
+                Deila
+              </button>
+            </div>
           </div>
 
           <div className="detail-section">
             <h3>{t("listing.description")}</h3>
             <p className="mb0">{listing.description}</p>
+            <p style={{ margin: "12px 0 0", fontSize: 13 }}>
+              <button className="linklike" onClick={() => setReportOpen(true)}>Tilkynna auglýsingu</button>
+            </p>
           </div>
 
           {addonsActive && (
@@ -370,6 +433,51 @@ export default function ListingPage() {
         <div className="section" style={{ paddingBottom: 0 }}>
           <div className="section-head"><h2>{t("listing.similar")}</h2></div>
           <div className="grid">{similar.map((l) => <ListingCard key={l.id} listing={l} />)}</div>
+        </div>
+      )}
+
+      {reportOpen && (
+        <div className="modal-overlay" onClick={() => setReportOpen(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ marginTop: 0 }}>Tilkynna auglýsingu</h3>
+            {reportDone ? (
+              <div className="empty" style={{ padding: "16px 0" }}>
+                <p>Þökkum tilkynninguna. Stjórnendur skoða hana.</p>
+                <button className="btn btn-primary" onClick={() => { setReportOpen(false); setReportDone(false); }}>Loka</button>
+              </div>
+            ) : (
+              <>
+                {reportError && <div className="form-error">{reportError}</div>}
+                <div className="field">
+                  <label>Ástæða</label>
+                  <select
+                    value={reportForm.reason}
+                    onChange={(e) => setReportForm({ ...reportForm, reason: e.target.value })}
+                  >
+                    <option value="">Veldu ástæðu</option>
+                    <option value="Scam or fraud">Svik eða fölsun</option>
+                    <option value="Wrong information">Rangar upplýsingar</option>
+                    <option value="Offensive content">Móðgandi efni</option>
+                    <option value="Duplicate listing">Tvítaka</option>
+                    <option value="Other">Annað</option>
+                  </select>
+                </div>
+                <div className="field">
+                  <label>Nánar (valfrjálst)</label>
+                  <textarea
+                    rows={3}
+                    value={reportForm.details}
+                    onChange={(e) => setReportForm({ ...reportForm, details: e.target.value })}
+                    style={{ width: "100%", resize: "vertical" }}
+                  />
+                </div>
+                <div className="row" style={{ justifyContent: "flex-end", gap: 10 }}>
+                  <button className="btn btn-outline" onClick={() => setReportOpen(false)}>Hætta við</button>
+                  <button className="btn btn-primary" disabled={!reportForm.reason} onClick={sendReport}>Senda tilkynningu</button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
 

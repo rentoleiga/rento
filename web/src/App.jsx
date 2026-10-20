@@ -33,6 +33,9 @@ import FaqPage from "./pages/FaqPage";
 import ContactPage from "./pages/ContactPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import MyPaymentsPage from "./pages/MyPaymentsPage";
+import SavedSearchesPage from "./pages/SavedSearchesPage";
+import ListingStatsPage from "./pages/ListingStatsPage";
+import ReceiptPage from "./pages/ReceiptPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./store";
 import { trackVisit, startTracking } from "./lib/track";
@@ -83,6 +86,9 @@ export default function App() {
           <Route path="/dashboard/calendar/:listingId" element={<RequireAuth><CalendarPage /></RequireAuth>} />
           <Route path="/dashboard/bookings" element={<RequireAuth><MyBookingsPage /></RequireAuth>} />
           <Route path="/dashboard/payments" element={<RequireAuth><MyPaymentsPage /></RequireAuth>} />
+          <Route path="/dashboard/searches" element={<RequireAuth><SavedSearchesPage /></RequireAuth>} />
+          <Route path="/dashboard/listings/:id/stats" element={<RequireAuth><ListingStatsPage /></RequireAuth>} />
+          <Route path="/receipt/:id" element={<RequireAuth><ReceiptPage /></RequireAuth>} />
           <Route path="/dashboard/credits" element={<CreditsPage />} />
           <Route path="/favorites" element={<RequireAuth><FavoritesPage /></RequireAuth>} />
           <Route path="/messages" element={<RequireAuth><MessagesPage /></RequireAuth>} />

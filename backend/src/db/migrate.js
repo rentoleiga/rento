@@ -216,7 +216,86 @@ async function applyMigrations() {
     `);
     console.log("v_listing_search recreated.");
 
-    // One-time refresh of demo promotions so the boost rules are visible.
+    // ---------------- growth features (saved searches, reports, promo codes) ----------------
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS saved_searches (
+        id               SERIAL PRIMARY KEY,
+        user_id          INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        name             VARCHAR(120) NOT NULL DEFAULT '',
+        query            JSONB NOT NULL DEFAULT '{}',
+        last_notified_at TIMESTAMPTZ,
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_saved_searches_user ON saved_searches (user_id, created_at DESC);
+
+      CREATE TABLE IF NOT EXISTS reports (
+        id          SERIAL PRIMARY KEY,
+        reporter_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        target_type VARCHAR(20) NOT NULL,
+        target_id   INTEGER NOT NULL,
+        reason      VARCHAR(60) NOT NULL DEFAULT '',
+        details     TEXT NOT NULL DEFAULT '',
+        status      VARCHAR(20) NOT NULL DEFAULT 'open',
+        resolved_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        resolved_at TIMESTAMPTZ,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_reports_status ON reports (status, created_at DESC);
+
+      CREATE TABLE IF NOT EXISTS promo_codes (
+        id         SERIAL PRIMARY KEY,
+        code       VARCHAR(40) NOT NULL UNIQUE,
+        kind       VARCHAR(20) NOT NULL DEFAULT 'any',
+        percent    INTEGER NOT NULL DEFAULT 0,
+        amount     INTEGER NOT NULL DEFAULT 0,
+        max_uses   INTEGER,
+        uses       INTEGER NOT NULL DEFAULT 0,
+        active     BOOLEAN NOT NULL DEFAULT TRUE,
+        expires_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS settings (
+        key        VARCHAR(60) PRIMARY KEY,
+        value      JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+
+      CREATE TABLE IF NOT EXISTS search_logs (
+        id         SERIAL PRIMARY KEY,
+        user_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        keyword    VARCHAR(200) NOT NULL DEFAULT '',
+        filters    JSONB NOT NULL DEFAULT '{}',
+        results    INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_search_logs_created ON search_logs (created_at DESC);
+
+      CREATE TABLE IF NOT EXISTS referrals (
+        id          SERIAL PRIMARY KEY,
+        referrer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        referred_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS referral_code VARCHAR(16);
+      UPDATE users SET referral_code = upper(substr(md5(email || id::text), 1, 8)) WHERE referral_code IS NULL;
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_users_referral_code ON users (referral_code);
+
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS expiry_reminder_sent_at TIMESTAMPTZ;
+
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS owner_reply TEXT;
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS owner_replied_at TIMESTAMPTZ;
+
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS promo_code VARCHAR(40);
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS discount INTEGER NOT NULL DEFAULT 0;
+
+      ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'open';
+      ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS admin_reply TEXT;
+    `);
+    console.log("Growth feature tables ready.");
+
+
     const ins = await db.query(
       "INSERT INTO app_migrations (id) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id",
       ["refresh_demo_promotions_1"]

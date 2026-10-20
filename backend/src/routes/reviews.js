@@ -109,6 +109,8 @@ router.get(
         cleanlinessRating: r.cleanliness_rating,
         pickupRating: r.pickup_rating,
         comment: r.comment,
+        ownerReply: r.owner_reply || null,
+        ownerRepliedAt: r.owner_replied_at || null,
         createdAt: r.created_at,
       })),
       myReview: myReview ? {
@@ -145,6 +147,8 @@ router.get(
         cleanlinessRating: r.cleanliness_rating,
         pickupRating: r.pickup_rating,
         comment: r.comment,
+        ownerReply: r.owner_reply || null,
+        ownerRepliedAt: r.owner_replied_at || null,
         createdAt: r.created_at,
       })),
     });
@@ -172,9 +176,43 @@ router.get(
         listingTitle: r.listing_title,
         rating: r.rating,
         comment: r.comment,
+        ownerReply: r.owner_reply || null,
+        ownerRepliedAt: r.owner_replied_at || null,
         createdAt: r.created_at,
       })),
     });
+  })
+);
+
+// Reviewed user (or listing owner) replies publicly to a review.
+router.put(
+  "/:id/reply",
+  authRequired,
+  validate(z.object({ reply: z.string().trim().min(1).max(2000) })),
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT r.id, r.reviewer_id, r.reviewed_user_id, l.owner_id
+         FROM reviews r JOIN listings l ON l.id = r.listing_id
+        WHERE r.id = $1`,
+      [req.params.id]
+    );
+    if (!rows.length) throw err("Review not found", 404);
+    const r = rows[0];
+    if (req.user.role !== "admin" && req.user.id !== r.reviewed_user_id && req.user.id !== r.owner_id) {
+      throw err("Not allowed", 403);
+    }
+    await db.query(
+      `UPDATE reviews SET owner_reply = $1, owner_replied_at = now() WHERE id = $2`,
+      [req.body.reply, r.id]
+    );
+    await notify(
+      r.reviewer_id,
+      "review_reply",
+      "Svar við umsögn",
+      `Eigandi svaraði umsögn þinni: „${req.body.reply.slice(0, 120)}“`,
+      { reviewId: r.id }
+    );
+    res.json({ ok: true });
   })
 );
 

@@ -184,4 +184,56 @@ router.get(
   })
 );
 
+// Owner: performance stats for one listing.
+router.get(
+  "/owner/listings/:id/stats",
+  authRequired,
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT id, title, slug, status, view_count, unique_view_count, rating, review_count,
+              promotion_tier, promotion_until, expires_at, created_at
+         FROM listings WHERE id = $1 AND owner_id = $2`,
+      [req.params.id, req.user.id]
+    );
+    if (!rows.length) throw Object.assign(new Error("Listing not found"), { status: 404 });
+    const l = rows[0];
+    const [fav, conv, msgs, bookings] = await Promise.all([
+      db.query("SELECT count(*)::int AS n FROM favorites WHERE listing_id = $1", [l.id]),
+      db.query("SELECT count(*)::int AS n FROM conversations WHERE listing_id = $1", [l.id]),
+      db.query(
+        `SELECT count(*)::int AS n FROM messages m
+           JOIN conversations c ON c.id = m.conversation_id WHERE c.listing_id = $1`,
+        [l.id]
+      ),
+      db.query(
+        `SELECT status, count(*)::int AS n FROM bookings WHERE listing_id = $1 GROUP BY status`,
+        [l.id]
+      ),
+    ]);
+    const byStatus = {};
+    bookings.rows.forEach((r) => { byStatus[r.status] = r.n; });
+    res.json({
+      stats: {
+        listingId: l.id,
+        title: l.title,
+        slug: l.slug,
+        status: l.status,
+        views: l.view_count,
+        uniqueViews: l.unique_view_count,
+        rating: l.rating,
+        reviews: l.review_count,
+        favorites: fav.rows[0].n,
+        conversations: conv.rows[0].n,
+        messages: msgs.rows[0].n,
+        bookings: byStatus,
+        bookingsTotal: Object.values(byStatus).reduce((a, b) => a + b, 0),
+        promotionTier: l.promotion_tier,
+        promotionUntil: l.promotion_until,
+        expiresAt: l.expires_at,
+        createdAt: l.created_at,
+      },
+    });
+  })
+);
+
 module.exports = router;

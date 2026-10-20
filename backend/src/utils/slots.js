@@ -90,6 +90,33 @@ async function releaseSlotForListing(listingId) {
   );
 }
 
+// Email + in-app reminder when a published listing is about to expire.
+async function sendExpiryReminders() {
+  const { rows } = await db.query(
+    `SELECT l.id, l.title, l.slug, l.owner_id, l.expires_at
+       FROM listings l
+      WHERE l.status = 'published'
+        AND l.expires_at IS NOT NULL
+        AND l.expires_at > now()
+        AND l.expires_at <= now() + interval '3 days'
+        AND l.expiry_reminder_sent_at IS NULL
+      LIMIT 200`
+  );
+  if (!rows.length) return 0;
+  const { notify } = require("./notify");
+  for (const l of rows) {
+    await notify(
+      l.owner_id,
+      "listing_expiring",
+      "Auglýsingin rennur út",
+      `„${l.title}“ rennur út ${new Date(l.expires_at).toLocaleDateString("is-IS")}. Þú getur endurbirt hana úr stjórnborðinu.`,
+      { listingId: l.id, slug: l.slug }
+    );
+    await db.query("UPDATE listings SET expiry_reminder_sent_at = now() WHERE id = $1", [l.id]);
+  }
+  return rows.length;
+}
+
 module.exports = {
   FREE_SLOTS,
   AD_DAYS,
@@ -101,4 +128,5 @@ module.exports = {
   reserveSlotForPublish,
   attachSlot,
   releaseSlotForListing,
+  sendExpiryReminders,
 };

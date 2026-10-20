@@ -47,6 +47,9 @@ export default function AdminListings() {
     run(() => api.del(`/api/admin/listings/${l.id}`), l.id);
   };
 
+  const action = (l, act) =>
+    run(() => api.post(`/api/admin/listings/${l.id}/action`, { action: act, days: 30 }), l.id);
+
   const pages = Math.max(1, Math.ceil(total / 25));
 
   return (
@@ -120,6 +123,12 @@ export default function AdminListings() {
                     )}
                     {l.status === "published" && (
                       <button className="btn btn-sm btn-outline" disabled={busyId === l.id} onClick={() => setStatusFor(l, "suspended")}>Suspend</button>
+                    )}
+                    {l.status !== "deleted" && (
+                      <button className="btn btn-sm btn-outline" disabled={busyId === l.id} onClick={() => action(l, "extend")}>+30d</button>
+                    )}
+                    {l.status === "published" && (
+                      <button className="btn btn-sm btn-outline" disabled={busyId === l.id} onClick={() => action(l, "expire")}>Expire</button>
                     )}
                     {l.status !== "deleted" && (
                       <button className="btn btn-sm btn-danger" disabled={busyId === l.id} onClick={() => remove(l)}>Delete</button>

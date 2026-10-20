@@ -40,6 +40,7 @@ export default function PremiumPage() {
   const [pickId, setPickId] = useState("");
   const [busy, setBusy] = useState("");
   const [notice, setNotice] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
 
   const loadListings = () =>
@@ -66,7 +67,7 @@ export default function PremiumPage() {
     if (!window.confirm(`Kaupa 1 auglýsingapláss fyrir ${fmt(SLOT_PRICE)} kr.? Plássið gildir í 30 daga frá notkun.`)) return;
     setBusy("slots");
     try {
-      const r = await api.post("/api/slots/purchase", { count: 1 });
+      const r = await api.post("/api/slots/purchase", { count: 1, code: code.trim() });
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
@@ -82,7 +83,7 @@ export default function PremiumPage() {
     if (!window.confirm(`Kaupa ${pkg.slots} auglýsingapláss fyrir ${fmt(pkg.amount)} kr.?`)) return;
     setBusy(pkg.id);
     try {
-      const r = await api.post("/api/slots/purchase", { packageId: pkg.id });
+      const r = await api.post("/api/slots/purchase", { packageId: pkg.id, code: code.trim() });
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
@@ -108,8 +109,8 @@ export default function PremiumPage() {
     if (!window.confirm(msg)) return;
     setBusy(tier.key);
     try {
-      await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key });
-      setNotice(`${tierName} kynning virkjuð · ${fmt(tier.amount)} kr.`);
+      const r = await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key, code: code.trim() });
+      setNotice(`${tierName} kynning virkjuð · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
       loadListings();
     } catch (e) {
       setError(e.message);
@@ -146,6 +147,15 @@ export default function PremiumPage() {
           <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
             <h2>{t("adv.slots.title")}</h2>
             <p className="muted" style={{ margin: "8px 0 0", maxWidth: 760 }}>{t("adv.slots.sub")}</p>
+          </div>
+
+          <div className="row" style={{ justifyContent: "center", marginTop: 20, gap: 8 }}>
+            <input
+              value={code}
+              onChange={(e) => setCode(e.target.value.toUpperCase())}
+              placeholder="Promókóði (valfrjálst)"
+              style={{ maxWidth: 220 }}
+            />
           </div>
 
           <div className="adv-grid" style={{ marginTop: 28 }}>

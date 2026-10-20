@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import CmsContent, { useCms } from "../components/CmsContent";
 
 const GROUPS = [
   {
@@ -62,6 +63,7 @@ const GROUPS = [
 
 export default function FaqPage() {
   const [openId, setOpenId] = useState("0-0");
+  const cms = useCms("faq_is");
 
   let gid = 0;
   return (
@@ -72,7 +74,9 @@ export default function FaqPage() {
           Hér finnur þú svör við algengustu spurningunum um Rentó, bæði fyrir þá sem vilja leigja og þá sem vilja leigja út.
         </p>
 
-        {GROUPS.map((g, gi) => (
+        {cms && <CmsContent text={cms} />}
+
+        {!cms && GROUPS.map((g, gi) => (
           <div key={g.title}>
             <h2 className="faq-group-title">{g.title}</h2>
             {g.items.map((it, ii) => {

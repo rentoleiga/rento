@@ -1,5 +1,6 @@
 import React from "react";
 import { useLang } from "../i18n";
+import CmsContent, { useCms } from "../components/CmsContent";
 
 export default function TermsPage() {
   const { t } = useLang();
@@ -9,6 +10,7 @@ export default function TermsPage() {
         <h1>{t("terms.title")}</h1>
         <p className="muted">{t("terms.updated")}</p>
 
+        {cms ? <CmsContent text={cms} /> : <>
         <div className="detail-section">
           <h3>{t("terms.s1.title")}</h3>
           <p>{t("terms.s1.text")}</p>
@@ -37,6 +39,7 @@ export default function TermsPage() {
           <h3>{t("terms.s7.title")}</h3>
           <p>{t("terms.contact")} <a href="mailto:info@rento.is">info@rento.is</a></p>
         </div>
+        </>}
       </div>
     </section>
   );

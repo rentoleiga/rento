@@ -1,5 +1,6 @@
 import React from "react";
 import { useLang } from "../i18n";
+import CmsContent, { useCms } from "../components/CmsContent";
 
 export default function PrivacyPage() {
   const { t } = useLang();
@@ -9,6 +10,7 @@ export default function PrivacyPage() {
         <h1>{t("privacy.title")}</h1>
         <p className="muted">{t("privacy.updated")}</p>
 
+        {cms ? <CmsContent text={cms} /> : <>
         <div className="detail-section">
           <h3>{t("privacy.s1.title")}</h3>
           <p>{t("privacy.s1.text")}</p>
@@ -32,6 +34,7 @@ export default function PrivacyPage() {
         <div className="detail-section">
           <h3>{t("privacy.contact")} <a href="mailto:info@rento.is">info@rento.is</a></h3>
         </div>
+        </>}
       </div>
     </section>
   );

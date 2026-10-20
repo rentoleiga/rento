@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api, formatPrice } from "../api";
+import { api, apiBase, formatPrice } from "../api";
 import { useAuth } from "../store";
 
 export default function CalendarPage() {
@@ -12,6 +12,9 @@ export default function CalendarPage() {
   const [form, setForm] = useState({ start: "", end: "", status: "blocked" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [icsText, setIcsText] = useState("");
+  const [icsUrl, setIcsUrl] = useState("");
+  const [icsMsg, setIcsMsg] = useState("");
 
   const load = () => {
     Promise.all([
@@ -47,8 +50,23 @@ export default function CalendarPage() {
     }
   };
 
-  const delBlock = async (id) => {
+  const importIcs = async () => {
+    setIcsMsg("");
     try {
+      const r = await api.post(`/api/availability/import/${listingId}`, {
+        text: icsText.trim(),
+        url: icsText.trim() ? "" : icsUrl.trim(),
+      });
+      setIcsMsg(`Flutti inn ${r.imported} tímabil.`);
+      setIcsText("");
+      setIcsUrl("");
+      load();
+    } catch (err) {
+      setIcsMsg(err.message);
+    }
+  };
+
+  const delBlock = async (id) => {    try {
       await api.del(`/api/availability/${id}`);
       load();
     } catch (err) {
@@ -99,6 +117,30 @@ export default function CalendarPage() {
           ))}
         </ul>
       )}
+
+      <h2 style={{ fontSize: 19 }}>Flytja inn / út dagatal</h2>
+      <div className="detail-section" style={{ marginTop: 8 }}>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Flytja má lokaða daga úr öðru dagatali (iCal) inn hér, eða sækja dagatalið til notkunar annars staðar.
+        </p>
+        <div className="row" style={{ marginBottom: 10 }}>
+          <a className="btn btn-outline btn-sm" href={`${apiBase()}/api/listings/${listingId}/calendar.ics`}>
+            Sækja .ics
+          </a>
+        </div>
+        <div className="field">
+          <label>iCal hlekkur</label>
+          <input value={icsUrl} onChange={(e) => setIcsUrl(e.target.value)} placeholder="https://…/calendar.ics" />
+        </div>
+        <div className="field">
+          <label>eða líma iCal texta</label>
+          <textarea rows={3} value={icsText} onChange={(e) => setIcsText(e.target.value)} style={{ width: "100%", resize: "vertical" }} />
+        </div>
+        {icsMsg && <div className={icsMsg.startsWith("Flutti") ? "form-success" : "form-error"}>{icsMsg}</div>}
+        <button className="btn btn-primary" disabled={!icsText.trim() && !icsUrl.trim()} onClick={importIcs}>
+          Flytja inn
+        </button>
+      </div>
 
       <h2 style={{ fontSize: 19 }}>Lokaðir dagar</h2>
       {avail.length === 0 ? <div className="empty">Engir lokaðir dagar.</div> : (

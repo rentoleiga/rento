@@ -5,6 +5,7 @@ import { fmt, fmtIsk } from "./shared";
 export default function AdminOverview() {
   const [o, setO] = useState(null);
   const [vis, setVis] = useState(null);
+  const [rev, setRev] = useState(null);
   const [error, setError] = useState("");
 
   const loadVisitors = () =>
@@ -13,6 +14,7 @@ export default function AdminOverview() {
   useEffect(() => {
     api.get("/api/admin/overview").then(setO).catch((e) => setError(e.message));
     loadVisitors();
+    api.get("/api/admin/revenue").then(setRev).catch(() => {});
     const t = setInterval(loadVisitors, 60000);
     return () => clearInterval(t);
   }, []);
@@ -124,6 +126,33 @@ export default function AdminOverview() {
           <div className="stat-num">{fmt(o.reviews)}</div>
           <div className="stat-label">Reviews</div>
         </div>
+      </div>
+
+      <div className="card" style={{ padding: 18, marginBottom: 18 }}>
+        <h2 style={{ fontSize: 17, marginTop: 0 }}>Revenue (ad slots &amp; promotions)</h2>
+        {!rev ? <div className="muted">Loading…</div> : (
+          <div className="dash-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))" }}>
+            <div className="stat-card">
+              <div className="stat-num">{fmtIsk(rev.sums.total)}</div>
+              <div className="stat-label">Total paid</div>
+              <div className="muted" style={{ fontSize: 12 }}>{rev.sums.sales} sales · {rev.sums.refunds} refunds</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num">{fmtIsk(rev.sums.slot_total)}</div>
+              <div className="stat-label">Ad slots</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num">{fmtIsk(rev.sums.promotion_total)}</div>
+              <div className="stat-label">Promotions</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num">
+                {rev.sums.sales ? fmtIsk(rev.sums.total / rev.sums.sales) : "0 kr."}
+              </div>
+              <div className="stat-label">Avg per sale</div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="card" style={{ padding: 18, marginBottom: 18 }}>

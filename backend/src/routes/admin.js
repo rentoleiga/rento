@@ -623,7 +623,7 @@ router.get(
 
     const [list, total, unread] = await Promise.all([
       db.query(
-        `SELECT m.id, m.name, m.email, m.subject, m.message, m.status, m.ip,
+        `SELECT m.id, m.name, m.email, m.subject, m.message, m.status, m.admin_reply, m.ip,
                 m.created_at, m.answered_at, m.answered_by, ua.email AS answered_by_email
          FROM contact_messages m
          LEFT JOIN users ua ON ua.id = m.answered_by
@@ -648,10 +648,11 @@ router.patch(
 
     const upd = await db.query(
       `UPDATE contact_messages
-       SET status = 'answered', answered_at = now(), answered_by = $1
+       SET status = 'answered', answered_at = now(), answered_by = $1,
+           admin_reply = COALESCE(NULLIF($3, ''), admin_reply)
        WHERE id = $2 AND status = 'new'
-       RETURNING id, status`,
-      [req.user.id, id]
+       RETURNING id, status, admin_reply`,
+      [req.user.id, id, String(req.body.adminReply || "").slice(0, 5000)]
     );
     if (upd.rowCount === 0) {
       const exists = await db.query("SELECT id FROM contact_messages WHERE id = $1", [id]);
@@ -966,6 +967,290 @@ router.get(
       perPage,
       sums: sums.rows[0],
     });
+  })
+);
+
+// ---------------- growth & moderation endpoints ----------------
+
+// GET /api/admin/revenue -> slot/promotion sales summary + 14-day series.
+router.get(
+  "/revenue",
+  asyncHandler(async (req, res) => {
+    const [sums, daily] = await Promise.all([
+      db.query(
+        `SELECT COALESCE(sum(amount) FILTER (WHERE status = 'paid' AND kind = 'slot'), 0)::int AS slot_total,
+                COALESCE(sum(amount) FILTER (WHERE status = 'paid' AND kind = 'promotion'), 0)::int AS promotion_total,
+                COALESCE(sum(amount) FILTER (WHERE status = 'paid'), 0)::int AS total,
+                count(*) FILTER (WHERE status = 'paid')::int AS sales,
+                count(*) FILTER (WHERE status = 'refunded')::int AS refunds
+           FROM payments`
+      ),
+      db.query(
+        `SELECT to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS day,
+                kind, sum(amount)::int AS amount
+           FROM payments
+          WHERE status = 'paid' AND created_at > now() - interval '14 days'
+          GROUP BY 1, 2 ORDER BY 1`
+      ),
+    ]);
+    res.json({ sums: sums.rows[0], daily: daily.rows });
+  })
+);
+
+// GET /api/admin/reports
+router.get(
+  "/reports",
+  asyncHandler(async (req, res) => {
+    const status = ["open", "resolved", "dismissed"].includes(String(req.query.status))
+      ? String(req.query.status)
+      : "";
+    const params = [];
+    let where = "";
+    if (status) {
+      params.push(status);
+      where = "WHERE r.status = $1";
+    }
+    const { rows } = await db.query(
+      `SELECT r.*, u.email AS reporter_email,
+              CASE WHEN r.target_type = 'listing' THEN l.title ELSE NULL END AS listing_title,
+              CASE WHEN r.target_type = 'user' THEN tu.email ELSE NULL END AS target_email
+         FROM reports r
+         LEFT JOIN users u ON u.id = r.reporter_id
+         LEFT JOIN listings l ON r.target_type = 'listing' AND l.id = r.target_id
+         LEFT JOIN users tu ON r.target_type = 'user' AND tu.id = r.target_id
+         ${where}
+        ORDER BY r.created_at DESC LIMIT 200`,
+      params
+    );
+    res.json({ reports: rows });
+  })
+);
+
+router.put(
+  "/reports/:id",
+  asyncHandler(async (req, res) => {
+    const status = String(req.body.status || "");
+    if (!["open", "resolved", "dismissed"].includes(status)) {
+      throw err("Invalid status", 400);
+    }
+    await db.query(
+      `UPDATE reports SET status = $1, resolved_by = $2,
+              resolved_at = CASE WHEN $1 = 'open' THEN NULL ELSE now() END
+        WHERE id = $3`,
+      [status, status === "open" ? null : req.user.id, req.params.id]
+    );
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "report.update",
+      targetType: "report",
+      targetId: Number(req.params.id),
+      data: { status },
+      ip: req.ip,
+    });
+    res.json({ ok: true });
+  })
+);
+
+// GET /api/admin/promo-codes
+router.get(
+  "/promo-codes",
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query("SELECT * FROM promo_codes ORDER BY created_at DESC");
+    res.json({ codes: rows });
+  })
+);
+
+router.post(
+  "/promo-codes",
+  asyncHandler(async (req, res) => {
+    const code = String(req.body.code || "").trim().toUpperCase();
+    if (!/^[A-Z0-9_-]{3,40}$/.test(code)) throw err("Code must be 3-40 letters/numbers", 400);
+    const kind = ["slot", "promotion", "any"].includes(req.body.kind) ? req.body.kind : "any";
+    const percent = Math.max(0, Math.min(100, parseInt(req.body.percent, 10) || 0));
+    const amount = Math.max(0, parseInt(req.body.amount, 10) || 0);
+    const maxUses = req.body.maxUses == null || req.body.maxUses === "" ? null : Math.max(1, parseInt(req.body.maxUses, 10));
+    const expiresAt = req.body.expiresAt ? new Date(req.body.expiresAt) : null;
+    if (!percent && !amount) throw err("Set percent or amount", 400);
+    try {
+      const { rows } = await db.query(
+        `INSERT INTO promo_codes (code, kind, percent, amount, max_uses, active, expires_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+        [code, kind, percent, amount, maxUses, req.body.active !== false, expiresAt]
+      );
+      res.status(201).json({ code: rows[0] });
+    } catch (e) {
+      if (String(e.message).includes("duplicate key")) throw err("Code already exists", 409);
+      throw e;
+    }
+  })
+);
+
+router.put(
+  "/promo-codes/:id",
+  asyncHandler(async (req, res) => {
+    const fields = [];
+    const vals = [];
+    const set = (col, val) => { fields.push(`${col} = $${fields.length + 1}`); vals.push(val); };
+    if (req.body.active !== undefined) set("active", !!req.body.active);
+    if (req.body.percent !== undefined) set("percent", Math.max(0, Math.min(100, parseInt(req.body.percent, 10) || 0)));
+    if (req.body.amount !== undefined) set("amount", Math.max(0, parseInt(req.body.amount, 10) || 0));
+    if (req.body.maxUses !== undefined) set("max_uses", req.body.maxUses === "" || req.body.maxUses == null ? null : parseInt(req.body.maxUses, 10));
+    if (req.body.expiresAt !== undefined) set("expires_at", req.body.expiresAt ? new Date(req.body.expiresAt) : null);
+    if (!fields.length) return res.json({ ok: true });
+    vals.push(req.params.id);
+    await db.query(`UPDATE promo_codes SET ${fields.join(", ")} WHERE id = $${vals.length}`, vals);
+    res.json({ ok: true });
+  })
+);
+
+router.delete(
+  "/promo-codes/:id",
+  asyncHandler(async (req, res) => {
+    await db.query("DELETE FROM promo_codes WHERE id = $1", [req.params.id]);
+    res.json({ ok: true });
+  })
+);
+
+// POST /api/admin/listings/:id/action { action, days }
+router.post(
+  "/listings/:id/action",
+  asyncHandler(async (req, res) => {
+    const action = String(req.body.action || "");
+    const days = Math.max(1, Math.min(365, parseInt(req.body.days, 10) || 30));
+    if (action === "extend") {
+      await db.query(
+        `UPDATE listings SET status = 'published', verification_status = 'approved',
+                expires_at = GREATEST(COALESCE(expires_at, now()), now()) + make_interval(days => $1),
+                expiry_reminder_sent_at = NULL, updated_at = now()
+          WHERE id = $2`,
+        [days, req.params.id]
+      );
+    } else if (action === "expire") {
+      await db.query("UPDATE listings SET status = 'expired', expires_at = now(), updated_at = now() WHERE id = $1", [req.params.id]);
+    } else if (action === "unpublish") {
+      await db.query("UPDATE listings SET status = 'paused', updated_at = now() WHERE id = $1", [req.params.id]);
+    } else {
+      throw err("Unknown action", 400);
+    }
+    await logAdminAction({
+      adminId: req.user.id,
+      action: `listing.${action}`,
+      targetType: "listing",
+      targetId: Number(req.params.id),
+      data: { days },
+      ip: req.ip,
+    });
+    res.json({ ok: true });
+  })
+);
+
+// GET /api/admin/listings/duplicates
+router.get(
+  "/listings/duplicates",
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query(
+      `SELECT lower(trim(title)) AS key, count(*)::int AS n,
+              array_agg(id ORDER BY id) AS ids, array_agg(title) AS titles
+         FROM listings WHERE status <> 'deleted'
+        GROUP BY 1 HAVING count(*) > 1
+        ORDER BY n DESC LIMIT 50`
+    );
+    res.json({ groups: rows });
+  })
+);
+
+// GET /api/admin/search-analytics
+router.get(
+  "/search-analytics",
+  asyncHandler(async (req, res) => {
+    const [top, zero, totals] = await Promise.all([
+      db.query(
+        `SELECT keyword, count(*)::int AS n, round(avg(results))::int AS avg_results
+           FROM search_logs
+          WHERE keyword <> '' AND created_at > now() - interval '30 days'
+          GROUP BY keyword ORDER BY n DESC LIMIT 20`
+      ),
+      db.query(
+        `SELECT keyword, count(*)::int AS n
+           FROM search_logs
+          WHERE results = 0 AND keyword <> '' AND created_at > now() - interval '30 days'
+          GROUP BY keyword ORDER BY n DESC LIMIT 20`
+      ),
+      db.query(
+        `SELECT count(*)::int AS searches,
+                count(*) FILTER (WHERE results = 0)::int AS zero_results
+           FROM search_logs WHERE created_at > now() - interval '30 days'`
+      ),
+    ]);
+    res.json({ top: top.rows, zero: zero.rows, totals: totals.rows[0] });
+  })
+);
+
+// GET /api/admin/settings + PUT /api/admin/settings/:key
+router.get(
+  "/settings",
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query("SELECT key, value, updated_at FROM settings ORDER BY key");
+    res.json({ settings: rows });
+  })
+);
+
+router.put(
+  "/settings/:key",
+  asyncHandler(async (req, res) => {
+    const allowed = ["faq_is", "terms_is", "privacy_is"];
+    if (!allowed.includes(req.params.key)) throw err("Unknown setting", 400);
+    await db.query(
+      `INSERT INTO settings (key, value) VALUES ($1, $2)
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+      [req.params.key, JSON.stringify(req.body.value)]
+    );
+    res.json({ ok: true });
+  })
+);
+
+// PUT /api/admin/payments/:id/refund
+router.put(
+  "/payments/:id/refund",
+  asyncHandler(async (req, res) => {
+    const r = await db.query("UPDATE payments SET status = 'refunded' WHERE id = $1", [req.params.id]);
+    if (r.rowCount === 0) throw err("Payment not found", 404);
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "payment.refund",
+      targetType: "payment",
+      targetId: Number(req.params.id),
+      ip: req.ip,
+    });
+    res.json({ ok: true });
+  })
+);
+
+// Contact-form inbox
+router.get(
+  "/contact-messages",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 25);
+    const [list, total] = await Promise.all([
+      db.query(
+        `SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+        [perPage, offset]
+      ),
+      db.query("SELECT count(*)::int AS n FROM contact_messages"),
+    ]);
+    res.json({ messages: list.rows, total: total.rows[0].n, page, perPage });
+  })
+);
+
+router.put(
+  "/contact-messages/:id",
+  asyncHandler(async (req, res) => {
+    const status = ["open", "answered", "closed"].includes(req.body.status) ? req.body.status : "open";
+    await db.query(
+      "UPDATE contact_messages SET status = $1, admin_reply = $2 WHERE id = $3",
+      [status, String(req.body.adminReply || "").slice(0, 5000), req.params.id]
+    );
+    res.json({ ok: true });
   })
 );
 

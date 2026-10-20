@@ -153,6 +153,7 @@ export default function MyListingsPage() {
                 {l.status === "expired" ? "Útrunnið" : l.status}
               </span>
               <div className="row">
+                <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}/stats`}>Tölfræði</Link>
                 <Link className="btn btn-outline btn-sm" to={`/dashboard/calendar/${l.id}`}>Dagatal</Link>
                 <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}`}>Breyta</Link>
                 {l.status === "expired" ? (

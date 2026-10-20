@@ -16,6 +16,8 @@ const {
   attachSlot,
   releaseSlotForListing,
 } = require("../utils/slots");
+const { notifySavedSearches } = require("../services/savedSearches");
+const { resolvePromo, consumePromo } = require("../utils/promo");
 
 const router = Router();
 
@@ -224,10 +226,11 @@ router.post(
 
     if (req.body.publish) {
       await db.query(
-        "UPDATE listings SET expires_at = now() + make_interval(days => $1) WHERE id = $2",
+        "UPDATE listings SET expires_at = now() + make_interval(days => $1), expiry_reminder_sent_at = NULL WHERE id = $2",
         [AD_DAYS, id]
       );
       if (slotReserve.mode === "slot") await attachSlot(slotReserve.slotId, id);
+      notifySavedSearches(id);
     }
 
     if (Array.isArray(req.body.gallery)) {
@@ -372,12 +375,13 @@ router.put(
     );
     if (publishing) {
       await db.query(
-        "UPDATE listings SET expires_at = now() + make_interval(days => $1) WHERE id = $2",
+        "UPDATE listings SET expires_at = now() + make_interval(days => $1), expiry_reminder_sent_at = NULL WHERE id = $2",
         [AD_DAYS, listing.id]
       );
       if (publishSlot && publishSlot.mode === "slot") {
         await attachSlot(publishSlot.slotId, listing.id);
       }
+      notifySavedSearches(listing.id);
     }
     if (req.body.gallery) {
       await db.query(`DELETE FROM listing_images WHERE listing_id = $1`, [listing.id]);
@@ -430,11 +434,13 @@ router.post(
     ) {
       throw err("Only published listings can be promoted", 400);
     }
+    const promo = await resolvePromo(req.body.code, "promotion", pricing.amount);
     await db.query(
-      `INSERT INTO payments (user_id, kind, reference_id, package_id, amount)
-       VALUES ($1, 'promotion', $2, $3, $4)`,
-      [req.user.id, listing.id, tierIn, pricing.amount]
+      `INSERT INTO payments (user_id, kind, reference_id, package_id, amount, promo_code, discount)
+       VALUES ($1, 'promotion', $2, $3, $4, $5, $6)`,
+      [req.user.id, listing.id, tierIn, promo.finalAmount, promo.code, promo.discount]
     );
+    await consumePromo(promo.promo);
     await db.query(
       `UPDATE listings
          SET promotion_tier = $1,
@@ -448,7 +454,12 @@ router.post(
       [PROMO_TIERS[tierIn], pricing.days, listing.id]
     );
     const updated = await getListingOr404(req, res);
-    res.json({ listing: publicListing(updated, { detail: true }), paid: pricing.amount });
+    res.json({
+      listing: publicListing(updated, { detail: true }),
+      paid: promo.finalAmount,
+      discount: promo.discount,
+      code: promo.code,
+    });
   })
 );
 
@@ -501,6 +512,61 @@ router.delete(
       listing.id, cnt.rows[0].n,
     ]);
     res.json({ isFavorite: false });
+  })
+);
+
+function icsDate(d) {
+  return new Date(d).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+// Public iCal feed with blocked periods and bookings for a listing.
+router.get(
+  "/:id/calendar.ics",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) throw err("Invalid listing", 400);
+    const { rows } = await db.query("SELECT id, title FROM listings WHERE id = $1", [id]);
+    if (!rows.length) throw err("Listing not found", 404);
+    const [blocks, bookings] = await Promise.all([
+      db.query(
+        "SELECT id, start_time, end_time, status FROM availability WHERE listing_id = $1 AND status <> 'available'",
+        [id]
+      ),
+      db.query(
+        `SELECT id, start_time, end_time FROM bookings
+          WHERE listing_id = $1 AND status NOT IN ('rejected', 'cancelled')`,
+        [id]
+      ),
+    ]);
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Rento//Calendar//IS",
+      "CALSCALE:GREGORIAN",
+      `X-WR-CALNAME:${String(rows[0].title).replace(/[\r\n]/g, " ")}`,
+    ];
+    blocks.rows.forEach((b) => {
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:block-${b.id}@rento.is`);
+      lines.push(`DTSTAMP:${icsDate(new Date())}`);
+      lines.push(`DTSTART:${icsDate(b.start_time)}`);
+      lines.push(`DTEND:${icsDate(b.end_time)}`);
+      lines.push("SUMMARY:Upptekið");
+      lines.push("END:VEVENT");
+    });
+    bookings.rows.forEach((b) => {
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:booking-${b.id}@rento.is`);
+      lines.push(`DTSTAMP:${icsDate(new Date())}`);
+      lines.push(`DTSTART:${icsDate(b.start_time)}`);
+      lines.push(`DTEND:${icsDate(b.end_time)}`);
+      lines.push("SUMMARY:Bókun");
+      lines.push("END:VEVENT");
+    });
+    lines.push("END:VCALENDAR");
+    res.setHeader("Content-Type", "text/calendar; charset=utf-8");
+    res.setHeader("Content-Disposition", `attachment; filename="rento-${id}.ics"`);
+    res.send(lines.join("\r\n"));
   })
 );
 

@@ -9,6 +9,7 @@ const {
   expireListings,
   activeListingCount,
 } = require("../utils/slots");
+const { resolvePromo, consumePromo } = require("../utils/promo");
 
 const router = Router();
 
@@ -72,19 +73,28 @@ router.post(
       amount = count * SLOT_PRICE;
       packageId = "single";
     }
+    const promo = await resolvePromo(req.body.code, "slot", amount);
+    const finalAmount = promo.finalAmount;
     for (let i = 0; i < count; i++) {
       await db.query(
         `INSERT INTO listing_slots (user_id, package_id, amount)
          VALUES ($1, $2, $3)`,
-        [req.user.id, packageId, Math.round(amount / count)]
+        [req.user.id, packageId, Math.round(finalAmount / count)]
       );
     }
     await db.query(
-      `INSERT INTO payments (user_id, kind, package_id, amount)
-       VALUES ($1, 'slot', $2, $3)`,
-      [req.user.id, packageId, amount]
+      `INSERT INTO payments (user_id, kind, package_id, amount, promo_code, discount)
+       VALUES ($1, 'slot', $2, $3, $4, $5)`,
+      [req.user.id, packageId, finalAmount, promo.code, promo.discount]
     );
-    res.status(201).json({ ok: true, slots: count, amount });
+    await consumePromo(promo.promo);
+    res.status(201).json({
+      ok: true,
+      slots: count,
+      amount: finalAmount,
+      discount: promo.discount,
+      code: promo.code,
+    });
   })
 );
 

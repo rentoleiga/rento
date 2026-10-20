@@ -187,6 +187,25 @@ router.get(
     );
     const total = countRs.rows[0].total;
 
+    if (page === 1) {
+      db.query(
+        `INSERT INTO search_logs (user_id, keyword, filters, results)
+         VALUES ($1, $2, $3, $4)`,
+        [
+          req.user ? req.user.id : null,
+          String(keyword || "").slice(0, 200),
+          JSON.stringify({
+            category: category || "",
+            subcategory: subcategory || "",
+            location: location || "",
+            min_price: min_price || "",
+            max_price: max_price || "",
+          }),
+          total,
+        ]
+      ).catch(() => {});
+    }
+
     const rs = await db.query(
       `SELECT v.* ${distanceSelect}
        FROM v_listing_search v

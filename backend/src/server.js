@@ -38,6 +38,9 @@ app.use("/api/estimate", require("./routes/estimate"));
 app.use("/api/credits", require("./routes/credits"));
 app.use("/api/slots", require("./routes/slots"));
 app.use("/api/payments", require("./routes/payments"));
+app.use("/api/saved-searches", require("./routes/savedSearches"));
+app.use("/api/reports", require("./routes/reports"));
+app.use("/api/settings", require("./routes/settings"));
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/track", require("./routes/track"));
 app.use("/api/admin", require("./routes/admin"));
@@ -49,4 +52,9 @@ migrate().then(() => {
   app.listen(config.port, () => {
     console.log(`Rento API listening on http://localhost:${config.port}`);
   });
+  const { sendExpiryReminders } = require("./utils/slots");
+  const runReminders = () =>
+    sendExpiryReminders().catch((e) => console.error("expiry reminders:", e.message));
+  setTimeout(runReminders, 15000);
+  setInterval(runReminders, 6 * 60 * 60 * 1000).unref();
 });

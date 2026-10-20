@@ -4,6 +4,7 @@ import { api } from "../api";
 import ListingCard from "../components/ListingCard";
 import CategoryIcon from "../components/CategoryIcon";
 import { useLang } from "../i18n";
+import { useAuth } from "../store";
 
 const SORTS = [
   ["recommended", "search.sort.recommended"],
@@ -28,11 +29,13 @@ const REGION_IS = {
 
 export default function SearchPage() {
   const { t, lang } = useLang();
+  const { user } = useAuth();
   const [params, setParams] = useSearchParams();
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saveMsg, setSaveMsg] = useState("");
 
   const query = useMemo(() => {
     const p = {
@@ -64,8 +67,7 @@ export default function SearchPage() {
       .finally(() => setLoading(false));
   }, [query]);
 
-  const update = (key, value) => {
-    const next = new URLSearchParams(params);
+  const update = (key, value) => {    const next = new URLSearchParams(params);
     if (value === "" || value == null) next.delete(key);
     else next.set(key, value);
     setParams(next, { replace: false });
@@ -88,6 +90,24 @@ export default function SearchPage() {
   const [openRegions, setOpenRegions] = useState({});
   const toggleRegion = (r) => setOpenRegions((prev) => ({ ...prev, [r]: !prev[r] }));
 
+  const saveSearch = async () => {
+    if (!user) {
+      window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      return;
+    }
+    const query = {};
+    params.forEach((v, k) => {
+      if (k !== "page" && v) query[k] = v;
+    });
+    setSaveMsg("");
+    try {
+      const r = await api.post("/api/saved-searches", { query });
+      setSaveMsg(`Vistað: ${r.savedSearch.name}`);
+    } catch (e) {
+      setSaveMsg(e.message);
+    }
+  };
+
   return (
     <div className="section">
       <div className="container">
@@ -107,6 +127,10 @@ export default function SearchPage() {
         <span className="results-info">
           {t("search.shown").replace("{n}", data?.results?.length || 0)}
         </span>
+        <button className="btn btn-outline btn-sm" onClick={saveSearch}>
+          Vista leit
+        </button>
+        {saveMsg && <span className="muted" style={{ fontSize: 13 }}>{saveMsg}</span>}
       </div>
       </div>
 

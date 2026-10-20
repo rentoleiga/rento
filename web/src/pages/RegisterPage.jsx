@@ -39,7 +39,7 @@ export default function RegisterPage() {
     setBusy(true);
     setError("");
     try {
-      await register(form);
+      await register({ ...form, ref: params.get("ref") || undefined });
       navigate(params.get("next") || "/dashboard");
     } catch (err) {
       setError(err.message);

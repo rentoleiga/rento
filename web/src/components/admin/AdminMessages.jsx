@@ -24,9 +24,11 @@ export default function AdminMessages() {
   useEffect(() => { load(status); }, [status, load]);
 
   const answer = async (m) => {
+    const reply = window.prompt("Reply text (saved on the message, optional):", m.admin_reply || "");
+    if (reply === null) return;
     setBusyId(m.id);
     try {
-      await api.patch(`/api/admin/messages/${m.id}/answer`, {});
+      await api.patch(`/api/admin/messages/${m.id}/answer`, { adminReply: reply });
       await load(status);
     } catch (e) {
       window.alert(e.message);
@@ -75,6 +77,12 @@ export default function AdminMessages() {
             {openId === m.id && (
               <div className="admin-message-body">
                 <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{m.message}</p>
+                {m.admin_reply && (
+                  <div style={{ marginTop: 10, paddingLeft: 12, borderLeft: "3px solid #d1d5db" }}>
+                    <div className="muted" style={{ fontSize: 12 }}>Reply saved</div>
+                    <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{m.admin_reply}</p>
+                  </div>
+                )}
                 <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>
                   IP: {m.ip || "—"}
                   {m.answered_at && ` · answered ${shortDate(m.answered_at)}${m.answered_by_email ? ` by ${m.answered_by_email}` : ""}`}

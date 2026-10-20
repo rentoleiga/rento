@@ -124,7 +124,9 @@ export default function AdminPayments() {
                 <th>Listing</th>
                 <th>Amount</th>
                 <th>Reference</th>
+                <th>Status</th>
                 <th>Time</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -137,11 +139,28 @@ export default function AdminPayments() {
                   <td>{p.listing_title ? <Link to={`/listing/${p.listing_slug || p.reference_id}`}>{p.listing_title}</Link> : <span className="muted">—</span>}</td>
                   <td>{fmtIsk(p.amount)}</td>
                   <td className="muted">{p.provider_reference || "—"}</td>
+                  <td><StatusPill status={p.status} label={statusLabel(p.status)} /></td>
                   <td className="muted">{shortDate(p.created_at)}</td>
+                  <td>
+                    {p.status !== "refunded" && (
+                      <button
+                        className="btn btn-sm btn-outline"
+                        onClick={async () => {
+                          if (!window.confirm(`Refund payment #${p.id} (${fmtIsk(p.amount)})?`)) return;
+                          try {
+                            await api.put(`/api/admin/payments/${p.id}/refund`, {});
+                            loadSales(salesPage);
+                          } catch (e) { setError(e.message); }
+                        }}
+                      >
+                        Refund
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
               {sales.length === 0 && (
-                <tr><td colSpan={8} className="muted">No slot or promotion sales yet.</td></tr>
+                <tr><td colSpan={10} className="muted">No slot or promotion sales yet.</td></tr>
               )}
             </tbody>
           </table>
