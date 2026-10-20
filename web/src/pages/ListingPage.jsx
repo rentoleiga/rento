@@ -79,6 +79,7 @@ export default function ListingPage() {
   const [reportForm, setReportForm] = useState({ reason: "", details: "" });
   const [reportDone, setReportDone] = useState(false);
   const [reportError, setReportError] = useState("");
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
     setListing(null);
@@ -118,6 +119,28 @@ export default function ListingPage() {
     }
     canonical.href = window.location.href;
   }, [listing]);
+
+  useEffect(() => {
+    if (lightbox == null) return;
+    const imgs = (listing?.gallery && listing.gallery.length ? listing.gallery : [listing?.mainImage]).filter(Boolean);
+    const onKey = (e) => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowRight" && imgs.length > 1) {
+        e.preventDefault();
+        setLightbox((i) => (i + 1) % imgs.length);
+      }
+      if (e.key === "ArrowLeft" && imgs.length > 1) {
+        e.preventDefault();
+        setLightbox((i) => (i - 1 + imgs.length) % imgs.length);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox, listing]);
 
   if (error) {
     return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
@@ -248,17 +271,29 @@ export default function ListingPage() {
         <div>
           <div className="gallery">
             <div className="gallery-main">
-              {mainImg ? <img src={mainImg} alt={listing.title} /> : <div className="img-placeholder">Rento</div>}
+              {mainImg ? (
+                <img
+                  src={mainImg}
+                  alt={listing.title}
+                  className="gallery-zoom"
+                  onClick={() => setLightbox(Math.max(0, gallery.indexOf(mainImg)))}
+                />
+              ) : (
+                <div className="img-placeholder">Rento</div>
+              )}
             </div>
             {gallery.length > 1 && (
               <div className="gallery-thumbs">
-                {gallery.map((img) => (
+                {gallery.map((img, i) => (
                   <img
                     key={img}
                     src={img}
                     alt=""
                     className={img === mainImg ? "active" : ""}
-                    onClick={() => setMainImg(img)}
+                    onClick={() => {
+                      setMainImg(img);
+                      setLightbox(i);
+                    }}
                   />
                 ))}
               </div>
@@ -485,6 +520,50 @@ export default function ListingPage() {
               </>
             )}
           </div>
+        </div>
+      )}
+
+      {lightbox != null && gallery[lightbox] && (
+        <div className="lightbox" onClick={() => setLightbox(null)} role="dialog" aria-modal="true" aria-label="Myndasafn">
+          <button className="lightbox-close" onClick={() => setLightbox(null)} aria-label="Loka">×</button>
+          {gallery.length > 1 && (
+            <button
+              className="lightbox-nav lightbox-prev"
+              onClick={(e) => { e.stopPropagation(); setLightbox((lightbox - 1 + gallery.length) % gallery.length); }}
+              aria-label="Fyrri mynd"
+            >
+              ‹
+            </button>
+          )}
+          <img
+            className="lightbox-img"
+            src={gallery[lightbox]}
+            alt={`${listing.title} ${lightbox + 1}`}
+            onClick={(e) => e.stopPropagation()}
+          />
+          {gallery.length > 1 && (
+            <button
+              className="lightbox-nav lightbox-next"
+              onClick={(e) => { e.stopPropagation(); setLightbox((lightbox + 1) % gallery.length); }}
+              aria-label="Næsta mynd"
+            >
+              ›
+            </button>
+          )}
+          <div className="lightbox-count">{lightbox + 1} / {gallery.length}</div>
+          {gallery.length > 1 && (
+            <div className="lightbox-strip" onClick={(e) => e.stopPropagation()}>
+              {gallery.map((img, i) => (
+                <img
+                  key={img}
+                  src={img}
+                  alt=""
+                  className={i === lightbox ? "active" : ""}
+                  onClick={() => setLightbox(i)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

@@ -238,7 +238,7 @@ a:hover {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.35);
-    z-index: 99;
+    z-index: 45;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
@@ -3187,4 +3187,102 @@ body.has-cookie-banner { padding-bottom: 120px; }
 .btn-icon svg {
   flex: 0 0 auto;
   display: block;
+}
+.gallery-zoom { cursor: zoom-in; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 15, 13, 0.94);
+  padding: 56px 72px 108px;
+}
+.lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  background: #0b1210;
+}
+.lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, 0.26); }
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+.lightbox-nav:hover { background: rgba(255, 255, 255, 0.26); }
+.lightbox-prev { left: 14px; }
+.lightbox-next { right: 14px; }
+.lightbox-count {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+.lightbox-strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 0 16px;
+}
+.lightbox-strip img {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  opacity: 0.55;
+  cursor: pointer;
+  border: 2px solid transparent;
+  flex: 0 0 auto;
+}
+.lightbox-strip img.active {
+  opacity: 1;
+  border-color: #4fd1b5;
+}
+@media (max-width: 640px) {
+  .lightbox { padding: 48px 8px 92px; }
+  .lightbox-nav { width: 40px; height: 40px; font-size: 28px; }
+  .lightbox-prev { left: 6px; }
+  .lightbox-next { right: 6px; }
 }
