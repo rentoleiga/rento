@@ -76,11 +76,11 @@ async function createBooking(user, listingId, body) {
        VALUES ($1,$2,$3,$4,$5,'authorized','mock_payment')`,
       [bookingId, user.id, listing.owner_id, totalMoney, listing.currency]
     );
-    await notify(listing.owner_id, "booking_confirmed", "New instant booking",
-      `${who} booked "${listing.title}"`, { bookingId });
+    await notify(listing.owner_id, "booking_confirmed", "Ný bókun",
+      `${who} bókaði "${listing.title}"`, { bookingId });
   } else {
-    await notify(listing.owner_id, "booking_request", "New booking request",
-      `${who} requested "${listing.title}"`, { bookingId });
+    await notify(listing.owner_id, "booking_request", "Ný bókunabeiðni",
+      `${who} óskaði eftir "${listing.title}"`, { bookingId });
   }
 
   const booking = await getBookingRow(bookingId);
@@ -230,8 +230,8 @@ router.put(
          ON CONFLICT DO NOTHING`,
         [b.id, b.renter_id, b.owner_id, b.total, 0, b.total, b.currency]
       );
-      await notify(b.owner_id, "payment_success", "Payment received",
-        `Payment of ${b.total} ${b.currency} received for "${b.listing_title}".`, { bookingId: b.id });
+      await notify(b.owner_id, "payment_success", "Greiðsla móttekin",
+        `Greiðsla að upphæð ${b.total} ${b.currency} barst fyrir "${b.listing_title}".`, { bookingId: b.id });
     }
     if (action === "pickup") nextPickup = "picked_up";
     if (action === "return") nextReturn = "returned";
@@ -257,17 +257,17 @@ router.put(
         `DELETE FROM availability WHERE booking_id = $1 AND status = 'booked'`,
         [b.id]
       );
-      await notify(b.renter_id, "booking_rejected", action === "cancel" ? "Booking cancelled" : "Booking request rejected",
-        `Your booking for "${b.listing_title}" was ${action === "cancel" ? "cancelled" : "rejected"}.`, { bookingId: b.id });
+      await notify(b.renter_id, "booking_rejected", action === "cancel" ? "Bókun afturkölluð" : "Bókun hafnað",
+        `Bókun þín fyrir "${b.listing_title}" var ${action === "cancel" ? "afturkölluð" : "hafnað"}.`, { bookingId: b.id });
       if (action === "cancel" && isRenter) {
-        await notify(b.owner_id, "booking_rejected", "Booking cancelled by renter",
-          `The booking for "${b.listing_title}" was cancelled.`, { bookingId: b.id });
+        await notify(b.owner_id, "booking_rejected", "Bókun afturkölluð af leigjanda",
+          `Bókunin fyrir "${b.listing_title}" var afturkölluð.`, { bookingId: b.id });
       }
     }
 
     if (action === "approve") {
-      await notify(b.renter_id, "booking_approved", "Booking request approved",
-        `Your booking for "${b.listing_title}" was approved. Please proceed to payment.`, { bookingId: b.id });
+      await notify(b.renter_id, "booking_approved", "Bókun samþykkt",
+        `Bókun þín fyrir "${b.listing_title}" var samþykkt. Vinsamlegast haltu áfram í greiðslu.`, { bookingId: b.id });
     }
 
     const updated = await getBookingRow(b.id);

@@ -380,7 +380,7 @@ export default function ListingPage() {
           )}
         </div>
 
-        <aside className="listing-side">
+        <aside className="listing-side" id="booking-panel">
           <div className="side-card price-card">
             <p className="price-line" style={{ margin: 0 }}>
               {formatPrice(listing.priceDaily || listing.priceHourly, listing.currency)}
@@ -477,6 +477,21 @@ export default function ListingPage() {
           )}
         </aside>
       </div>
+
+      {(!user || user.id !== listing.owner.id) && (
+        <div className="mobile-book-bar">
+          <div className="mbb-price">
+            {formatPrice(listing.priceDaily || listing.priceHourly, listing.currency)}
+            <span>{listing.priceDaily ? t("listing.perDay") : t("listing.perHour")}</span>
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => document.getElementById("booking-panel")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+          >
+            Bóka núna
+          </button>
+        </div>
+      )}
 
       {similar.length > 0 && (
         <div className="section" style={{ paddingBottom: 0 }}>

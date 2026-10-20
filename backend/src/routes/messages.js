@@ -72,8 +72,8 @@ router.post(
       [conv.id, req.user.id, ownerId, req.body.message]
     );
     await db.query(`UPDATE conversations SET updated_at = now() WHERE id = $1`, [conv.id]);
-    await notify(ownerId, "new_message", "New message",
-      `${req.user.first_name || req.user.email} sent you a message.`, { conversationId: conv.id });
+    await notify(ownerId, "new_message", "Ný skilaboð",
+      `${req.user.first_name || req.user.email} sendi þér skilaboð.`, { conversationId: conv.id });
 
     const full = await conversationRow(conv.id, req.user.id);
     res.status(201).json({ conversation: full });
@@ -146,8 +146,8 @@ router.post(
       [req.params.id, req.user.id, receiverId, req.body.message]
     );
     await db.query(`UPDATE conversations SET updated_at = now() WHERE id = $1`, [req.params.id]);
-    await notify(receiverId, "new_message", "New message",
-      `${req.user.first_name || req.user.email} sent you a message.`, { conversationId: conv.id });
+    await notify(receiverId, "new_message", "Ný skilaboð",
+      `${req.user.first_name || req.user.email} sendi þér skilaboð.`, { conversationId: conv.id });
     const { rows } = await db.query(
       `SELECT id, sender_id, receiver_id, message, attachment, read_at, created_at
        FROM messages WHERE conversation_id = $1 ORDER BY created_at DESC LIMIT 1`,

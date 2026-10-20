@@ -295,6 +295,20 @@ async function applyMigrations() {
     `);
     console.log("Growth feature tables ready.");
 
+    await db.query(`
+      DELETE FROM notifications n
+      USING notifications d
+      WHERE n.type = d.type
+        AND n.user_id = d.user_id
+        AND n.read_at IS NULL
+        AND d.read_at IS NULL
+        AND n.id < d.id
+        AND (
+          (n.type = 'new_message' AND n.data->>'conversationId' = d.data->>'conversationId')
+          OR (n.data->>'bookingId' IS NOT NULL AND n.data->>'bookingId' = d.data->>'bookingId')
+        );
+    `);
+
 
     const ins = await db.query(
       "INSERT INTO app_migrations (id) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id",

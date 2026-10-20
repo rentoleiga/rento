@@ -168,9 +168,8 @@ a:hover {
 .avatar-btn {
   height: 36px; border-radius: 999px;
   border: 1px solid var(--line); background: #fff; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; padding: 3px 4px 3px 12px; gap: 8px;
+  display: flex; align-items: center; justify-content: center; padding: 3px 4px; gap: 8px;
 }
-.avatar-btn::before { content: "☰"; font-size: 14px; color: var(--ink-soft); }
 .avatar-face {
   width: 26px; height: 26px; flex-shrink: 0; aspect-ratio: 1 / 1; border-radius: 50%;
   background: #7c3aed; color: #fff; font-size: 13px; font-weight: 700;
@@ -3466,4 +3465,25 @@ body.has-cookie-banner { padding-bottom: 120px; }
   .cookie-banner-inner p { font-size: 12.5px; line-height: 1.4; flex-basis: 100%; }
   .cookie-actions { gap: 8px; }
   .cookie-actions .btn { padding: 8px 10px; font-size: 13px; }
+}
+.mobile-book-bar { display: none; }
+@media (max-width: 640px) {
+  .mobile-book-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: #fff;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 24px rgba(15, 32, 27, 0.12);
+  }
+  .mbb-price { font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1.15; }
+  .mbb-price span { display: block; font-size: 11px; font-weight: 500; color: var(--muted); }
+  .mobile-book-bar .btn { padding: 10px 20px; flex: 0 0 auto; }
 }
