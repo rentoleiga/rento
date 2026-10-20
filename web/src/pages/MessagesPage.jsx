@@ -33,7 +33,7 @@ export default function MessagesPage() {
                     <div className="grow">
                       <div className="title">
                         <Link to={`/messages/${c.id}`}>{c.listing_title}</Link>
-                        {c.unread > 0 && <span className="status-pill status-active" style={{ marginLeft: 8 }}>{c.unread} ný</span>}
+                        {c.unread > 0 && <span className="unread-pill">{c.unread > 9 ? "9+" : c.unread}</span>}
                       </div>
                       <div className="sub">
                         {user.id === c.renter_id

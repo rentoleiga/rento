@@ -7,7 +7,7 @@ import { StarRating } from "../components/ListingCard";
 
 export default function MyBookingsPage() {
   const { user } = useAuth();
-  const [tab, setTab] = useState("renter");
+  const [tab, setTab] = useState("owner");
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reviewState, setReviewState] = useState({}); // bookingId -> { loading, canReview, myReview, reviews }
@@ -46,8 +46,8 @@ export default function MyBookingsPage() {
     <div className="container section" style={{ maxWidth: 880 }}>
       <h1 className="mt0">Bókanir</h1>
       <div className="dash-nav">
-        <button className={`nav-link ${tab === "renter" ? "active" : ""}`} onClick={() => setTab("renter")}>Sem leigjandi</button>
         <button className={`nav-link ${tab === "owner" ? "active" : ""}`} onClick={() => setTab("owner")}>Sem eigandi</button>
+        <button className={`nav-link ${tab === "renter" ? "active" : ""}`} onClick={() => setTab("renter")}>Sem leigjandi</button>
       </div>
 
       {loading ? (

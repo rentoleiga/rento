@@ -311,10 +311,17 @@ export default function ListingPage() {
               </div>
             </div>
             <div className="row" style={{ gap: 8 }}>
-              <button className="btn btn-outline btn-sm" onClick={toggleFav} style={{ borderRadius: 999 }} >
-                {isFav ? `♥ ${t("listing.saved")}` : `♡ Vista`}
+              <button className={`btn btn-sm btn-icon ${isFav ? "btn-fav active" : "btn-fav"}`} onClick={toggleFav} aria-pressed={isFav}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill={isFav ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+                {isFav ? t("listing.saved") : "Vista"}
               </button>
-              <button className="btn btn-outline btn-sm" style={{ borderRadius: 999 }} onClick={shareListing}>
+              <button className="btn btn-sm btn-icon btn-share" onClick={shareListing}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+                  <path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4" />
+                </svg>
                 Deila
               </button>
             </div>
