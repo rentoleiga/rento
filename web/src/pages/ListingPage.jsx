@@ -418,11 +418,18 @@ export default function ListingPage() {
                 <div className="verify-row"><span>✉️ Netfang</span><span style={{ color: "#0a7a5a" }}>✓</span></div>
                 <div className="verify-row"><span>📞 Símanúmer</span><span style={{ color: listing.ownerPhone ? "#0a7a5a" : "var(--muted)" }}>{listing.ownerPhone ? "✓" : "—"}</span></div>
               </div>
-              <button className="btn btn-primary btn-block" style={{ marginTop: 12 }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else if (listing.ownerPhone) window.location.href=`tel:${listing.ownerPhone}`; }}>
-                📅 Bóka núna
+              <button className="btn btn-primary btn-block btn-icon" style={{ marginTop: 12 }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else if (listing.ownerPhone) window.location.href=`tel:${listing.ownerPhone}`; }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                Bóka núna
               </button>
-              <button className="btn btn-outline btn-block" style={{ marginTop: 8, background: "#eef6f3", borderColor: "#cce5dc", color: "var(--primary)" }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else setMsgOpen(true); }}>
-                💬 Senda skilaboð
+              <button className="btn btn-outline btn-block btn-icon" style={{ marginTop: 8, background: "#eef6f3", borderColor: "#cce5dc", color: "var(--primary)" }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else setMsgOpen(true); }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                </svg>
+                Senda skilaboð
               </button>
             </div>
           )}

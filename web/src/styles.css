@@ -3178,3 +3178,13 @@ body.has-cookie-banner { padding-bottom: 120px; }
   .main { padding: 0 !important; }
   body { background: #fff !important; }
 }
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-icon svg {
+  flex: 0 0 auto;
+  display: block;
+}
