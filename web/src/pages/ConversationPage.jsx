@@ -14,7 +14,7 @@ export default function ConversationPage() {
 
   useEffect(() => {
     api.get(`/api/conversations/${conversationId}/messages`)
-      .then((d) => { setConv(d.conversation); setMsgs(d.messages || []); })
+      .then((d) => { setConv(d.conversation); setMsgs(d.messages || []); window.dispatchEvent(new Event("rento:badges")); })
       .catch((e) => alert(e.message));
   }, [conversationId]);
 

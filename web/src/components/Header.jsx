@@ -18,6 +18,7 @@ export default function Header() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifs, setNotifs] = useState([]);
   const [notifLoading, setNotifLoading] = useState(false);
+  const [badgeTick, setBadgeTick] = useState(0);
   const notifRef = useRef(null);
 
   const closeMenu = useCallback(() => { setMenuOpen(false); setNotifOpen(false); }, []);
@@ -47,7 +48,13 @@ export default function Header() {
     load();
     const timer = setInterval(load, 30000);
     return () => { alive = false; clearInterval(timer); };
-  }, [user, location.pathname]);
+  }, [user, location.pathname, badgeTick]);
+
+  useEffect(() => {
+    const refresh = () => setBadgeTick((n) => n + 1);
+    window.addEventListener("rento:badges", refresh);
+    return () => window.removeEventListener("rento:badges", refresh);
+  }, []);
 
   useEffect(() => {
     if (menuOpen) {

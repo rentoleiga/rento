@@ -26,6 +26,7 @@ export default function MyBookingsPage() {
             .then(r => setReviewState(prev => ({ ...prev, [b.id]: { loading: false, ...r } })))
             .catch(() => setReviewState(prev => ({ ...prev, [b.id]: { loading: false, canReview: true } })));
         });
+        window.dispatchEvent(new Event("rento:badges"));
       })
       .catch(() => setRows([]))
       .finally(() => setLoading(false));
