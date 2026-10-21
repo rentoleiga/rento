@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
 import { api, formatPrice, timeAgo } from "../api";
+import { NOTIF_LABELS, sortNotifications } from "../notifications";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -77,7 +78,7 @@ export default function Header() {
   const loadNotifs = () => {
     setNotifLoading(true);
     api.get("/api/notifications")
-      .then((d) => setNotifs(d.notifications || []))
+      .then((d) => setNotifs(sortNotifications(d.notifications || [])))
       .catch(() => {})
       .finally(() => setNotifLoading(false));
   };
@@ -109,12 +110,16 @@ export default function Header() {
     setNotifOpen(false);
     if (data.conversationId) {
       navigate(`/messages/${data.conversationId}`);
-    } else if (data.bookingId || n.type?.startsWith("booking") || n.type === "payment_success") {
+    } else if (data.bookingId || n.type?.startsWith("booking") || n.type === "payment_success" || n.type === "return_reminder") {
       navigate("/dashboard/bookings");
-    } else if (n.type === "new_review") {
+    } else if (n.type === "new_review" || n.type === "review_reply") {
       navigate(`/users/${user.id}`);
+    } else if (n.type === "favorite_price_drop" && data.slug) {
+      navigate(`/listing/${data.slug}`);
     } else if (n.type === "saved_search_match" || n.type === "search_alert") {
       navigate("/dashboard/searches");
+    } else if ((n.type === "listing_expiring" || n.type === "listing_expired") && data.slug) {
+      navigate(`/listing/${data.slug}`);
     }
   };
 
@@ -138,20 +143,7 @@ export default function Header() {
 
   const initial = ((user?.firstName || user?.email || "R")[0] || "R").toUpperCase();
   const badgeCount = Math.max(unreadNotifications, unreadMessages);
-  const notifLabel = (n) => ({
-    new_message: "Ný skilaboð",
-    booking_request: "Ný bókunabeiðni",
-    booking_confirmed: "Ný bókun",
-    booking_approved: "Bókun samþykkt",
-    booking_rejected: "Bókun hafnað",
-    payment_success: "Greiðsla móttekin",
-    new_review: "Ný umsögn",
-    review_reply: "Svar við umsögn",
-    saved_search_match: "Ný auglýsing passar við leit",
-    listing_expiring: "Auglýsing rennur út",
-    listing_expired: "Auglýsing runnin út",
-    phone_verified: "Símanúmer staðfest",
-  }[n.type] || n.title);
+  const notifLabel = (n) => NOTIF_LABELS[n.type] || n.title;
 
   const mainLinks = [
     { to: "/dashboard/listings", label: t("dash.nav.listings"), icon: (<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>) },
@@ -170,6 +162,7 @@ export default function Header() {
   const profileTo = user?.id ? `/users/${user.id}` : "/dashboard";
 
   return (
+    <>
     <header className="header">
       <div className="container header-inner">
         <Link to="/" className="brand">
@@ -190,8 +183,6 @@ export default function Header() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg>
           </button>
         </form>
-
-        <div className={`mobile-overlay ${menuOpen ? "open" : ""}`} onClick={closeMenu} />
 
         <div className="header-actions">
           {user ? (
@@ -247,8 +238,12 @@ export default function Header() {
             </div>
           )}
         </div>
+      </div>
+    </header>
 
-        <nav className={`drawer ${menuOpen ? "open" : ""}`}>
+    <div className={`mobile-overlay ${menuOpen ? "open" : ""}`} onClick={closeMenu} />
+
+    <nav className={`drawer ${menuOpen ? "open" : ""}`}>
           <button className="drawer-close" onClick={closeMenu} aria-label="Close">×</button>
           {user ? (
             <div className="mobile-account">
@@ -277,8 +272,7 @@ export default function Header() {
               <Link to="/register?next=/dashboard/listings/new" onClick={closeMenu}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Leigja út</Link>
             </div>
           )}
-        </nav>
-      </div>
-    </header>
+    </nav>
+    </>
   );
 }

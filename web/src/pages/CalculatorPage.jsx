@@ -1,19 +1,10 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api";
 import { useLang } from "../i18n";
 
 const isk = (n) => `${String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} kr.`;
 const num = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-function MiniStars({ n }) {
-  return (
-    <span className="stars-mini" aria-label={n + "/5 demand"}>
-      {"★".repeat(n)}
-      <span className="stars-ghost">{"★".repeat(5 - n)}</span>
-    </span>
-  );
-}
 
 const TIP_ICONS = [
   <svg key="tag" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
@@ -57,13 +48,6 @@ export default function CalculatorPage() {
   const payDays = price > 0 && value > 0 ? Math.ceil(value / price) : 0;
   const payMonths = payDays > 0 && days > 0 ? Math.ceil(payDays / days) : 0;
 
-  const opportunities = useMemo(() => {
-    if (!data?.subcategories) return [];
-    return [...data.subcategories]
-      .map((s) => ({ ...s, monthly: Math.round(s.suggestedDaily * 22 * (s.occupancy / 100)) }))
-      .sort((a, b) => b.monthly - a.monthly);
-  }, [data]);
-
   const subList = cat
     ? data?.categories.find((c) => c.slug === cat)?.subcategories || []
     : data?.subcategories || [];
@@ -73,7 +57,6 @@ export default function CalculatorPage() {
       <section className="hero hero-calc">
         <div className="container">
           <h1>{t("calc.title")}</h1>
-          <p>{t("calc.sub")}</p>
         </div>
       </section>
 
@@ -177,34 +160,6 @@ export default function CalculatorPage() {
         </div>
         </div>
 
-        <div className="container" style={{ marginTop: 48 }}>
-          <div className="section-head">
-            <h2>{t("calc.bestOpportunities")}</h2>
-            <span className="muted" style={{ fontSize: 14 }}>{t("calc.basedOnMarket")}</span>
-          </div>
-          <div className="opp-table">
-            <div className="opp-row opp-head">
-              <span>{t("calc.item")}</span>
-              <span>{t("calc.demand")}</span>
-              <span>{t("calc.suggestedPrice")}</span>
-              <span>{t("calc.suggestedMonthly")}</span>
-              <span></span>
-            </div>
-            {opportunities.slice(0, 10).map((s) => (
-              <div key={s.slug} className="opp-row">
-                <span className="opp-name">{s.name}</span>
-                <span><MiniStars n={s.demand} /></span>
-                <span>{isk(s.suggestedDaily)}</span>
-                <span><strong>{isk(s.monthly)}</strong></span>
-                <span>
-                  <button className="btn btn-outline btn-sm" onClick={() => applySub(s)}>
-                    {t("calc.use")}
-                  </button>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* Hvernig ákveður þú leiguverð? */}

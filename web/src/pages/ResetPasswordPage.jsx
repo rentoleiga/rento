@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../api";
 import { useLang } from "../i18n";
+import PasswordInput from "../components/PasswordInput";
 
 export default function ResetPasswordPage() {
   const { t } = useLang();
@@ -71,22 +72,22 @@ export default function ResetPasswordPage() {
           <form onSubmit={submit}>
             <div className="field">
               <label>{t("auth.newPassword")}</label>
-              <input
-                type="password"
+              <PasswordInput
                 required
                 minLength={8}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
+                autoComplete="new-password"
               />
             </div>
             <div className="field">
               <label>{t("auth.confirmPassword")}</label>
-              <input
-                type="password"
+              <PasswordInput
                 required
                 minLength={8}
                 value={form.confirm}
                 onChange={(e) => setForm({ ...form, confirm: e.target.value })}
+                autoComplete="new-password"
               />
             </div>
             <button className="btn btn-primary btn-block" disabled={busy}>

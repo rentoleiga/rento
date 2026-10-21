@@ -9,6 +9,7 @@ const { asyncHandler, validate, err } = require("../middleware/http");
 const { publicUser, slugify } = require("../utils/helpers");
 const { logAdminAction } = require("../utils/adminLog");
 const { sendMail } = require("../services/mail");
+const { notify } = require("../utils/notify");
 
 const router = Router();
 
@@ -256,6 +257,12 @@ router.post(
       "UPDATE password_resets SET used_at = now() WHERE user_id = $1 AND used_at IS NULL",
       [rows[0].user_id]
     );
+    await notify(
+      rows[0].user_id,
+      "password_changed",
+      "Lykilorði breytt",
+      "Lykilorðinu þínu var breytt með endurstillingartengli. Ef þú gerðir þetta ekki skaltu hafa samband við okkur."
+    );
     res.json({ ok: true });
   })
 );
@@ -436,6 +443,12 @@ router.put(
       data: { set: !hash },
       ip: req.ip,
     });
+    await notify(
+      req.user.id,
+      "password_changed",
+      "Lykilorði breytt",
+      "Lykilorðinu þínu var breytt. Ef þú gerðir þetta ekki skaltu hafa samband við okkur."
+    );
     res.json({ ok: true, hasPassword: true });
   })
 );

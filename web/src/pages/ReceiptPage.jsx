@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, formatPrice } from "../api";
+import { fmtDateTime as fmtDate } from "../lib/dates";
 
-const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Kynning" };
+const KIND_LABEL = { slot: "AuglÃ½singaplÃ¡ss", promotion: "Kynning" };
 const PACKAGE_LABEL = {
-  single: "Stakt pláss",
-  pkg3: "3 pláss",
-  pkg5: "5 pláss",
-  pkg10: "10 pláss",
+  single: "Stakt plÃ¡ss",
+  pkg3: "3 plÃ¡ss",
+  pkg5: "5 plÃ¡ss",
+  pkg10: "10 plÃ¡ss",
   silver: "Silfur",
   gold: "Gull",
-  platinum: "Platína",
-};
-
-const fmtDate = (d) => {
-  if (!d) return "";
-  const dt = new Date(d);
-  return `${String(dt.getDate()).padStart(2, "0")}.${String(dt.getMonth() + 1).padStart(2, "0")}.${dt.getFullYear()} ${String(dt.getHours()).padStart(2, "0")}:${String(dt.getMinutes()).padStart(2, "0")}`;
+  platinum: "PlatÃ­na",
 };
 
 export default function ReceiptPage() {
@@ -31,12 +26,12 @@ export default function ReceiptPage() {
   }, [id]);
 
   if (error) return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
-  if (!p) return <div className="container section"><div className="empty">Hleður…</div></div>;
+  if (!p) return <div className="container section"><div className="empty">HleÃ°urâ€¦</div></div>;
 
   return (
     <div className="container section" style={{ maxWidth: 640 }}>
       <div className="row no-print" style={{ justifyContent: "space-between", marginBottom: 14 }}>
-        <Link to="/dashboard/payments">← Kvittanir</Link>
+        <Link to="/dashboard/payments">â† Kvittanir</Link>
         <button className="btn btn-primary btn-sm" onClick={() => window.print()}>Prenta</button>
       </div>
 
@@ -44,7 +39,7 @@ export default function ReceiptPage() {
         <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start" }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 24 }}>Kvittun</h1>
-            <p className="muted" style={{ margin: "4px 0 0" }}>Rentó · www.rento.is</p>
+            <p className="muted" style={{ margin: "4px 0 0" }}>RentÃ³ Â· www.rento.is</p>
           </div>
           <div className="text-right">
             <div style={{ fontWeight: 700 }}>#{p.id}</div>
@@ -66,7 +61,7 @@ export default function ReceiptPage() {
             )}
             {p.listing_title && (
               <tr>
-                <td className="muted">Auglýsing</td>
+                <td className="muted">AuglÃ½sing</td>
                 <td className="text-right">
                   {p.listing_slug ? <Link to={`/listing/${p.listing_slug}`}>{p.listing_title}</Link> : p.listing_title}
                 </td>
@@ -74,8 +69,8 @@ export default function ReceiptPage() {
             )}
             {Number(p.discount) > 0 && (
               <tr>
-                <td className="muted">Afsláttur {p.promo_code ? `(${p.promo_code})` : ""}</td>
-                <td className="text-right">−{formatPrice(p.discount, p.currency)}</td>
+                <td className="muted">AfslÃ¡ttur {p.promo_code ? `(${p.promo_code})` : ""}</td>
+                <td className="text-right">âˆ’{formatPrice(p.discount, p.currency)}</td>
               </tr>
             )}
             <tr>
@@ -85,14 +80,14 @@ export default function ReceiptPage() {
               </td>
             </tr>
             <tr>
-              <td className="muted">Staða</td>
+              <td className="muted">StaÃ°a</td>
               <td className="text-right">{p.status === "paid" ? "Greitt" : p.status === "refunded" ? "Endurgreitt" : p.status}</td>
             </tr>
           </tbody>
         </table>
 
         <p className="muted" style={{ fontSize: 12, marginTop: 24 }}>
-          Kvittun fyrir kaupum á auglýsingaplássi eða kynningu. Leigugreiðslur fara fram beint milli leigjanda og leigusala.
+          Kvittun fyrir kaupum Ã¡ auglÃ½singaplÃ¡ssi eÃ°a kynningu. LeigugreiÃ°slur fara fram beint milli leigjanda og leigusala.
         </p>
       </div>
     </div>

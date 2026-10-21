@@ -112,5 +112,8 @@ String timeAgo(String? iso) {
 
 String dateOnly(String? iso) {
   if (iso == null) return '';
-  return iso.substring(0, 10);
+  final d = DateTime.tryParse(iso);
+  if (d == null) return iso.length >= 10 ? iso.substring(0, 10) : iso;
+  String pad(int n) => n.toString().padLeft(2, '0');
+  return '${pad(d.day)}/${pad(d.month)}/${d.year}';
 }

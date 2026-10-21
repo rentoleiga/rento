@@ -7,7 +7,7 @@ const router = Router();
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const lang = req.query.lang || "en";
+    const lang = req.query.lang || "is";
     const { rows } = await db.query(
       `SELECT c.id, c.parent_id, c.slug, c.icon, c.sort_order,
               COALESCE(ct.name, cte.name, '') AS name
@@ -34,7 +34,7 @@ router.get(
 router.get(
   "/all",
   asyncHandler(async (req, res) => {
-    const lang = req.query.lang || "en";
+    const lang = req.query.lang || "is";
     const { rows } = await db.query(
       `SELECT c.id, c.parent_id, c.slug, c.icon, c.sort_order,
               COALESCE(ct.name, cte.name, '') AS name,
@@ -57,7 +57,7 @@ router.get(
 router.get(
   "/:slug",
   asyncHandler(async (req, res) => {
-    const lang = req.query.lang || "en";
+    const lang = req.query.lang || "is";
     const { rows } = await db.query(
       `SELECT c.id, c.slug, c.icon,
               COALESCE(ct.name, cte.name, '') AS name

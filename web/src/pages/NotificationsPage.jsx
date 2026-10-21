@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, timeAgo } from "../api";
 import { useAuth } from "../store";
+import { NOTIF_LABELS, sortNotifications } from "../notifications";
 
 const FILTERS = [
   { id: "all", label: "Allt" },
@@ -9,21 +10,6 @@ const FILTERS = [
   { id: "booking", label: "Bókanir" },
   { id: "message", label: "Skilaboð" },
 ];
-
-const TYPE_LABELS = {
-  new_message: "Ný skilaboð",
-  booking_request: "Ný bókunabeiðni",
-  booking_confirmed: "Ný bókun",
-  booking_approved: "Bókun samþykkt",
-  booking_rejected: "Bókun hafnað",
-  payment_success: "Greiðsla móttekin",
-  new_review: "Ný umsögn",
-  review_reply: "Svar við umsögn",
-  saved_search_match: "Ný auglýsing passar við leit",
-  listing_expiring: "Auglýsing rennur út",
-  listing_expired: "Auglýsing runnin út",
-  phone_verified: "Símanúmer staðfest",
-};
 
 function parsesData(n) {
   try {
@@ -36,7 +22,7 @@ function parsesData(n) {
 function matchesFilter(n, filter) {
   if (filter === "all") return true;
   if (filter === "unread") return !n.read_at;
-  if (filter === "booking") return n.type?.startsWith("booking") || n.type === "payment_success";
+  if (filter === "booking") return n.type?.startsWith("booking") || n.type === "payment_success" || n.type === "return_reminder";
   if (filter === "message") return n.type === "new_message";
   return true;
 }
@@ -50,7 +36,7 @@ export default function NotificationsPage() {
 
   const load = () => {
     api.get("/api/notifications")
-      .then((d) => setItems(d.notifications || []))
+      .then((d) => setItems(sortNotifications(d.notifications || [])))
       .catch(() => {})
       .finally(() => setLoading(false));
   };
@@ -77,12 +63,16 @@ export default function NotificationsPage() {
     const data = parsesData(n);
     if (data.conversationId) {
       navigate(`/messages/${data.conversationId}`);
-    } else if (data.bookingId || n.type?.startsWith("booking") || n.type === "payment_success") {
+    } else if (data.bookingId || n.type?.startsWith("booking") || n.type === "payment_success" || n.type === "return_reminder") {
       navigate("/dashboard/bookings");
     } else if (n.type === "new_review" || n.type === "review_reply") {
       navigate(`/users/${user.id}`);
+    } else if (n.type === "favorite_price_drop" && data.slug) {
+      navigate(`/listing/${data.slug}`);
     } else if (n.type === "saved_search_match") {
       navigate("/dashboard/searches");
+    } else if ((n.type === "listing_expiring" || n.type === "listing_expired") && data.slug) {
+      navigate(`/listing/${data.slug}`);
     }
   };
 
@@ -120,7 +110,7 @@ export default function NotificationsPage() {
         <div className="notif-history">
           {visible.map((n) => (
             <button key={n.id} className={`notif-item notif-row ${n.read_at ? "" : "unread"}`} onClick={() => openItem(n)}>
-              <span className="notif-item-title">{TYPE_LABELS[n.type] || n.title}</span>
+              <span className="notif-item-title">{NOTIF_LABELS[n.type] || n.title}</span>
               {n.body && <span className="notif-item-body">{n.body}</span>}
               <span className="notif-item-time">{timeAgo(n.created_at)}</span>
             </button>

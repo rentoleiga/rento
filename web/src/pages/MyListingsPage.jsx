@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
+import { fmtDate } from "../lib/dates";
 
 const TIER_LABEL = { silver: "Silfur", featured: "Silfur", gold: "Gull", platinum: "Platína" };
 const DAY = 86400000;
@@ -16,13 +17,10 @@ const daysLabel = (iso) => {
   if (d <= 0) return "rennur út í dag";
   return `rennur út eftir ${d} ${d === 1 ? "dag" : "daga"}`;
 };
-const fmtDate = (iso) => {
-  const d = new Date(iso);
-  return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
-};
-
 export default function MyListingsPage() {
   const [rows, setRows] = useState([]);
+  const [archivedRows, setArchivedRows] = useState([]);
+  const [tab, setTab] = useState("active");
   const [slots, setSlots] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,10 +28,12 @@ export default function MyListingsPage() {
     setLoading(true);
     Promise.all([
       api.get("/api/dashboard/owner/listings").then((d) => d.listings).catch(() => []),
+      api.get("/api/dashboard/owner/listings?archived=1").then((d) => d.listings).catch(() => []),
       api.get("/api/slots").catch(() => null),
     ])
-      .then(([listings, slotData]) => {
+      .then(([listings, archived, slotData]) => {
         setRows(listings || []);
+        setArchivedRows(archived || []);
         setSlots(slotData);
       })
       .finally(() => setLoading(false));
@@ -60,6 +60,22 @@ export default function MyListingsPage() {
     }
   };
 
+  const deletePermanent = async (l) => {
+    if (!window.confirm(`Eyða "${l.title}" varanlega? Þetta er ekki hægt að afturkalla.`)) return;
+    try {
+      await api.del(`/api/listings/${l.id}/permanent`);
+      load();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const statusLabel = (status) => {
+    if (status === "expired") return "Útrunnið";
+    if (status === "deleted") return "Eytt";
+    return status;
+  };
+
   return (
     <div className="container section" style={{ maxWidth: 880 }}>
       <div className="row" style={{ justifyContent: "space-between", marginBottom: 18 }}>
@@ -67,7 +83,16 @@ export default function MyListingsPage() {
         <Link className="btn btn-primary" to="/dashboard/listings/new">+ Ný skráning</Link>
       </div>
 
-      {slots && (
+      <div className="dash-nav" style={{ marginBottom: 18 }}>
+        <button className={`nav-link ${tab === "active" ? "active" : ""}`} onClick={() => setTab("active")}>
+          Virkar ({rows.length})
+        </button>
+        <button className={`nav-link ${tab === "archive" ? "active" : ""}`} onClick={() => setTab("archive")}>
+          Safn ({archivedRows.length})
+        </button>
+      </div>
+
+      {slots && tab === "active" && (
         <div className="slots-panel">
           <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <strong>Auglýsingapláss</strong>
@@ -115,14 +140,61 @@ export default function MyListingsPage() {
 
       {loading ? (
         <div className="empty">Hleður…</div>
-      ) : rows.length === 0 ? (
+      ) : tab === "active" ? (
+        rows.length === 0 ? (
+          <div className="empty">
+            <h3>Engar virkar skráningar</h3>
+            <p>Skráðu hlutina þína og byrjaðu að græða.</p>
+          </div>
+        ) : (
+          <ul className="plain-list">
+            {rows.map((l) => (
+              <li key={l.id}>
+                {l.mainImage ? (
+                  <img src={l.mainImage} alt="" />
+                ) : (
+                  <div className="img-placeholder" style={{ width: 56, height: 42 }}>I</div>
+                )}
+                <div className="grow">
+                  <div className="title">
+                    <Link to={`/listing/${l.slug}`}>{l.title}</Link>
+                    {activePromo(l) && (
+                      <span className={`badge badge-tier badge-${l.promotionTier === "featured" ? "silver" : l.promotionTier}`}>
+                        {TIER_LABEL[l.promotionTier]}
+                      </span>
+                    )}
+                  </div>
+                  <div className="sub">
+                    {l.categoryName} · {formatPrice(l.priceDaily || l.priceHourly, l.currency)}/
+                    {l.priceDaily ? "dag" : "klst"}
+                    {l.depositAmount > 0 && ` · trygging ${formatPrice(l.depositAmount, l.currency)}`}
+                  </div>
+                  <div className="sub">
+                    {l.viewCount} skoðanir · {l.favoriteCount} vistuð
+                    {l.status === "published" && l.expiresAt && ` · ${daysLabel(l.expiresAt)}`}
+                    {activePromo(l) && ` · kynning til ${fmtDate(l.promotionUntil)}`}
+                  </div>
+                </div>
+                <span className={`status-pill status-${l.status}`}>{statusLabel(l.status)}</span>
+                <div className="row">
+                  <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}/stats`}>Tölfræði</Link>
+                  <Link className="btn btn-outline btn-sm" to={`/dashboard/calendar/${l.id}`}>Dagatal</Link>
+                  <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}`}>Breyta</Link>
+                  <Link className="btn btn-outline btn-sm" to="/promote">Kynna ↑</Link>
+                  <button className="btn btn-danger btn-sm" onClick={() => del(l)}>Eyða</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      ) : archivedRows.length === 0 ? (
         <div className="empty">
-          <h3>Engar skráningar ennþá</h3>
-          <p>Skráðu hlutina þína og byrjaðu að græða.</p>
+          <h3>Safnið er tómt</h3>
+          <p>Útrunnar og eyttar auglýsingar birtast hér.</p>
         </div>
       ) : (
         <ul className="plain-list">
-          {rows.map((l) => (
+          {archivedRows.map((l) => (
             <li key={l.id}>
               {l.mainImage ? (
                 <img src={l.mainImage} alt="" />
@@ -132,36 +204,20 @@ export default function MyListingsPage() {
               <div className="grow">
                 <div className="title">
                   <Link to={`/listing/${l.slug}`}>{l.title}</Link>
-                  {activePromo(l) && (
-                    <span className={`badge badge-tier badge-${l.promotionTier === "featured" ? "silver" : l.promotionTier}`}>
-                      {TIER_LABEL[l.promotionTier]}
-                    </span>
-                  )}
                 </div>
                 <div className="sub">
                   {l.categoryName} · {formatPrice(l.priceDaily || l.priceHourly, l.currency)}/
                   {l.priceDaily ? "dag" : "klst"}
-                  {l.depositAmount > 0 && ` · trygging ${formatPrice(l.depositAmount, l.currency)}`}
                 </div>
                 <div className="sub">
-                  {l.viewCount} skoðanir · {l.favoriteCount} vistuð
-                  {l.status === "published" && l.expiresAt && ` · ${daysLabel(l.expiresAt)}`}
-                  {activePromo(l) && ` · kynning til ${fmtDate(l.promotionUntil)}`}
+                  {statusLabel(l.status)}
+                  {l.expiresAt ? ` · ${fmtDate(l.expiresAt)}` : ""}
                 </div>
               </div>
-              <span className={`status-pill status-${l.status}`}>
-                {l.status === "expired" ? "Útrunnið" : l.status}
-              </span>
+              <span className={`status-pill status-${l.status}`}>{statusLabel(l.status)}</span>
               <div className="row">
-                <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}/stats`}>Tölfræði</Link>
-                <Link className="btn btn-outline btn-sm" to={`/dashboard/calendar/${l.id}`}>Dagatal</Link>
-                <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}`}>Breyta</Link>
-                {l.status === "expired" ? (
-                  <button className="btn btn-primary btn-sm" onClick={() => republish(l)}>Endurbirta</button>
-                ) : (
-                  <Link className="btn btn-outline btn-sm" to="/promote">Kynna ↑</Link>
-                )}
-                <button className="btn btn-danger btn-sm" onClick={() => del(l)}>Eyða</button>
+                <button className="btn btn-primary btn-sm" onClick={() => republish(l)}>Endurvekja</button>
+                <button className="btn btn-danger btn-sm" onClick={() => deletePermanent(l)}>Eyða varanlega</button>
               </div>
             </li>
           ))}

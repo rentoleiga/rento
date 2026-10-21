@@ -71,8 +71,8 @@ router.post(
     );
     // Notify the reviewed user
     try {
-      await notify(reviewedUserId, "new_review", "New review received",
-        `${req.user.first_name || req.user.email} left you a ${req.body.rating}★ review for "${b.listing_title}"`, { bookingId: b.id, listingId });
+      await notify(reviewedUserId, "new_review", "Ný umsögn móttekin",
+        `${req.user.first_name || req.user.email} gaf þér ${req.body.rating}★ umsögn fyrir „${b.listing_title}“.`, { bookingId: b.id, listingId });
     } catch {}
 
     res.status(201).json({ ok: true });

@@ -145,12 +145,16 @@ router.get(
   authRequired,
   asyncHandler(async (req, res) => {
     await expireListings();
+    const archived = req.query.archived === "1";
+    const statusFilter = archived
+      ? "l.status IN ('deleted','expired') AND l.purged_at IS NULL"
+      : "l.status NOT IN ('deleted','expired')";
     const { rows } = await db.query(
       `SELECT l.*, c.slug AS category_slug, COALESCE(ct.name,'') AS category_name
        FROM listings l
        LEFT JOIN categories c ON c.id = l.category_id
-       LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'en'
-       WHERE l.owner_id = $1 AND l.status <> 'deleted'
+       LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'is'
+       WHERE l.owner_id = $1 AND ${statusFilter}
        ORDER BY l.created_at DESC`,
       [req.user.id]
     );

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
 import GoogleButton from "../components/GoogleButton";
+import PasswordInput from "../components/PasswordInput";
 
 export default function RegisterPage() {
   const { register, loginGoogle } = useAuth();
@@ -73,7 +74,7 @@ export default function RegisterPage() {
         </div>
         <div className="field">
           <label>{t("auth.password")} (að lágm. 8)</label>
-          <input type="password" required minLength={8} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+          <PasswordInput required minLength={8} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} autoComplete="new-password" />
         </div>
         <div className="field">
           <label>{t("auth.city")}</label>

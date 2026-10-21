@@ -1,8 +1,9 @@
+import { fmtDateTime } from "../../lib/dates";
+
 export const fmt = (n) => String(Number(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 export const fmtIsk = (n) => `${fmt(Math.round(Number(n || 0)))} kr.`;
 
-export const shortDate = (iso) =>
-  iso ? new Date(iso).toLocaleString("is-IS", { dateStyle: "short", timeStyle: "short" }) : "";
+export const shortDate = (iso) => (iso ? fmtDateTime(iso) : "");
 
 export const ACTION_LABEL = {
   "user.role_change": "Changed role",

@@ -30,6 +30,15 @@ async function notify(userId, type, title, body, data = {}) {
         [userId, type, title, body, String(data.bookingId)]
       );
       deduped = upd.rowCount > 0;
+    } else if (data.listingId) {
+      const upd = await db.query(
+        `UPDATE notifications
+         SET title = $3, body = $4, created_at = now()
+         WHERE user_id = $1 AND type = $2 AND read_at IS NULL
+           AND data->>'listingId' = $5`,
+        [userId, type, title, body, String(data.listingId)]
+      );
+      deduped = upd.rowCount > 0;
     }
     if (!deduped) {
       await db.query(

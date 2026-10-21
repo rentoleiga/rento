@@ -630,6 +630,19 @@ a:hover {
 .how-info-card { padding: 22px; }
 .how-info-card h4 { font-size: 15px; margin: 0 0 8px; }
 .how-info-card p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
+.how-pay-intro { font-size: 14px; color: var(--muted); margin: -8px 0 20px; }
+.how-pay-flow { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; margin-bottom: 22px; }
+.how-pay-box { padding: 20px 22px; border-radius: 14px; }
+.how-pay-box-accent { border-color: #2ed3a6; background: #f1fbf7; }
+.how-pay-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+.how-pay-box h3 { font-size: 18px; margin: 0 0 8px; }
+.how-pay-box p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
+.how-pay-plus { font-size: 24px; font-weight: 600; color: #2ed3a6; line-height: 1; }
+.how-pay-cards { margin-top: 0; }
+.how-pay-card { display: flex; flex-direction: column; align-items: flex-start; }
+.how-pay-card h4 { margin: 12px 0 8px; font-size: 17px; }
+.how-pay-icon { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 11px; background: #e6f6f0; color: #0f8f78; flex: 0 0 auto; }
+.how-pay-tag { display: inline-block; margin-top: 12px; padding: 4px 10px; border-radius: 999px; background: #e6f6f0; color: #0f6b5a; font-size: 12px; font-weight: 600; }
 .how-four-col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .how-trust-card { background: #e6f6f0; border-radius: 14px; padding: 18px 16px; font-size: 13px; font-weight: 600; color: #0f2b24; line-height: 1.4; }
 .how-help-card { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 28px; flex-wrap: wrap; }
@@ -643,7 +656,7 @@ a:hover {
 .how-cta-teal:hover { background: #1fc49a; color: #0a1f1a; text-decoration: none; }
 .how-cta-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 10px 22px; border-radius: 999px; font-weight: 600; }
 .how-cta-outline:hover { background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; }
-@media (max-width: 860px) { .how-two-col { grid-template-columns: 1fr; } .how-three-col { grid-template-columns: 1fr; } .how-four-col { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 860px) { .how-two-col { grid-template-columns: 1fr; } .how-three-col { grid-template-columns: 1fr; } .how-four-col { grid-template-columns: repeat(2, 1fr); } .how-pay-flow { grid-template-columns: 1fr; } .how-pay-plus { justify-self: center; } }
 @media (max-width: 480px) { .how-four-col { grid-template-columns: 1fr; } }
 
 /* Contact */
@@ -1585,6 +1598,7 @@ a:hover {
   gap: 8px;
 }
 .gallery-main {
+  position: relative;
   aspect-ratio: 16 / 10;
   background: var(--bg-soft);
   border-radius: var(--radius);
@@ -1594,6 +1608,45 @@ a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(12, 22, 18, 0.55);
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.15s ease;
+}
+.gallery-nav:hover { background: rgba(12, 22, 18, 0.78); }
+.gallery-prev { left: 10px; }
+.gallery-next { right: 10px; }
+.listing-unavailable {
+  max-width: 560px;
+  margin: 40px auto;
+}
+.listing-unavailable-icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #fbe9e7;
+  color: #c2412d;
+  font-size: 30px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .gallery-thumbs {
   display: flex;
@@ -1790,6 +1843,73 @@ a:hover {
   min-height: 90px;
   resize: vertical;
 }
+.password-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.password-wrap input {
+  width: 100%;
+  padding-right: 44px;
+}
+.password-eye {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.password-eye:hover { color: var(--ink); background: #f1f5f3; }
+.password-eye svg { width: 18px; height: 18px; }
+.date-field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.date-field > input[type="text"] {
+  width: 100%;
+  padding-right: 44px;
+}
+.date-field .date-native {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+}
+.date-pick-btn {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.date-pick-btn:hover { color: var(--ink); background: #f1f5f3; }
+.date-pick-btn svg { width: 18px; height: 18px; }
 .field.has-error input,
 .field.has-error select,
 .field.has-error textarea {
@@ -2050,6 +2170,7 @@ a:hover {
 }
 .opt-details summary { cursor: pointer; font-weight: 600; font-size: 14px; }
 .opt-details .row { margin-top: 10px; }
+.opt-details > .btn { margin-top: 12px; }
 @media (max-width: 860px) {
   .wizard-layout { grid-template-columns: 1fr; }
   .wizard-steps { position: static; display: flex; overflow-x: auto; gap: 4px; padding: 10px; }
@@ -2160,6 +2281,8 @@ a:hover {
 .status-rejected, .status-cancelled { background: #f8e3de; color: #9c3a25; }
 .status-published { background: #e3efe6; color: #245c3d; }
 .status-draft, .status-pending_review { background: #fbf3df; color: #8a6d1b; }
+.status-expired { background: #fbf3df; color: #8a6d1b; }
+.status-deleted { background: #f8e3de; color: #9c3a25; }
 
 /* ---------- Messages ---------- */
 .chat {

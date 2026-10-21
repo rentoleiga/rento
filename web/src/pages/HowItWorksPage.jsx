@@ -54,45 +54,47 @@ export default function HowItWorksPage() {
       <section className="section" style={{ background: "#f6f8f7", paddingTop: 0 }}>
         <div className="container">
           <h2 className="how-section-title">Greiðslur á mannamáli</h2>
-          <div className="how-three-col">
-            <div className="card how-info-card">
-              <h4>Borga ég Rentó eða eigandanum?</h4>
-              <p>Allar greiðslur fara í gegnum Rentó. Þú borgar við bókun og eigandinn fær greiðsluna eftir staðfestingu.</p>
+          <p className="how-pay-intro">Leigan er á milli þín og leigusala. Rentó selur aðeins auglýsingaþjónustu.</p>
+
+          <div className="how-pay-flow">
+            <div className="card how-pay-box">
+              <span className="how-pay-label">LEIGA</span>
+              <h3>Leigjandi ↔ Eigandi</h3>
+              <p>Þið semjið beint um verð og greiðslu. Rentó tekur ekki við leigugreiðslum og tekur enga þóknun.</p>
             </div>
-            <div className="card how-info-card">
-              <h4>Hvenær fær eigandinn peninginn?</h4>
-              <p>Greiðsla berst til leigusala eftir að hlutur er afhentur og leiga hefst. Öruggt og rekjanlegt.</p>
-            </div>
-            <div className="card how-info-card">
-              <h4>Hvað kostar Rentó?</h4>
-              <p>Rentó tekur enga þjónustugjald af leigum. Þrjár auglýsingar eru ókeypis. Fleiri pláss og boost eru keypt með <Link to="/promote">Rentó Kredit</Link>.</p>
+            <span className="how-pay-plus" aria-hidden="true">+</span>
+            <div className="card how-pay-box how-pay-box-accent">
+              <span className="how-pay-label">AUGLÝSINGAÞJÓNUSTA</span>
+              <h3>Eigandi → Rentó</h3>
+              <p>Þú greiðir Rentó með korti fyrir einingar og auglýsingapakka til að birta og efla auglýsingar.</p>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Öruggari leiga */}
-      <section className="section" style={{ background: "#f6f8f7", paddingTop: 0 }}>
-        <div className="container">
-          <h2 className="how-section-title">Öruggari leiga með Rentó</h2>
-          <div className="how-four-col">
-            <div className="how-trust-card">Notendur stofna reikning</div>
-            <div className="how-trust-card">Bókanir og greiðslur fara í gegnum Rentó</div>
-            <div className="how-trust-card">Umsagnir hjálpa þér að velja</div>
-            <div className="how-trust-card">Skilmálar gilda um hverja leigu</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Hvað ef eitthvað kemur upp? */}
-      <section className="section" style={{ background: "#f6f8f7", paddingTop: 0 }}>
-        <div className="container">
-          <div className="card how-help-card">
-            <div>
-              <h3>Hvað ef eitthvað kemur upp?</h3>
-              <p>Hluturinn er bilaður eða kemur skemmdur til baka? Hér er farið yfir hvað gerist og hvert þú leitar.</p>
+          <div className="how-three-col how-pay-cards">
+            <div className="card how-info-card how-pay-card">
+              <span className="how-pay-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              </span>
+              <h4>Hver sér um greiðsluna fyrir leiguna?</h4>
+              <p>Leigjandi og eigandi ganga frá leigugreiðslu sín á milli. Rentó tekur ekki við leigugreiðslum og tekur enga þóknun af leigunni.</p>
+              <span className="how-pay-tag">Beint á milli notenda</span>
             </div>
-            <Link to="/faq" className="btn btn-outline how-help-btn">Sjá hjálparsíðu</Link>
+            <div className="card how-info-card how-pay-card">
+              <span className="how-pay-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+              </span>
+              <h4>Hvað greiði ég Rentó fyrir?</h4>
+              <p>Rentó selur auglýsingaþjónustu. Þú getur keypt staka einingu eða auglýsingapakka og notað einingarnar til að birta eða efla auglýsingar.</p>
+              <span className="how-pay-tag">Stök eining eða pakki</span>
+            </div>
+            <div className="card how-info-card how-pay-card">
+              <span className="how-pay-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </span>
+              <h4>Hvernig er greitt fyrir þjónustu Rentó?</h4>
+              <p>Greitt er með korti í gegnum Straum. Einingar eru ekki peningar og ekki hægt að færa þær milli notenda.</p>
+              <span className="how-pay-tag">Kortagreiðsla</span>
+            </div>
           </div>
         </div>
       </section>

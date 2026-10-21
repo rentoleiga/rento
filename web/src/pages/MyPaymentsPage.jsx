@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
+import { fmtDate } from "../lib/dates";
 
 const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Kynning" };
 const PACKAGE_LABEL = {
@@ -11,13 +12,6 @@ const PACKAGE_LABEL = {
   silver: "Silfur",
   gold: "Gull",
   platinum: "Platína",
-};
-
-const fmtDate = (d) => {
-  if (!d) return "";
-  const dt = new Date(d);
-  if (Number.isNaN(dt.getTime())) return String(d).slice(0, 10);
-  return `${String(dt.getDate()).padStart(2, "0")}.${String(dt.getMonth() + 1).padStart(2, "0")}.${dt.getFullYear()}`;
 };
 
 export default function MyPaymentsPage() {

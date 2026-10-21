@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import { useLang } from "../i18n";
 import { useAuth } from "../store";
+import { fmtDate } from "../lib/dates";
 
 const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 const SLOT_PRICE = 490;
@@ -19,12 +20,6 @@ const TIERS = [
 
 const isActive = (l) =>
   l.status === "published" && (!l.expiresAt || new Date(l.expiresAt).getTime() > Date.now());
-
-const fmtDate = (d) => {
-  const dt = new Date(d);
-  if (Number.isNaN(dt.getTime())) return "";
-  return `${String(dt.getDate()).padStart(2, "0")}.${String(dt.getMonth() + 1).padStart(2, "0")}.${dt.getFullYear()}`;
-};
 
 const promotionLabel = (l) => {
   if (!l.promotionTier || !l.promotionUntil) return "";
@@ -64,11 +59,11 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
-    if (!window.confirm(`Kaupa 1 auglýsingapláss fyrir ${fmt(SLOT_PRICE)} kr.? Plássið gildir í 30 daga frá notkun.`)) return;
+    if (!window.confirm(`Kaupa 1 auglÃ½singaplÃ¡ss fyrir ${fmt(SLOT_PRICE)} kr.? PlÃ¡ssiÃ° gildir Ã­ 30 daga frÃ¡ notkun.`)) return;
     setBusy("slots");
     try {
       const r = await api.post("/api/slots/purchase", { count: 1, code: code.trim() });
-      setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
+      setNotice(`${r.slots} plÃ¡ss keypt Â· ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -80,11 +75,11 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
-    if (!window.confirm(`Kaupa ${pkg.slots} auglýsingapláss fyrir ${fmt(pkg.amount)} kr.?`)) return;
+    if (!window.confirm(`Kaupa ${pkg.slots} auglÃ½singaplÃ¡ss fyrir ${fmt(pkg.amount)} kr.?`)) return;
     setBusy(pkg.id);
     try {
       const r = await api.post("/api/slots/purchase", { packageId: pkg.id, code: code.trim() });
-      setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
+      setNotice(`${r.slots} plÃ¡ss keypt Â· ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -97,20 +92,20 @@ export default function PremiumPage() {
     setError("");
     if (!user) return needLogin();
     if (!pickId) {
-      setError("Veldu auglýsingu fyrst.");
+      setError("Veldu auglÃ½singu fyrst.");
       return;
     }
     const chosen = listings.find((l) => String(l.id) === String(pickId));
     const extend = chosen && promotionLabel(chosen);
     const tierName = t(`credit.boost.${tier.key}`);
     const msg = extend
-      ? `Framlengja ${tierName.toLowerCase()} kynningu um ${tier.days} daga fyrir ${fmt(tier.amount)} kr.? Núverandi kynning gildir til ${fmtDate(chosen.promotionUntil)}.`
-      : `Kaupa ${tierName.toLowerCase()} kynningu í ${tier.days} daga fyrir ${fmt(tier.amount)} kr.?`;
+      ? `Framlengja ${tierName.toLowerCase()} kynningu um ${tier.days} daga fyrir ${fmt(tier.amount)} kr.? NÃºverandi kynning gildir til ${fmtDate(chosen.promotionUntil)}.`
+      : `Kaupa ${tierName.toLowerCase()} kynningu Ã­ ${tier.days} daga fyrir ${fmt(tier.amount)} kr.?`;
     if (!window.confirm(msg)) return;
     setBusy(tier.key);
     try {
       const r = await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key, code: code.trim() });
-      setNotice(`${tierName} kynning virkjuð · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
+      setNotice(`${tierName} kynning virkjuÃ° Â· ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
       loadListings();
     } catch (e) {
       setError(e.message);
@@ -123,15 +118,12 @@ export default function PremiumPage() {
     <>
       <section className="hero hero-premium">
         <div className="container">
-          <span className="adv-badge">{t("adv.badge")}</span>
           <h1>{t("adv.hero.title")}</h1>
-          <p>{t("adv.hero.sub")}</p>
           <div className="credit-stats">
             <div className="credit-stat"><strong>0%</strong><span>{t("adv.stat.commission")}</span></div>
             <div className="credit-stat"><strong>3</strong><span>{t("adv.stat.free")}</span></div>
             <div className="credit-stat"><strong>30</strong><span>{t("adv.stat.days")}</span></div>
           </div>
-          <a href="#plass" className="btn btn-primary">{t("adv.hero.cta")}</a>
         </div>
       </section>
 
@@ -153,7 +145,7 @@ export default function PremiumPage() {
             <input
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="Promókóði (valfrjálst)"
+              placeholder="PromÃ³kÃ³Ã°i (valfrjÃ¡lst)"
               style={{ maxWidth: 220 }}
             />
           </div>
@@ -168,12 +160,12 @@ export default function PremiumPage() {
               </div>
               <div className="credit-price">{t("adv.single.unit")}</div>
               <ul className="plan-features">
-                <li><span className="plan-check">✓</span><span>{t("adv.f.days")}</span></li>
-                <li><span className="plan-check">✓</span><span>{t("adv.f.keep")}</span></li>
-                <li><span className="plan-check">✓</span><span>{t("adv.f.noSub")}</span></li>
+                <li><span className="plan-check">âœ“</span><span>{t("adv.f.days")}</span></li>
+                <li><span className="plan-check">âœ“</span><span>{t("adv.f.keep")}</span></li>
+                <li><span className="plan-check">âœ“</span><span>{t("adv.f.noSub")}</span></li>
               </ul>
               <button className="btn btn-outline btn-block" disabled={!!busy} onClick={buySlot}>
-                {busy === "slots" ? "…" : t("adv.buy.slot")}
+                {busy === "slots" ? "â€¦" : t("adv.buy.slot")}
               </button>
             </div>
 
@@ -186,18 +178,18 @@ export default function PremiumPage() {
                   <strong>{fmt(p.amount)}</strong>
                   <span className="plan-unit">kr.</span>
                 </div>
-                <div className="credit-price">{fmt(p.per)} kr. á pláss</div>
+                <div className="credit-price">{fmt(p.per)} kr. Ã¡ plÃ¡ss</div>
                 <ul className="plan-features">
-                  <li><span className="plan-check">✓</span><span>{t("adv.f.days")}</span></li>
-                  <li><span className="plan-check">✓</span><span>{t("adv.f.keep")}</span></li>
-                  <li><span className="plan-check">✓</span><span>{t("adv.f.noSub")}</span></li>
+                  <li><span className="plan-check">âœ“</span><span>{t("adv.f.days")}</span></li>
+                  <li><span className="plan-check">âœ“</span><span>{t("adv.f.keep")}</span></li>
+                  <li><span className="plan-check">âœ“</span><span>{t("adv.f.noSub")}</span></li>
                 </ul>
                 <button
                   className={`btn ${p.popular ? "btn-primary" : "btn-outline"} btn-block`}
                   disabled={!!busy}
                   onClick={() => buyPackage(p)}
                 >
-                  {busy === p.id ? "…" : t("adv.buy.pkg")}
+                  {busy === p.id ? "â€¦" : t("adv.buy.pkg")}
                 </button>
               </div>
             ))}
@@ -247,7 +239,7 @@ export default function PremiumPage() {
               <select value={pickId} onChange={(e) => setPickId(e.target.value)}>
                 {listings.map((l) => (
                   <option key={l.id} value={l.id}>
-                    {l.title}{promotionLabel(l) ? ` — ${promotionLabel(l)}` : ""}
+                    {l.title}{promotionLabel(l) ? ` â€” ${promotionLabel(l)}` : ""}
                   </option>
                 ))}
               </select>
@@ -272,7 +264,7 @@ export default function PremiumPage() {
                 <div className="credit-price">{t(`adv.days.${tier.days}`)}</div>
                 <ul className="plan-features">
                   {tier.features.map((k) => (
-                    <li key={k}><span className="plan-check">✓</span><span>{t(k)}</span></li>
+                    <li key={k}><span className="plan-check">âœ“</span><span>{t(k)}</span></li>
                   ))}
                 </ul>
                 <button
@@ -280,7 +272,7 @@ export default function PremiumPage() {
                   disabled={!!busy || (!!user && !listings.length)}
                   onClick={() => promote(tier)}
                 >
-                  {busy === tier.key ? "…" : `${t("adv.buyTier")} ${t(`credit.boost.${tier.key}`)}`}
+                  {busy === tier.key ? "â€¦" : `${t("adv.buyTier")} ${t(`credit.boost.${tier.key}`)}`}
                 </button>
               </div>
             ))}

@@ -5,6 +5,8 @@ import { useAuth } from "../store";
 import { useLang } from "../i18n";
 import ListingCard from "../components/ListingCard";
 import { StarRating } from "../components/ListingCard";
+import DateField from "../components/DateField";
+import { fmtDate } from "../lib/dates";
 
 const ATTR_LABELS = {
   brand: "Vörumerki",
@@ -65,6 +67,7 @@ export default function ListingPage() {
   const [mainImg, setMainImg] = useState("");
   const [isFav, setIsFav] = useState(false);
   const [error, setError] = useState("");
+  const [errorCode, setErrorCode] = useState("");
 
   const [dates, setDates] = useState({ start: "", end: "" });
   const [quote, setQuote] = useState(null);
@@ -83,6 +86,8 @@ export default function ListingPage() {
 
   useEffect(() => {
     setListing(null);
+    setError("");
+    setErrorCode("");
     api.get(`/api/listings/${slug}?inc=1`)
       .then((d) => {
         setListing(d.listing);
@@ -91,7 +96,10 @@ export default function ListingPage() {
         return api.get(`/api/reviews/listing/${d.listing.id}`);
       })
       .then((d) => setReviews(d.reviews || []))
-      .catch(() => setError(t("listing.notFound")));
+      .catch((err) => {
+        setError(err.data?.error || t("listing.notFound"));
+        setErrorCode(err.data?.code || "");
+      });
   }, [slug]);
 
   useEffect(() => {
@@ -143,13 +151,33 @@ export default function ListingPage() {
   }, [lightbox, listing]);
 
   if (error) {
-    return <div className="container section"><div className="empty"><h3>{error}</h3></div></div>;
+    return (
+      <div className="container section">
+        <div className="empty listing-unavailable">
+          <div className="listing-unavailable-icon" aria-hidden="true">!</div>
+          <h3>{error}</h3>
+          <p>
+            {errorCode === "listing_deleted"
+              ? "Þessari auglýsingu hefur verið eytt og hún er ekki lengur aðgengileg."
+              : errorCode === "listing_expired"
+                ? "Auglýsingin er útrunnin og ekki lengur virk."
+                : "Auglýsingin sem þú leitaðir að er ekki lengur til."}
+          </p>
+          <Link className="btn btn-primary" to="/search">Skoða aðrar auglýsingar</Link>
+        </div>
+      </div>
+    );
   }
   if (!listing) {
     return <div className="container section"><div className="empty">{t("search.loading")}</div></div>;
   }
 
   const gallery = listing.gallery && listing.gallery.length ? listing.gallery : [listing.mainImage];
+  const galleryIndex = Math.max(0, gallery.indexOf(mainImg));
+  const moveMain = (step) => {
+    if (gallery.length < 2) return;
+    setMainImg(gallery[(galleryIndex + step + gallery.length) % gallery.length]);
+  };
   const promoActive = !listing.promotionUntil || new Date(listing.promotionUntil).getTime() > Date.now();
   const ytMatch = listing.addonVideo
     ? String(listing.addonVideo).match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/)
@@ -276,24 +304,39 @@ export default function ListingPage() {
                   src={mainImg}
                   alt={listing.title}
                   className="gallery-zoom"
-                  onClick={() => setLightbox(Math.max(0, gallery.indexOf(mainImg)))}
+                  onClick={() => setLightbox(galleryIndex)}
                 />
               ) : (
                 <div className="img-placeholder">Rento</div>
               )}
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    className="gallery-nav gallery-prev"
+                    onClick={(e) => { e.stopPropagation(); moveMain(-1); }}
+                    aria-label="Fyrri mynd"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="gallery-nav gallery-next"
+                    onClick={(e) => { e.stopPropagation(); moveMain(1); }}
+                    aria-label="Næsta mynd"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
             </div>
             {gallery.length > 1 && (
               <div className="gallery-thumbs">
-                {gallery.map((img, i) => (
+                {gallery.map((img) => (
                   <img
                     key={img}
                     src={img}
                     alt=""
                     className={img === mainImg ? "active" : ""}
-                    onClick={() => {
-                      setMainImg(img);
-                      setLightbox(i);
-                    }}
+                    onClick={() => setMainImg(img)}
                   />
                 ))}
               </div>
@@ -389,7 +432,8 @@ export default function ListingPage() {
               </span>
             </p>
             <p className="muted small" style={{ margin: "6px 0 14px" }}>
-              {t("listing.depositShort")} {formatPrice(listing.depositAmount, listing.currency)} · {t("listing.minimum").replace("{n}", listing.minimumDuration).replace("{unit}", unitLabel(listing.minimumDurationUnit, listing.minimumDuration))}
+              {t("listing.depositShort")} {formatPrice(listing.depositAmount, listing.currency)}
+              {Number(listing.minimumDuration) > 0 ? ` · ${t("listing.minimum").replace("{n}", listing.minimumDuration).replace("{unit}", unitLabel(listing.minimumDurationUnit, listing.minimumDuration))}` : ""}
               {listing.instantBooking ? ` · ${t("listing.instant")}` : ` · ${t("listing.requiresApproval")}`}
             </p>
             <div className="field-label" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--muted)", marginBottom: 6 }}>TÍMABIL</div>
@@ -399,12 +443,12 @@ export default function ListingPage() {
           <form onSubmit={submitQuote}>
             <div className="field">
               <label>{t("listing.from")}</label>
-              <input type="date" required value={dates.start}
+              <DateField required value={dates.start}
                 onChange={(e) => setDates({ ...dates, start: e.target.value })} />
             </div>
             <div className="field">
               <label>{t("listing.to")}</label>
-              <input type="date" required value={dates.end}
+              <DateField required value={dates.end}
                 min={dates.start}
                 onChange={(e) => setDates({ ...dates, end: e.target.value })} />
             </div>
@@ -445,7 +489,7 @@ export default function ListingPage() {
                       <span>★ {Number(listing.owner.rating).toFixed(1)}</span>
                       {listing.ownerProfile && <span>· {listing.ownerProfile.responseRate}% svarhlutfall</span>}
                     </div>
-                    {listing.ownerProfile?.createdAt && <div className="muted small">Meðlimur síðan {new Date(listing.ownerProfile.createdAt).toLocaleDateString("is-IS", { month: "long", year: "numeric" })}</div>}
+                    {listing.ownerProfile?.createdAt && <div className="muted small">Meðlimur síðan {fmtDate(listing.ownerProfile.createdAt)}</div>}
                     <div className="muted small" style={{ display: "flex", alignItems: "center", gap: 4 }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {listing.city}</div>
                     {listing.ownerProfile && <div className="muted small">✓ Samþykkti {listing.ownerProfile.approvedCount || 4} af {listing.ownerProfile.totalCount || 4} beiðnum</div>}
                   </div>

@@ -275,6 +275,41 @@ router.put(
   })
 );
 
+// ---------------- payment reminder ----------------
+router.post(
+  "/:id/remind-payment",
+  authRequired,
+  asyncHandler(async (req, res) => {
+    const b = await getBookingRow(req.params.id);
+    if (!b) throw err("Booking not found", 404);
+    if (req.user.id !== b.owner_id) throw err("Not allowed", 403);
+    if (b.status !== "approved") throw err("Bókun bíður ekki greiðslu", 409);
+    if (b.payment_status === "paid") throw err("Bókun er þegar greidd", 409);
+
+    const { rowCount } = await db.query(
+      `SELECT 1 FROM notifications
+       WHERE user_id = $1 AND type = 'booking_payment_reminder'
+         AND data->>'bookingId' = $2
+         AND created_at > now() - interval '10 minutes'
+       LIMIT 1`,
+      [b.renter_id, String(b.id)]
+    );
+    if (rowCount > 0) {
+      throw err("Áminning var nýlega send", 429);
+    }
+
+    await notify(
+      b.renter_id,
+      "booking_payment_reminder",
+      "Áminning um greiðslu",
+      `Eigandi "${b.listing_title}" minnir þig á að klára greiðslu fyrir bókunina.`,
+      { bookingId: b.id }
+    );
+
+    res.json({ ok: true });
+  })
+);
+
 // ---------------- price quote (public) ----------------
 router.post(
   "/listings/:listingId/quote",

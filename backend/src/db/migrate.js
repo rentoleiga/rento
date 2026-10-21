@@ -292,6 +292,19 @@ async function applyMigrations() {
 
       ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'open';
       ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS admin_reply TEXT;
+
+      ALTER TABLE bookings ADD COLUMN IF NOT EXISTS return_reminder_sent_at TIMESTAMPTZ;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS purged_at TIMESTAMPTZ;
+
+      CREATE TABLE IF NOT EXISTS uploads (
+        id         SERIAL PRIMARY KEY,
+        filename   VARCHAR(180) UNIQUE NOT NULL,
+        mime       VARCHAR(120) NOT NULL DEFAULT 'application/octet-stream',
+        size       INTEGER NOT NULL DEFAULT 0,
+        data       BYTEA NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_uploads_created ON uploads (created_at DESC);
     `);
     console.log("Growth feature tables ready.");
 

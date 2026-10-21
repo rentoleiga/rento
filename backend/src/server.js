@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const config = require("./config");
+const db = require("./db/pool");
 const { notFound, errorHandler } = require("./middleware/http");
 const { migrate } = require("./db/migrate");
 
@@ -13,8 +14,23 @@ app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json({ limit: "2mb" }));
 
-// Static uploads
+// Uploads are stored in Postgres so they survive redeploys. Older files that
+// still exist on disk are served by express.static first.
 app.use("/uploads", express.static(path.join(__dirname, "..", config.uploadDir)));
+app.get("/uploads/:filename", async (req, res, next) => {
+  try {
+    const { rows } = await db.query(
+      "SELECT mime, data FROM uploads WHERE filename = $1",
+      [req.params.filename]
+    );
+    if (!rows.length) return res.status(404).json({ error: "Not found" });
+    res.set("Content-Type", rows[0].mime);
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
+    res.send(rows[0].data);
+  } catch (e) {
+    next(e);
+  }
+});
 
 // Health
 app.get("/health", (req, res) => res.json({ ok: true, service: "rento-api" }));
@@ -52,9 +68,13 @@ migrate().then(() => {
   app.listen(config.port, () => {
     console.log(`Rento API listening on http://localhost:${config.port}`);
   });
-  const { sendExpiryReminders } = require("./utils/slots");
+  const { sendExpiryReminders, sendReturnReminders, cleanupOldNotifications } = require("./utils/slots");
   const runReminders = () =>
-    sendExpiryReminders().catch((e) => console.error("expiry reminders:", e.message));
+    Promise.all([
+      sendExpiryReminders(),
+      sendReturnReminders(),
+      cleanupOldNotifications(),
+    ]).catch((e) => console.error("reminders:", e.message));
   setTimeout(runReminders, 15000);
-  setInterval(runReminders, 6 * 60 * 60 * 1000).unref();
+  setInterval(runReminders, 5 * 60 * 1000).unref();
 });

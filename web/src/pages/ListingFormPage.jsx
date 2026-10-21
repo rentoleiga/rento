@@ -139,7 +139,7 @@ export default function ListingFormPage() {
   };
 
   useEffect(() => {
-    api.get("/api/categories/all").then((d) => setCats(d.categories || [])).catch(() => {});
+    api.get("/api/categories/all?lang=is").then((d) => setCats(d.categories || [])).catch(() => {});
     if (id) {
       api.get(`/api/listings/${id}`)
         .then((d) => {
@@ -312,7 +312,7 @@ export default function ListingFormPage() {
       attributes: attrs,
       categoryId: Number(form.categoryId),
       subcategoryId: Number(form.subcategoryId) || 0,
-      minimumDuration: Number(form.minimumDuration) || 1,
+      minimumDuration: form.minimumDuration === "" || form.minimumDuration == null ? 1 : Number(form.minimumDuration),
       publish,
     };
     NUMERIC_CONVERT.forEach((k) => {
@@ -543,8 +543,21 @@ export default function ListingFormPage() {
             <label>Lágmarksleigutími (valfrjálst)</label>
             <div className="row">
               <input type="number" min={0} value={form.minimumDuration} onChange={(e) => set("minimumDuration", e.target.value)} placeholder="t.d. 3" style={{ maxWidth: 120 }} />
-              <select value={form.minimumDurationUnit} onChange={(e) => set("minimumDurationUnit", e.target.value)} style={{ flex: 1 }}>
-                <option value="hour">Ekkert lágmark</option>
+              <select
+                value={Number(form.minimumDuration) === 0 ? "none" : form.minimumDurationUnit}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === "none") {
+                    set("minimumDuration", 0);
+                    set("minimumDurationUnit", "day");
+                  } else {
+                    if (Number(form.minimumDuration) === 0) set("minimumDuration", 1);
+                    set("minimumDurationUnit", v);
+                  }
+                }}
+                style={{ flex: 1 }}
+              >
+                <option value="none">Ekkert lágmark</option>
                 <option value="hour">klst.</option><option value="day">dagur</option><option value="week">vika</option>
               </select>
             </div>
@@ -638,7 +651,7 @@ export default function ListingFormPage() {
                 .map(([u, v, sfx]) => <span key={u} className="muted" style={{ marginLeft: 8 }}>{v} ISK{sfx}</span>)}
               {!form.priceDaily && ![form.priceHourly, form.priceWeekly, form.priceMonthly].map(Number).some((n) => n > 0) && "Ekkert verð sett ennþá"}
             </p>
-            <p className="muted mb0" style={{ marginTop: 4 }}>Trygging {form.depositAmount || 0} ISK · lágm. {form.minimumDuration} {{hour: "klst.", day: "daga", week: "vikur"}[form.minimumDurationUnit] || form.minimumDurationUnit}</p>
+            <p className="muted mb0" style={{ marginTop: 4 }}>Trygging {form.depositAmount || 0} ISK{Number(form.minimumDuration) > 0 ? ` · lágm. ${form.minimumDuration} ${{hour: "klst.", day: "daga", week: "vikur"}[form.minimumDurationUnit] || form.minimumDurationUnit}` : ""}</p>
           </div>
           <div className="review-card">
             <div className="review-head"><span>📍 Staðsetning og afhending</span><button className="link-btn" onClick={() => setStep(3)}>✎ Breyta</button></div>

@@ -4,9 +4,12 @@ import { api, formatPrice, timeAgo } from "../api";
 import { useAuth } from "../store";
 import ReviewForm from "../components/ReviewForm";
 import { StarRating } from "../components/ListingCard";
+import { fmtDate } from "../lib/dates";
+import { useLang } from "../i18n";
 
 export default function MyBookingsPage() {
   const { user } = useAuth();
+  const { t } = useLang();
   const [tab, setTab] = useState("owner");
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,9 +38,22 @@ export default function MyBookingsPage() {
   useEffect(load, [tab]);
 
   const act = async (booking, action) => {
+    if (["reject", "cancel"].includes(action)) {
+      const question = action === "reject" ? "Hafna þessari bókun?" : "Hætta við þessa bókun?";
+      if (!window.confirm(question)) return;
+    }
     try {
       await api.put(`/api/bookings/${booking.id}/status`, { action });
       load();
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const remindPayment = async (booking) => {
+    try {
+      await api.post(`/api/bookings/${booking.id}/remind-payment`);
+      alert("Áminning um greiðslu var send.");
     } catch (err) {
       alert(err.message);
     }
@@ -67,17 +83,25 @@ export default function MyBookingsPage() {
                 <div className="sub">
                   {tab === "renter" ? "Eigandi: " : "Leigjandi: "}
                   {tab === "renter" ? b.owner.name : b.renter.name}
-                  {" · "}{b.start?.slice(0, 10)} → {b.end?.slice(0, 10)}
+                  {" · "}{fmtDate(b.start)} → {fmtDate(b.end)}
                 </div>
                 <div className="sub">Samtals {formatPrice(b.total, b.currency)} · Trygging {formatPrice(b.deposit, b.currency)}</div>
               </div>
               <div className="text-right">
-                <span className={`status-pill status-${b.status}`}>{b.status}</span>
+                <span className={`status-pill status-${b.status}`}>{t(`status.${b.status}`)}</span>
+                {b.status === "approved" && (
+                  <div className="sub" style={{ marginTop: 6 }}>
+                    {b.paymentStatus === "paid" ? "Greiðsla móttekin" : "Bíður greiðslu leigjanda"}
+                  </div>
+                )}
                 {b.status === "pending" && tab === "owner" && (
                   <div className="row" style={{ marginTop: 8 }}>
                     <button className="btn btn-primary btn-sm" onClick={() => act(b, "approve")}>Samþykkja</button>
                     <button className="btn btn-outline btn-sm" onClick={() => act(b, "reject")}>Hafna</button>
                   </div>
+                )}
+                {b.status === "pending" && tab === "renter" && (
+                  <button className="btn btn-outline btn-sm" style={{ marginTop: 8 }} onClick={() => act(b, "cancel")}>Hætta við</button>
                 )}
                 {b.status === "approved" && tab === "renter" && (
                   <div className="row" style={{ marginTop: 8 }}>
@@ -85,16 +109,37 @@ export default function MyBookingsPage() {
                     <button className="btn btn-outline btn-sm" onClick={() => act(b, "cancel")}>Hætta við</button>
                   </div>
                 )}
+                {b.status === "approved" && tab === "owner" && (
+                  <div className="row" style={{ marginTop: 8 }}>
+                    {b.paymentStatus !== "paid" && (
+                      <button className="btn btn-primary btn-sm" onClick={() => remindPayment(b)}>Áminna um greiðslu</button>
+                    )}
+                    <button className="btn btn-outline btn-sm" onClick={() => act(b, "cancel")}>Hætta við</button>
+                  </div>
+                )}
                 {b.status === "active" && tab === "owner" && (
                   <div className="row" style={{ marginTop: 8 }}>
-                    <button className="btn btn-primary btn-sm" onClick={() => act(b, "pickup")}>Merkja sótt</button>
+                    {b.pickupStatus !== "picked_up" ? (
+                      <button className="btn btn-primary btn-sm" onClick={() => act(b, "pickup")}>Merkja sótt</button>
+                    ) : (
+                      <button className="btn btn-primary btn-sm" onClick={() => act(b, "return")}>Merkja skilað</button>
+                    )}
+                    <Link className="btn btn-outline btn-sm" to={`/listing/${b.listing.slug}`}>Opna auglýsingu</Link>
                   </div>
                 )}
                 {b.status === "active" && tab === "renter" && (
-                  <button className="btn btn-primary btn-sm" onClick={() => act(b, "return")}>Merkja skilað</button>
+                  <div className="row" style={{ marginTop: 8 }}>
+                    <button className="btn btn-primary btn-sm" onClick={() => act(b, "return")}>Merkja skilað</button>
+                    <Link className="btn btn-outline btn-sm" to={`/listing/${b.listing.slug}`}>Opna auglýsingu</Link>
+                  </div>
                 )}
                 {b.status === "returned" && tab === "owner" && (
-                  <button className="btn btn-primary btn-sm" onClick={() => act(b, "complete")}>Ljúka leigu</button>
+                  <div className="row" style={{ marginTop: 8 }}>
+                    <button className="btn btn-primary btn-sm" onClick={() => act(b, "complete")}>Ljúka leigu</button>
+                  </div>
+                )}
+                {b.status === "returned" && tab === "renter" && (
+                  <div className="sub" style={{ marginTop: 6 }}>Bíður yfirferðar eiganda</div>
                 )}
                 {b.status === "completed" && (
                   <div style={{ marginTop: 8 }}>

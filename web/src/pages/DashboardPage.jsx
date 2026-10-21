@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
+import { fmtDate } from "../lib/dates";
 import { useAuth } from "../store";
 import { useLang } from "../i18n";
 import ListingCard from "../components/ListingCard";
@@ -24,7 +25,7 @@ export default function Dashboard() {
         {t("dash.greeting").replace("{name}", user?.firstName || "")}
       </h1>
       <p className="muted" style={{ marginTop: 0 }}>
-        {stats?.unreadNotifications > 0 && `${t("dash.notifs").replace("{n}", stats.unreadNotifications)} Â· `}
+        {stats?.unreadNotifications > 0 && `${t("dash.notifs").replace("{n}", stats.unreadNotifications)} · `}
         {stats?.unreadMessages > 0 && t("dash.unread").replace("{n}", stats.unreadMessages)}
       </p>
 
@@ -33,7 +34,7 @@ export default function Dashboard() {
         <Link to="/dashboard/listings/new">{t("dash.nav.add")}</Link>
         <Link to="/dashboard/bookings">{t("dash.nav.bookings")}</Link>
         <Link to="/dashboard/searches">Vistaðar leitir</Link>
-        <Link to="/promote">Auglýsingapláss</Link>
+        <Link to="/promote">Auglýsingapakkar</Link>
         <Link to="/favorites">{t("dash.nav.favorites")}</Link>
         <Link to="/messages">{t("dash.nav.messages")}</Link>
       </nav>
@@ -77,7 +78,7 @@ export default function Dashboard() {
                 <div className="grow">
                   <div className="title"><Link to={`/listing/${b.listing.slug}`}>{b.listing.title}</Link></div>
                   <div className="sub">
-                    {b.start.slice(0, 10)} â†’ {b.end.slice(0, 10)} Â· {formatPrice(b.total, b.currency)}
+                    {fmtDate(b.start)} → {fmtDate(b.end)} · {formatPrice(b.total, b.currency)}
                   </div>
                 </div>
                 <span className={`status-pill status-${b.status}`}>{t(`status.${b.status}`)}</span>
@@ -94,8 +95,8 @@ export default function Dashboard() {
         </div>
         {listings.length === 0 ? (
           <div className="empty">
-            <h3>Engar skrÃ¡ningar ennÃ¾Ã¡</h3>
-            <p>SkrÃ¡Ã°u hlutina Ã¾Ã­na og byrjaÃ°u aÃ° grÃ¦Ã°a.</p>
+            <h3>Engar skráningar ennþá</h3>
+            <p>Skráðu hlutina þína og byrjaðu að græða.</p>
             <Link className="btn btn-primary" to="/dashboard/listings/new">{t("dash.nav.add")}</Link>
           </div>
         ) : (

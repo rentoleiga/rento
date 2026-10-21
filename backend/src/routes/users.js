@@ -3,6 +3,7 @@ const db = require("../db/pool");
 const { authRequired } = require("../middleware/auth");
 const { asyncHandler, err } = require("../middleware/http");
 const { publicUser, publicListing } = require("../utils/helpers");
+const { notify } = require("../utils/notify");
 
 const router = Router();
 
@@ -41,6 +42,12 @@ router.post(
       throw err("Rangur staðfestingarkóði (prufa: 1234)", 400);
     }
     await db.query("UPDATE users SET phone_verified = TRUE WHERE id = $1", [req.user.id]);
+    await notify(
+      req.user.id,
+      "phone_verified",
+      "Símanúmer staðfest",
+      "Símanúmerið þitt hefur verið staðfest. Þú getur nú sýnt það á auglýsingum ef þú vilt."
+    );
     res.json({ ok: true, phoneVerified: true });
   })
 );

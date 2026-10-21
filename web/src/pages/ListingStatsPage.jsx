@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, formatPrice } from "../api";
-
-const fmtDate = (iso) => {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()}`;
-};
+import { fmtDate } from "../lib/dates";
 
 export default function ListingStatsPage() {
   const { id } = useParams();
@@ -42,7 +37,8 @@ export default function ListingStatsPage() {
       <p style={{ marginBottom: 4 }}><Link to="/dashboard/listings">← Auglýsingar</Link></p>
       <h1 className="mt0">{stats.title}</h1>
       <p className="muted" style={{ marginTop: -4 }}>
-        {stats.status} · birt {fmtDate(stats.createdAt)} · rennur út {fmtDate(stats.expiresAt)}
+        {stats.status} · birt {fmtDate(stats.createdAt) || "—"}
+        {stats.expiresAt ? ` · rennur út ${fmtDate(stats.expiresAt)}` : ""}
         {stats.promotionTier && stats.promotionTier !== "none" ? ` · kynnt til ${fmtDate(stats.promotionUntil)}` : ""}
       </p>
 

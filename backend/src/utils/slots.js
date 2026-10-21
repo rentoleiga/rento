@@ -1,5 +1,26 @@
 const db = require("../db/pool");
 
+const fmtDate = (iso) =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Atlantic/Reykjavik",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date(iso));
+
+const fmtDateTime = (iso) =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Atlantic/Reykjavik",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  })
+    .format(new Date(iso))
+    .replace(",", "");
+
 // Every user may keep 3 listings published at the same time, free.
 const FREE_SLOTS = 3;
 
@@ -98,7 +119,7 @@ async function sendExpiryReminders() {
       WHERE l.status = 'published'
         AND l.expires_at IS NOT NULL
         AND l.expires_at > now()
-        AND l.expires_at <= now() + interval '3 days'
+        AND l.expires_at <= now() + interval '1 day'
         AND l.expiry_reminder_sent_at IS NULL
       LIMIT 200`
   );
@@ -109,12 +130,79 @@ async function sendExpiryReminders() {
       l.owner_id,
       "listing_expiring",
       "Auglýsingin rennur út",
-      `„${l.title}“ rennur út ${new Date(l.expires_at).toLocaleDateString("is-IS")}. Þú getur endurbirt hana úr stjórnborðinu.`,
+      `„${l.title}“ rennur út ${fmtDate(l.expires_at)}. Þú getur endurbirt hana úr stjórnborðinu.`,
       { listingId: l.id, slug: l.slug }
     );
     await db.query("UPDATE listings SET expiry_reminder_sent_at = now() WHERE id = $1", [l.id]);
   }
   return rows.length;
+}
+
+// Reminder before a booking is due back. Short rentals (up to 24 hours) get
+// the reminder one hour before, longer rentals one day before.
+async function sendReturnReminders() {
+  const { rows } = await db.query(
+    `SELECT b.id, b.listing_id, b.renter_id, b.owner_id, b.start_time, b.end_time,
+            l.title, l.slug
+       FROM bookings b
+       JOIN listings l ON l.id = b.listing_id
+      WHERE b.status IN ('approved', 'active')
+        AND b.return_status = 'pending'
+        AND b.end_time > now()
+        AND b.end_time <= now() + CASE
+          WHEN b.end_time - b.start_time <= interval '24 hours' THEN interval '1 hour'
+          ELSE interval '1 day'
+        END
+        AND b.return_reminder_sent_at IS NULL
+      LIMIT 300`
+  );
+  if (!rows.length) return 0;
+  const { notify } = require("./notify");
+  for (const b of rows) {
+    const shortRental = new Date(b.end_time) - new Date(b.start_time) <= 24 * 60 * 60 * 1000;
+    const extension = shortRental ? "1 hour" : "1 day";
+    const conflict = await db.query(
+      `SELECT 1 FROM availability
+        WHERE listing_id = $1
+          AND status IN ('blocked','booked','maintenance')
+          AND start_time < $2::timestamptz + $3::interval
+          AND end_time > $2::timestamptz
+        LIMIT 1`,
+      [b.listing_id, b.end_time, extension]
+    );
+    const canExtend = conflict.rowCount === 0;
+    const due = `„${b.title}“ á að skila ${fmtDateTime(b.end_time)}.`;
+    const renterBody = `${due} ${
+      canExtend
+        ? `Tíminn er laus hjá útgefanda, svo þú getur framlengt bókunina um ${shortRental ? "klukkustund" : "dag"}.`
+        : "Hafðu samband við útgefandann ef þú þarft að framlengja."
+    }`;
+    const ownerBody = `${due} ${
+      canExtend
+        ? `Tíminn er laus, svo leigjandi getur framlengt bókunina um ${shortRental ? "klukkustund" : "dag"}.`
+        : "Leigjandi þarf að hafa samband við þig ef framlengja á bókunina."
+    }`;
+    await notify(b.renter_id, "return_reminder", "Skilafrestur nálgast", renterBody, {
+      bookingId: b.id,
+      listingId: b.listing_id,
+      slug: b.slug,
+    });
+    await notify(b.owner_id, "return_reminder", "Skilafrestur nálgast", ownerBody, {
+      bookingId: b.id,
+      listingId: b.listing_id,
+      slug: b.slug,
+    });
+    await db.query("UPDATE bookings SET return_reminder_sent_at = now() WHERE id = $1", [b.id]);
+  }
+  return rows.length;
+}
+
+// Keep notification history for 90 days (spec: 30–90 days).
+async function cleanupOldNotifications() {
+  const { rowCount } = await db.query(
+    "DELETE FROM notifications WHERE created_at < now() - interval '90 days'"
+  );
+  return rowCount;
 }
 
 module.exports = {
@@ -129,4 +217,6 @@ module.exports = {
   attachSlot,
   releaseSlotForListing,
   sendExpiryReminders,
+  sendReturnReminders,
+  cleanupOldNotifications,
 };

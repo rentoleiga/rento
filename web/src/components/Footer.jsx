@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer-top">
           <div className="footer-brand">
-            <div className="footer-logo"><img src="/rento-logo.png" alt="RentÃ³" style={{ height: 36, width: "auto" }} /></div>
+            <div className="footer-logo"><img src="/rento-logo.png" alt="Rentó" style={{ height: 36, width: "auto" }} /></div>
             <p className="footer-brand-desc">{t("footer.rentoDesc")}</p>
           </div>
 
@@ -19,7 +19,7 @@ export default function Footer() {
             <Link to="/calculator" className="footer-link">{t("footer.earn")}</Link>
             <Link to="/faq" className="footer-link">{t("footer.faq")}</Link>
             <Link to="/contact" className="footer-link">{t("footer.contact")}</Link>
-            <Link to="/promote" className="footer-link">Auglýsingapláss</Link>
+            <Link to="/promote" className="footer-link">Auglýsingapakkar</Link>
           </div>
 
           <div className="footer-col">

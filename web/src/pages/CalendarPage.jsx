@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, apiBase, formatPrice } from "../api";
 import { useAuth } from "../store";
+import DateField from "../components/DateField";
+import { fmtDate } from "../lib/dates";
 
 export default function CalendarPage() {
   const { listingId } = useParams();
@@ -85,11 +87,11 @@ export default function CalendarPage() {
         <form onSubmit={addBlock} className="row" style={{ alignItems: "flex-end" }}>
           <div className="field grow" style={{ marginBottom: 0 }}>
             <label>Frá</label>
-            <input type="date" required value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} />
+            <DateField required value={form.start} onChange={(e) => setForm({ ...form, start: e.target.value })} />
           </div>
           <div className="field grow" style={{ marginBottom: 0 }}>
             <label>Til</label>
-            <input type="date" required min={form.start} value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} />
+            <DateField required min={form.start} value={form.end} onChange={(e) => setForm({ ...form, end: e.target.value })} />
           </div>
           <div className="field grow" style={{ marginBottom: 0 }}>
             <label>Ástæða</label>
@@ -109,7 +111,7 @@ export default function CalendarPage() {
           {bookings.map((b) => (
             <li key={b.id}>
               <div className="grow">
-                <div className="title">{b.start.slice(0, 10)} → {b.end.slice(0, 10)}</div>
+                <div className="title">{fmtDate(b.start)} → {fmtDate(b.end)}</div>
                 <div className="sub">{b.renterName} · {formatPrice(b.total, b.currency)}</div>
               </div>
               <span className={`status-pill status-${b.status}`}>{b.status}</span>
@@ -148,7 +150,7 @@ export default function CalendarPage() {
           {avail.map((a) => (
             <li key={a.id}>
               <div className="grow">
-                <div className="title">{a.start.slice(0, 10)} → {a.end.slice(0, 10)}</div>
+                <div className="title">{fmtDate(a.start)} → {fmtDate(a.end)}</div>
                 <div className="sub">{a.status}{a.bookingId ? ` · bókun ${a.bookingId}` : ""}</div>
               </div>
               <button className="btn btn-danger btn-sm" onClick={() => delBlock(a.id)}>Fjarlægja</button>

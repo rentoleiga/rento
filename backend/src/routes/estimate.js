@@ -55,8 +55,8 @@ router.get(
          COALESCE(ROUND(AVG(l.view_count))::int, 0) AS avg_views
        FROM categories c
        JOIN categories cat ON cat.id = c.parent_id
-       LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'en'
-       LEFT JOIN category_translations catt ON catt.category_id = cat.id AND catt.language = 'en'
+       LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'is'
+       LEFT JOIN category_translations catt ON catt.category_id = cat.id AND catt.language = 'is'
        LEFT JOIN listings l
          ON l.subcategory_id = c.id
         AND l.status = 'published'

@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const path = require("path");
-const fs = require("fs");
 const multer = require("multer");
 const { z } = require("zod");
 const db = require("../db/pool");
@@ -17,22 +16,13 @@ const {
   releaseSlotForListing,
 } = require("../utils/slots");
 const { notifySavedSearches } = require("../services/savedSearches");
+const { notify } = require("../utils/notify");
 const { resolvePromo, consumePromo } = require("../utils/promo");
 
 const router = Router();
 
 // ---------------- image upload ----------------
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, "..", "..", config.uploadDir);
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-  },
-});
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: config.maxUploadMb * 1024 * 1024 },
@@ -47,12 +37,19 @@ router.post(
   "/upload",
   authRequired,
   upload.single("file"),
-  (req, res) => {
+  asyncHandler(async (req, res) => {
     if (!req.file) throw err("No file uploaded", 400);
+    const ext = path.extname(req.file.originalname || "").toLowerCase();
+    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    await db.query(
+      `INSERT INTO uploads (filename, mime, size, data)
+       VALUES ($1, $2, $3, $4)`,
+      [filename, req.file.mimetype || "application/octet-stream", req.file.size || 0, req.file.buffer]
+    );
     res.json({
-      url: `${config.publicBaseUrl}/uploads/${req.file.filename}`,
+      url: `${config.publicBaseUrl}/uploads/${filename}`,
     });
-  }
+  })
 );
 
 // ---------------- schemas ----------------
@@ -178,9 +175,9 @@ async function getListingOr404(req, res) {
             u.email AS owner_email
      FROM listings l
      LEFT JOIN categories c ON c.id = l.category_id
-     LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'en'
+     LEFT JOIN category_translations ct ON ct.category_id = c.id AND ct.language = 'is'
      LEFT JOIN categories sub ON sub.id = l.subcategory_id
-     LEFT JOIN category_translations st ON st.category_id = sub.id AND st.language = 'en'
+     LEFT JOIN category_translations st ON st.category_id = sub.id AND st.language = 'is'
      LEFT JOIN users u ON u.id = l.owner_id
      WHERE CAST(l.id AS text) = $1 OR l.slug = $1
      LIMIT 1`,
@@ -252,12 +249,29 @@ router.get(
   asyncHandler(async (req, res) => {
     await expireListings();
     const listing = await getListingOr404(req, res);
-    if (!listing) return res.status(404).json({ error: "Listing not found" });
+    if (!listing) {
+      return res.status(404).json({ error: "Auglýsingin fannst ekki", code: "listing_not_found" });
+    }
+    if (listing.status === "deleted" || listing.purged_at) {
+      return res.status(410).json({
+        error: "Auglýsingin hefur verið eytt",
+        code: "listing_deleted",
+      });
+    }
     if (
       listing.status === "expired" ||
       (listing.expires_at && new Date(listing.expires_at) <= new Date())
     ) {
-      return res.status(404).json({ error: "Listing not found" });
+      return res.status(410).json({
+        error: "Auglýsingin er útrunnin",
+        code: "listing_expired",
+      });
+    }
+    if (listing.status !== "published") {
+      const isOwner = req.user && (req.user.id === listing.owner_id || req.user.role === "admin");
+      if (!isOwner) {
+        return res.status(404).json({ error: "Auglýsingin fannst ekki", code: "listing_not_found" });
+      }
     }
 
     if (req.user) {
@@ -304,6 +318,29 @@ router.get(
   })
 );
 
+async function notifyFavoritePriceDrop(listing, oldDaily, newDaily, oldHourly, newHourly) {
+  const dropDaily = oldDaily > 0 && newDaily > 0 && newDaily < oldDaily;
+  const dropHourly = oldHourly > 0 && newHourly > 0 && newHourly < oldHourly;
+  if (!dropDaily && !dropHourly) return;
+  const { rows } = await db.query(
+    "SELECT user_id FROM favorites WHERE listing_id = $1 AND user_id <> $2",
+    [listing.id, listing.owner_id]
+  );
+  if (!rows.length) return;
+  const price = dropDaily
+    ? `${newDaily} ${listing.currency || "ISK"} á dag`
+    : `${newHourly} ${listing.currency || "ISK"} á klst.`;
+  for (const r of rows) {
+    await notify(
+      r.user_id,
+      "favorite_price_drop",
+      "Verðlækkun á uppáhaldi",
+      `„${listing.title}“ er nú ${price}.`,
+      { listingId: listing.id, slug: listing.slug }
+    );
+  }
+}
+
 router.put(
   "/:id",
   authRequired,
@@ -314,6 +351,8 @@ router.put(
     if (req.user.role !== "admin" && req.user.id !== listing.owner_id) {
       throw err("You can only edit your own listings", 403);
     }
+    const oldDaily = Number(listing.price_daily) || 0;
+    const oldHourly = Number(listing.price_hourly) || 0;
     const publishing = req.body.publish === true;
     let publishSlot = null;
     if (publishing) {
@@ -366,13 +405,20 @@ router.put(
       }
     }
     if (req.body.publish === true) {
-      cols.push("status='published', verification_status = 'approved'");
+      cols.push("status='published', verification_status = 'approved', purged_at = NULL");
     }
     cols.push("updated_at = now()");
     await db.query(
       `UPDATE listings SET ${cols.join(", ")} WHERE id = $${vals.length + 1}`,
       [...vals, req.params.id]
     );
+    const newDaily = req.body.priceDaily !== undefined ? Number(req.body.priceDaily) || 0 : oldDaily;
+    const newHourly = req.body.priceHourly !== undefined ? Number(req.body.priceHourly) || 0 : oldHourly;
+    if (req.body.priceDaily !== undefined || req.body.priceHourly !== undefined) {
+      notifyFavoritePriceDrop(listing, oldDaily, newDaily, oldHourly, newHourly).catch((e) =>
+        console.error("price drop notify failed:", e.message)
+      );
+    }
     if (publishing) {
       await db.query(
         "UPDATE listings SET expires_at = now() + make_interval(days => $1), expiry_reminder_sent_at = NULL WHERE id = $2",
@@ -409,6 +455,54 @@ router.delete(
     }
     await db.query(`UPDATE listings SET status='deleted' WHERE id = $1`, [listing.id]);
     await releaseSlotForListing(listing.id);
+    res.json({ ok: true });
+  })
+);
+
+router.delete(
+  "/:id/permanent",
+  authRequired,
+  asyncHandler(async (req, res) => {
+    const listing = await getListingOr404(req, res);
+    if (!listing) return res.status(404).json({ error: "Listing not found" });
+    if (req.user.role !== "admin" && req.user.id !== listing.owner_id) {
+      throw err("You can only delete your own listings", 403);
+    }
+    if (!["deleted", "expired"].includes(listing.status)) {
+      throw err("Aðeins er hægt að eyða útrunnum eða eyttum auglýsingum varanlega", 409);
+    }
+    await releaseSlotForListing(listing.id);
+
+    const client = await db.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const bookings = await client.query(
+        "SELECT 1 FROM bookings WHERE listing_id = $1 LIMIT 1",
+        [listing.id]
+      );
+      if (!bookings.rowCount) {
+        await client.query("DELETE FROM listings WHERE id = $1", [listing.id]);
+      } else {
+        await client.query(
+          `UPDATE listings
+              SET status = 'deleted', purged_at = now(), title = 'Eytt auglýsing',
+                  subtitle = '', description = '', main_image = '', gallery = '[]'::jsonb,
+                  attributes = '{}'::jsonb, phone = '', address = '', postcode = '',
+                  latitude = NULL, longitude = NULL, addon_link = NULL, addon_video = NULL,
+                  updated_at = now()
+            WHERE id = $1`,
+          [listing.id]
+        );
+        await client.query("DELETE FROM listing_images WHERE listing_id = $1", [listing.id]);
+        await client.query("DELETE FROM favorites WHERE listing_id = $1", [listing.id]);
+      }
+      await client.query("COMMIT");
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
     res.json({ ok: true });
   })
 );

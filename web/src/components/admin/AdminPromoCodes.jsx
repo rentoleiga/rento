@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../../api";
 import { shortDate } from "./shared";
+import DateField from "../DateField";
 
 const EMPTY = { code: "", kind: "any", percent: "", amount: "", maxUses: "", expiresAt: "" };
 
@@ -84,7 +85,7 @@ export default function AdminPromoCodes() {
           </div>
           <div className="field" style={{ marginBottom: 0 }}>
             <label>Expires</label>
-            <input type="date" value={form.expiresAt} onChange={(e) => setForm({ ...form, expiresAt: e.target.value })} />
+            <DateField value={form.expiresAt} onChange={(e) => setForm({ ...form, expiresAt: e.target.value })} />
           </div>
           <button className="btn btn-primary" type="submit">Create</button>
         </form>
