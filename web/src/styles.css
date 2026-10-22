@@ -226,6 +226,11 @@ a:hover {
   .header-actions {
     margin-left: auto;
   }
+  .header-inner > .brand,
+  .header-inner > .header-actions {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
   .brand {
     width: 110px;
     min-width: 110px;
@@ -1367,7 +1372,7 @@ a:hover {
   gap: 24px;
   align-items: start;
 }
-@media (max-width: 860px) {
+@media (max-width: 1024px) {
   .split {
     grid-template-columns: 1fr;
   }
@@ -1531,10 +1536,22 @@ a:hover {
   white-space: nowrap;
 }
 .filter-collapse { display: block; }
-.filter-toggle { display: none; }
-@media (max-width: 860px) {
+.filter-toggle,
+.filter-toggle-row { display: none; }
+@media (max-width: 1024px) {
   .filter-panel { padding: 12px; }
   .filter-heading { display: none; }
+  .filter-toggle-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 680px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-toggle-row::-webkit-scrollbar { display: none; }
   .filter-toggle {
     display: flex;
     align-items: center;
@@ -1551,21 +1568,48 @@ a:hover {
     text-align: left;
     cursor: pointer;
   }
-  .filter-heading:not(:first-child) + .filter-toggle { margin-top: 8px; }
-  .filter-toggle + .filter-collapse { margin-top: 8px; }
+  .filter-toggle-row .filter-toggle {
+    flex: 1 0 148px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label chevron"
+      "value chevron";
+    align-items: center;
+    column-gap: 4px;
+    row-gap: 1px;
+    min-height: 54px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  .filter-toggle-row .filter-toggle > span:first-child {
+    grid-area: label;
+    overflow: hidden;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--muted);
+  }
   .filter-collapse { display: none; }
-  .filter-collapse.open { display: block; }
+  .filter-collapse.open { display: block; margin-top: 8px; }
   .filter-toggle-value {
-    margin-left: auto;
-    max-width: 55%;
+    grid-area: value;
+    margin-left: 0;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 13px;
     font-weight: 500;
-    color: var(--muted);
+    line-height: 1.2;
+    color: var(--ink);
   }
   .filter-chevron {
+    grid-area: chevron;
     flex: 0 0 auto;
     font-size: 18px;
     line-height: 1;
@@ -2884,6 +2928,24 @@ a:hover {
   .section { padding-top: 36px; padding-bottom: 36px; }
   .section-flush { padding-top: 36px; padding-bottom: 36px; }
   .grid { grid-template-columns: 1fr; gap: 14px; }
+  .listing-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: stretch; }
+  .card-img-wrap { aspect-ratio: auto; height: 100%; min-height: 132px; }
+  .card-body { display: flex; flex-direction: column; min-width: 0; padding: 10px 12px; }
+  .card-title {
+    margin-bottom: 4px;
+    font-size: 15px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .card-meta { font-size: 12px; line-height: 1.35; }
+  .card-price { margin-top: auto; padding-top: 6px; font-size: 13px; }
+  .card-price strong { font-size: 16px; }
+  .card-badges { top: 6px; left: 6px; right: 40px; flex-wrap: wrap; gap: 3px; }
+  .card-badges .badge { padding: 2px 5px; font-size: 9px; line-height: 1.2; }
+  .card-fav { top: 6px; right: 6px; width: 30px; height: 30px; }
+  .card-fav svg { width: 16px; height: 16px; }
   .category-grid { display: flex; gap: 10px; overflow-x: auto; }
   .steps-grid { grid-template-columns: 1fr; }
   .plans-grid { grid-template-columns: 1fr; }

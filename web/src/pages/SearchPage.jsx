@@ -140,18 +140,31 @@ export default function SearchPage() {
       <div className="container">
       <div className="split">
         <aside className="filter-panel">
+          <div className="filter-toggle-row">
+            <button
+              type="button"
+              className={`filter-toggle ${openFilter === "category" ? "open" : ""}`}
+              onClick={() => toggleFilter("category")}
+              aria-expanded={openFilter === "category"}
+              aria-controls="filter-category"
+            >
+              <span>{t("search.filter.category")}</span>
+              <span className="filter-toggle-value">{selectedCat?.name || t("search.allCategories")}</span>
+              <span className="filter-chevron" aria-hidden="true">⌄</span>
+            </button>
+            <button
+              type="button"
+              className={`filter-toggle ${openFilter === "location" ? "open" : ""}`}
+              onClick={() => toggleFilter("location")}
+              aria-expanded={openFilter === "location"}
+              aria-controls="filter-location"
+            >
+              <span>{t("search.filter.location")}</span>
+              <span className="filter-toggle-value">{query.location || t("search.allIceland")}</span>
+              <span className="filter-chevron" aria-hidden="true">⌄</span>
+            </button>
+          </div>
           <h4 className="mt0 filter-heading">{t("search.filter.category")}</h4>
-          <button
-            type="button"
-            className={`filter-toggle ${openFilter === "category" ? "open" : ""}`}
-            onClick={() => toggleFilter("category")}
-            aria-expanded={openFilter === "category"}
-            aria-controls="filter-category"
-          >
-            <span>{t("search.filter.category")}</span>
-            <span className="filter-toggle-value">{selectedCat?.name || t("search.allCategories")}</span>
-            <span className="filter-chevron" aria-hidden="true">⌄</span>
-          </button>
           <div id="filter-category" className={`filter-collapse ${openFilter === "category" ? "open" : ""}`}>
             <div className="category-filter">
               <button
@@ -185,17 +198,6 @@ export default function SearchPage() {
           </div>
 
           <h4 className="filter-heading">{t("search.filter.location")}</h4>
-          <button
-            type="button"
-            className={`filter-toggle ${openFilter === "location" ? "open" : ""}`}
-            onClick={() => toggleFilter("location")}
-            aria-expanded={openFilter === "location"}
-            aria-controls="filter-location"
-          >
-            <span>{t("search.filter.location")}</span>
-            <span className="filter-toggle-value">{query.location || t("search.allIceland")}</span>
-            <span className="filter-chevron" aria-hidden="true">⌄</span>
-          </button>
           <div id="filter-location" className={`filter-collapse ${openFilter === "location" ? "open" : ""}`}>
             <div className="location-tree">
               <button
