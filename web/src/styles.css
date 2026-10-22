@@ -168,8 +168,9 @@ a:hover {
 .avatar-btn {
   height: 36px; border-radius: 999px;
   border: 1px solid var(--line); background: #fff; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; padding: 3px 4px; gap: 8px;
+  display: flex; align-items: center; justify-content: center; padding: 3px 4px 3px 12px; gap: 8px;
 }
+.avatar-btn::before { content: "☰"; font-size: 14px; color: var(--ink-soft); }
 .avatar-face {
   width: 26px; height: 26px; flex-shrink: 0; aspect-ratio: 1 / 1; border-radius: 50%;
   background: #7c3aed; color: #fff; font-size: 13px; font-weight: 700;
