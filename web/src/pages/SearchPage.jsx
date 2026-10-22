@@ -90,6 +90,9 @@ export default function SearchPage() {
   const [openRegions, setOpenRegions] = useState({});
   const toggleRegion = (r) => setOpenRegions((prev) => ({ ...prev, [r]: !prev[r] }));
 
+  const [openFilter, setOpenFilter] = useState(null);
+  const toggleFilter = (key) => setOpenFilter((prev) => (prev === key ? null : key));
+
   const saveSearch = async () => {
     if (!user) {
       window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
@@ -137,71 +140,97 @@ export default function SearchPage() {
       <div className="container">
       <div className="split">
         <aside className="filter-panel">
-          <h4 className="mt0">{t("search.filter.category")}</h4>
-          <div className="category-filter">
-            <button
-              className={`category-filter-item ${query.category === "" ? "active" : ""}`}
-              onClick={() => { const next = new URLSearchParams(params); next.delete("category"); next.delete("subcategory"); setParams(next, { replace: false }); }}
-            >
-              {t("search.allCategories")}
-            </button>
-            {topCats.map((c) => (
+          <h4 className="mt0 filter-heading">{t("search.filter.category")}</h4>
+          <button
+            type="button"
+            className={`filter-toggle ${openFilter === "category" ? "open" : ""}`}
+            onClick={() => toggleFilter("category")}
+            aria-expanded={openFilter === "category"}
+            aria-controls="filter-category"
+          >
+            <span>{t("search.filter.category")}</span>
+            <span className="filter-toggle-value">{selectedCat?.name || t("search.allCategories")}</span>
+            <span className="filter-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div id="filter-category" className={`filter-collapse ${openFilter === "category" ? "open" : ""}`}>
+            <div className="category-filter">
               <button
-                key={c.id}
-                className={`category-filter-item ${query.category === c.slug ? "active" : ""}`}
-                onClick={() => { const next = new URLSearchParams(params); next.set("category", c.slug); next.delete("subcategory"); setParams(next, { replace: false }); }}
+                className={`category-filter-item ${query.category === "" ? "active" : ""}`}
+                onClick={() => { const next = new URLSearchParams(params); next.delete("category"); next.delete("subcategory"); setParams(next, { replace: false }); }}
               >
-                <CategoryIcon slug={c.slug} size={20} />
-                <span className="category-filter-name">{c.name}</span>
-                {c.listing_count > 0 && <span className="tree-count">{c.listing_count}</span>}
+                {t("search.allCategories")}
               </button>
-            ))}
-          </div>
-          {query.category && subs.length > 0 && (
-            <div className="field" style={{ marginTop: 8 }}>
-              <select value={query.subcategory} onChange={(e) => update("subcategory", e.target.value)}>
-                <option value="">{t("search.allSubcategories")}</option>
-                {subs.map((c) => (
-                  <option key={c.id} value={c.slug}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <h4>{t("search.filter.location")}</h4>
-          <div className="location-tree">
-            <button
-              className={`location-tree-item ${query.location === "" ? "active" : ""}`}
-              onClick={() => update("location", "")}
-            >
-              {t("search.allIceland")}
-            </button>
-            {regions.map(([region, locs]) => (
-              <div key={region}>
+              {topCats.map((c) => (
                 <button
-                  className={`location-tree-item region ${openRegions[region] ? "open" : ""}`}
-                  onClick={() => toggleRegion(region)}
+                  key={c.id}
+                  className={`category-filter-item ${query.category === c.slug ? "active" : ""}`}
+                  onClick={() => { const next = new URLSearchParams(params); next.set("category", c.slug); next.delete("subcategory"); setParams(next, { replace: false }); }}
                 >
-                  <span className="tree-toggle">{openRegions[region] ? "−" : "+"}</span>
-                  {lang === "is" ? REGION_IS[region] || region : region}
-                  <span className="tree-count">{locs.length}</span>
+                  <CategoryIcon slug={c.slug} size={20} />
+                  <span className="category-filter-name">{c.name}</span>
+                  {c.listing_count > 0 && <span className="tree-count">{c.listing_count}</span>}
                 </button>
-                {openRegions[region] && (
-                  <div className="location-tree-children">
-                    {locs.map((l) => (
-                      <button
-                        key={l.id}
-                        className={`location-tree-item ${query.location === l.city ? "active" : ""}`}
-                        onClick={() => update("location", l.city)}
-                      >
-                        {l.city}
-                        {l.listing_count > 0 && <span className="tree-count">{l.listing_count}</span>}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              ))}
+            </div>
+            {query.category && subs.length > 0 && (
+              <div className="field" style={{ marginTop: 8 }}>
+                <select value={query.subcategory} onChange={(e) => update("subcategory", e.target.value)}>
+                  <option value="">{t("search.allSubcategories")}</option>
+                  {subs.map((c) => (
+                    <option key={c.id} value={c.slug}>{c.name}</option>
+                  ))}
+                </select>
               </div>
-            ))}
+            )}
+          </div>
+
+          <h4 className="filter-heading">{t("search.filter.location")}</h4>
+          <button
+            type="button"
+            className={`filter-toggle ${openFilter === "location" ? "open" : ""}`}
+            onClick={() => toggleFilter("location")}
+            aria-expanded={openFilter === "location"}
+            aria-controls="filter-location"
+          >
+            <span>{t("search.filter.location")}</span>
+            <span className="filter-toggle-value">{query.location || t("search.allIceland")}</span>
+            <span className="filter-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div id="filter-location" className={`filter-collapse ${openFilter === "location" ? "open" : ""}`}>
+            <div className="location-tree">
+              <button
+                className={`location-tree-item ${query.location === "" ? "active" : ""}`}
+                onClick={() => update("location", "")}
+              >
+                {t("search.allIceland")}
+              </button>
+              {regions.map(([region, locs]) => (
+                <div key={region}>
+                  <button
+                    className={`location-tree-item region ${openRegions[region] ? "open" : ""}`}
+                    onClick={() => toggleRegion(region)}
+                  >
+                    <span className="tree-toggle">{openRegions[region] ? "−" : "+"}</span>
+                    {lang === "is" ? REGION_IS[region] || region : region}
+                    <span className="tree-count">{locs.length}</span>
+                  </button>
+                  {openRegions[region] && (
+                    <div className="location-tree-children">
+                      {locs.map((l) => (
+                        <button
+                          key={l.id}
+                          className={`location-tree-item ${query.location === l.city ? "active" : ""}`}
+                          onClick={() => update("location", l.city)}
+                        >
+                          {l.city}
+                          {l.listing_count > 0 && <span className="tree-count">{l.listing_count}</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </aside>
 

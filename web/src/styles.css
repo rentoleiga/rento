@@ -1530,6 +1530,51 @@ a:hover {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.filter-collapse { display: block; }
+.filter-toggle { display: none; }
+@media (max-width: 860px) {
+  .filter-panel { padding: 12px; }
+  .filter-heading { display: none; }
+  .filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+  }
+  .filter-heading:not(:first-child) + .filter-toggle { margin-top: 8px; }
+  .filter-toggle + .filter-collapse { margin-top: 8px; }
+  .filter-collapse { display: none; }
+  .filter-collapse.open { display: block; }
+  .filter-toggle-value {
+    margin-left: auto;
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .filter-chevron {
+    flex: 0 0 auto;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  .filter-toggle.open .filter-chevron { transform: rotate(180deg); }
+  .filter-panel .category-filter { max-height: 320px; overflow-y: auto; }
+}
 .sort-row {
   display: flex;
   align-items: center;
@@ -2400,8 +2445,12 @@ a:hover {
 }
 @media (max-width: 640px) {
   .footer-top {
-    grid-template-columns: 1fr;
-    gap: 28px;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 20px;
+  }
+  .footer-brand,
+  .footer-side {
+    grid-column: 1 / -1;
   }
 }
 .footer-logo {
@@ -3340,14 +3389,14 @@ body.has-cookie-banner { padding-bottom: 120px; }
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(8, 15, 13, 0.58);
   color: #fff;
   font-size: 26px;
   line-height: 1;
   cursor: pointer;
 }
-.lightbox-close:hover { background: rgba(255, 255, 255, 0.26); }
+.lightbox-close:hover { background: rgba(8, 15, 13, 0.82); }
 .lightbox-nav {
   position: absolute;
   top: 50%;
@@ -3355,8 +3404,8 @@ body.has-cookie-banner { padding-bottom: 120px; }
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(8, 15, 13, 0.58);
   color: #fff;
   font-size: 34px;
   line-height: 1;
@@ -3366,7 +3415,7 @@ body.has-cookie-banner { padding-bottom: 120px; }
   justify-content: center;
   padding-bottom: 4px;
 }
-.lightbox-nav:hover { background: rgba(255, 255, 255, 0.26); }
+.lightbox-nav:hover { background: rgba(8, 15, 13, 0.82); }
 .lightbox-prev { left: 14px; }
 .lightbox-next { right: 14px; }
 .lightbox-count {
@@ -3591,7 +3640,8 @@ body.has-cookie-banner { padding-bottom: 120px; }
   .cookie-actions .btn { padding: 8px 10px; font-size: 13px; }
 }
 .mobile-book-bar { display: none; }
-@media (max-width: 640px) {
+body.has-cookie-banner .mobile-book-bar { display: none; }
+@media (max-width: 900px) {
   .mobile-book-bar {
     position: fixed;
     left: 0;
@@ -3609,5 +3659,35 @@ body.has-cookie-banner { padding-bottom: 120px; }
   }
   .mbb-price { font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1.15; }
   .mbb-price span { display: block; font-size: 11px; font-weight: 500; color: var(--muted); }
-  .mobile-book-bar .btn { padding: 10px 20px; flex: 0 0 auto; }
+  .mobile-book-bar .btn { min-height: 44px; padding: 10px 20px; flex: 0 0 auto; }
+}
+
+@media (max-width: 900px) {
+  .btn-sm {
+    min-height: 40px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+  .notif-filter {
+    min-height: 40px;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .promo-close {
+    top: 6px;
+    right: 6px;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .footer-link-btn {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .cookie-actions .btn { min-height: 40px; }
 }
