@@ -105,7 +105,7 @@ export default function SearchPage() {
     setSaveMsg("");
     try {
       const r = await api.post("/api/saved-searches", { query });
-      setSaveMsg(`Vistað: ${r.savedSearch.name}`);
+      setSaveMsg(t("search.saved").replace("{name}", r.savedSearch.name));
     } catch (e) {
       setSaveMsg(e.message);
     }
@@ -117,12 +117,21 @@ export default function SearchPage() {
       <div className="section-head">
         <h2 className="mt0">
           {query.keyword ? `Niðurstöður fyrir "${query.keyword}"` : t("search.allRentals")}
-          {data && <span className="muted" style={{ fontSize: 15 }}> · {t("search.found").replace("{n}", data.total)}</span>}
+          {data && (
+            <span className="muted search-count">
+              {" · "}
+              {data.total === 1 ? t("search.foundOne") : t("search.foundMany").replace("{n}", data.total)}
+            </span>
+          )}
         </h2>
       </div>
 
-      <div className="sort-row">
-        <select value={query.sort} onChange={(e) => update("sort", e.target.value)}>
+      <div className="sort-row search-toolbar">
+        <select
+          value={query.sort}
+          onChange={(e) => update("sort", e.target.value)}
+          aria-label={t("search.sort")}
+        >
           {SORTS.map(([v, key]) => (
             <option key={v} value={v}>{t(key)}</option>
           ))}
@@ -130,10 +139,13 @@ export default function SearchPage() {
         <span className="results-info">
           {t("search.shown").replace("{n}", data?.results?.length || 0)}
         </span>
-        <button className="btn btn-outline btn-sm" onClick={saveSearch}>
-          Vista leit
+        <button className="btn btn-outline btn-sm save-search-btn" onClick={saveSearch}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+          </svg>
+          {t("search.save")}
         </button>
-        {saveMsg && <span className="muted" style={{ fontSize: 13 }}>{saveMsg}</span>}
+        {saveMsg && <span className="muted save-search-msg">{saveMsg}</span>}
       </div>
       </div>
 

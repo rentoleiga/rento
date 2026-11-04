@@ -35,9 +35,9 @@ function Denied({ user }) {
     return (
       <div className="container section">
         <div className="empty">
-          <h3>Sign in required</h3>
-          <p>You need to be signed in as an administrator to view this page.</p>
-          <Link className="btn btn-primary" to="/login">Sign in</Link>
+          <h3>Innskráning nauðsynleg</h3>
+          <p>Þú þarft að vera innskráður sem stjórnandi til að skoða þessa síðu.</p>
+          <Link className="btn btn-primary" to="/login">Innskrá</Link>
         </div>
       </div>
     );
@@ -45,9 +45,9 @@ function Denied({ user }) {
   return (
     <div className="container section">
       <div className="empty">
-        <h3>403 — Access denied</h3>
-        <p>This page is for administrators only.</p>
-        <Link className="btn btn-outline" to="/dashboard">Go to dashboard</Link>
+        <h3>403 — Aðgangur synjaður</h3>
+        <p>Þessi síða er aðeins fyrir stjórnendur.</p>
+        <Link className="btn btn-outline" to="/dashboard">Á stjórnborðið</Link>
       </div>
     </div>
   );

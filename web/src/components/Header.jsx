@@ -20,6 +20,9 @@ export default function Header() {
   const [notifs, setNotifs] = useState([]);
   const [notifLoading, setNotifLoading] = useState(false);
   const [badgeTick, setBadgeTick] = useState(0);
+  const [compactSearch, setCompactSearch] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches
+  );
   const notifRef = useRef(null);
 
   const closeMenu = useCallback(() => { setMenuOpen(false); setNotifOpen(false); }, []);
@@ -74,6 +77,13 @@ export default function Header() {
     document.addEventListener("pointerdown", onDoc);
     return () => document.removeEventListener("pointerdown", onDoc);
   }, [notifOpen]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const onChange = (e) => setCompactSearch(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   const loadNotifs = () => {
     setNotifLoading(true);
@@ -172,7 +182,12 @@ export default function Header() {
         <form className="header-search" onSubmit={submitHeaderSearch} role="search">
           <div className="hs-field">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg>
-            <input value={sq} onChange={(e) => setSq(e.target.value)} placeholder={t("search.placeholder")} aria-label={t("search.placeholder")} />
+            <input
+              value={sq}
+              onChange={(e) => setSq(e.target.value)}
+              placeholder={compactSearch ? t("search.placeholderShort") : t("search.placeholder")}
+              aria-label={t("search.placeholder")}
+            />
           </div>
           <span className="hs-div" aria-hidden="true" />
           <div className="hs-field">

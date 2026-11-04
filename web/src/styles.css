@@ -3406,6 +3406,24 @@ body.has-cookie-banner { padding-bottom: 120px; }
 
 .cms-content p { line-height: 1.65; }
 .cms-content h3 { margin-top: 22px; }
+.legal-updated { margin: 0 0 18px; }
+.legal-intro {
+  color: var(--ink-soft);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.legal-section p {
+  color: var(--ink-soft);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.legal-section p + p { margin-top: 10px; }
+.legal-section a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
 @media print {
   .no-print, .site-header, .site-footer, .cookie-banner { display: none !important; }
@@ -3752,4 +3770,53 @@ body.has-cookie-banner .mobile-book-bar { display: none; }
     align-items: center;
   }
   .cookie-actions .btn { min-height: 40px; }
+}
+
+/* ---------- 2026-11 visual polish ---------- */
+.category-tile .small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.search-count { font-size: 15px; font-weight: 500; }
+.save-search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.save-search-btn svg { flex: 0 0 auto; }
+.save-search-msg { font-size: 13px; }
+@media (max-width: 640px) {
+  .header-search .hs-field { padding: 6px 8px; gap: 5px; }
+  .header-search .hs-field svg { width: 14px; height: 14px; }
+  .header-search .hs-go { margin-left: 2px; }
+  .search-count { font-size: 13px; }
+  .search-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .search-toolbar select { width: 100%; min-width: 0; min-height: 40px; }
+  .search-toolbar .results-info { display: none; }
+  .search-toolbar .save-search-btn { width: auto; margin: 0; white-space: nowrap; }
+  .search-toolbar .save-search-msg { grid-column: 1 / -1; }
+}
+
+@media (min-width: 381px) and (max-width: 640px) {
+  .header-inner { padding-left: 16px; padding-right: 16px; }
+  .guest-actions { gap: 4px; }
+  .guest-link { padding: 6px 8px; }
+  .guest-cta { padding: 7px 10px; }
+}
+
+@media (max-width: 380px) {
+  .header-inner { padding-left: 14px; padding-right: 14px; gap: 8px; }
+  .guest-actions { gap: 2px; }
+  .guest-link { padding: 5px 6px; }
+  .guest-cta { padding: 6px 8px; }
 }

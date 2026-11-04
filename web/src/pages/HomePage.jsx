@@ -47,7 +47,13 @@ export default function HomePage() {
                     <CategoryIcon slug={c.slug} />
                   </div>
                   <div>{c.name}</div>
-                  {c.listing_count != null && <div className="muted small">{c.listing_count}</div>}
+                  {c.listing_count != null && (
+                    <div className="muted small">
+                      {c.listing_count === 1
+                        ? t("home.listingCountOne")
+                        : t("home.listingCountMany").replace("{n}", c.listing_count)}
+                    </div>
+                  )}
                 </Link>
               ))}
             </div>
