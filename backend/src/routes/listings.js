@@ -117,6 +117,15 @@ const baseSchema = z.object({
   attributes: z.record(z.any()).optional().default({}),
   mainImage: z.string().optional().default(""),
   gallery: z.array(z.string()).optional().default([]),
+  imagePositions: z
+    .record(
+      z.object({
+        x: z.coerce.number().min(0).max(100),
+        y: z.coerce.number().min(0).max(100),
+      })
+    )
+    .optional()
+    .default({}),
   instantPublish: z.boolean().optional().default(true),
   publish: z.boolean().optional().default(false),
 });
@@ -124,7 +133,7 @@ const baseSchema = z.object({
 function listingColumnsForInsert() {
   return [
     ["slug", "owner_id", "title", "subtitle", "description"],
-    ["category_id", "subcategory_id", "main_image", "gallery", "status", "verification_status"],
+    ["category_id", "subcategory_id", "main_image", "gallery", "image_positions", "status", "verification_status"],
     ["featured", "currency"],
     ["price_hourly", "price_daily", "price_weekly", "price_monthly"],
     ["minimum_duration", "minimum_duration_unit", "deposit_amount"],
@@ -143,6 +152,7 @@ function buildListingValues(l, ownerId, slug) {
   return [
     slug, ownerId, l.title, l.subtitle, l.description,
     l.categoryId, l.subcategoryId, l.mainImage || gallery[0] || "", JSON.stringify(gallery),
+    JSON.stringify(l.imagePositions || {}),
     l.publish ? "published" : "draft", l.instantPublish ? "approved" : "pending",
     false, l.currency,
     l.priceHourly ?? null, l.priceDaily ?? null, l.priceWeekly ?? null, l.priceMonthly ?? null,
@@ -376,7 +386,7 @@ router.put(
     const map = {
       title: "title", subtitle: "subtitle", description: "description",
       categoryId: "category_id", subcategoryId: "subcategory_id",
-      mainImage: "main_image", gallery: "gallery",
+      mainImage: "main_image", gallery: "gallery", imagePositions: "image_positions",
       currency: "currency", priceHourly: "price_hourly", priceDaily: "price_daily",
       priceWeekly: "price_weekly", priceMonthly: "price_monthly",
       minimumDuration: "minimum_duration", minimumDurationUnit: "minimum_duration_unit",
@@ -396,7 +406,7 @@ router.put(
     };
     for (const [key, value] of Object.entries(req.body)) {
       if (!(key in map)) continue;
-      if (key === "gallery" || key === "attributes") {
+      if (key === "gallery" || key === "attributes" || key === "imagePositions") {
         cols.push(`${map[key]} = $${i++}`);
         vals.push(JSON.stringify(value));
       } else {
@@ -487,6 +497,7 @@ router.delete(
           `UPDATE listings
               SET status = 'deleted', purged_at = now(), title = 'Eytt auglýsing',
                   subtitle = '', description = '', main_image = '', gallery = '[]'::jsonb,
+                  image_positions = '{}'::jsonb,
                   attributes = '{}'::jsonb, phone = '', address = '', postcode = '',
                   latitude = NULL, longitude = NULL, addon_link = NULL, addon_video = NULL,
                   updated_at = now()

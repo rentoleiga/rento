@@ -64,6 +64,7 @@ function publicListing(row, opts = {}) {
     subcategoryName: row.subcategory_name,
     mainImage: row.main_image,
     gallery: row.gallery || [],
+    imagePositions: row.image_positions || {},
     status: row.status,
     verificationStatus: row.verification_status,
     featured: !!row.featured,

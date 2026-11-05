@@ -111,6 +111,8 @@ CREATE TABLE IF NOT EXISTS listings (
 
   main_image            TEXT DEFAULT '',
   gallery               JSONB        NOT NULL DEFAULT '[]',
+  -- Per-image crop focus: { "<url>": { "x": 50, "y": 50 } } -> object-position.
+  image_positions       JSONB        NOT NULL DEFAULT '{}'::jsonb,
 
   status                VARCHAR(20)  NOT NULL DEFAULT 'draft',
   -- draft | pending_review | published | paused | rejected | suspended | expired | deleted

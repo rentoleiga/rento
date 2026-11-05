@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { fmtDate } from "../lib/dates";
+import { objectPosition } from "../lib/imagePosition";
 
 const TIER_LABEL = { silver: "Silfur", featured: "Silfur", gold: "Gull", platinum: "Platína" };
 const DAY = 86400000;
@@ -151,7 +152,7 @@ export default function MyListingsPage() {
             {rows.map((l) => (
               <li key={l.id}>
                 {l.mainImage ? (
-                  <img src={l.mainImage} alt="" />
+                  <img src={l.mainImage} alt="" style={{ objectPosition: objectPosition(l.imagePositions, l.mainImage) }} />
                 ) : (
                   <div className="img-placeholder" style={{ width: 56, height: 42 }}>I</div>
                 )}
@@ -197,7 +198,7 @@ export default function MyListingsPage() {
           {archivedRows.map((l) => (
             <li key={l.id}>
               {l.mainImage ? (
-                <img src={l.mainImage} alt="" />
+                <img src={l.mainImage} alt="" style={{ objectPosition: objectPosition(l.imagePositions, l.mainImage) }} />
               ) : (
                 <div className="img-placeholder" style={{ width: 56, height: 42 }}>I</div>
               )}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { formatPrice } from "../api";
 import { api } from "../api";
 import { useAuth } from "../store";
+import { objectPosition } from "../lib/imagePosition";
 
 const TIER_BADGE = {
   platinum: "Platína",
@@ -50,7 +51,12 @@ export default function ListingCard({ listing }) {
     <Link to={`/listing/${listing.slug}`} className={`card listing-card${hlActive ? " listing-card-hl" : ""}`}>
       <div className="card-img-wrap">
         {listing.mainImage ? (
-          <img src={listing.mainImage} alt={listing.title} loading="lazy" />
+          <img
+            src={listing.mainImage}
+            alt={listing.title}
+            loading="lazy"
+            style={{ objectPosition: objectPosition(listing.imagePositions, listing.mainImage) }}
+          />
         ) : (
           <div className="img-placeholder">Rento</div>
         )}

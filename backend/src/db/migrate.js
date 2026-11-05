@@ -179,6 +179,7 @@ async function applyMigrations() {
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS seo_title          VARCHAR(200) DEFAULT '';
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS seo_description    TEXT         DEFAULT '';
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS unique_view_count  INTEGER      NOT NULL DEFAULT 0;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS image_positions    JSONB        NOT NULL DEFAULT '{}'::jsonb;
 
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS golden_until    TIMESTAMPTZ;
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS addon_highlight BOOLEAN NOT NULL DEFAULT FALSE;

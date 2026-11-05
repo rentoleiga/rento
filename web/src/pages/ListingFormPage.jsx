@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, apiBase, getToken } from "../api";
 import { useAuth } from "../store";
+import ImagePositioner from "../components/ImagePositioner";
+import { isDefaultPosition, objectPosition, positionFor } from "../lib/imagePosition";
 
 const STEPS = ["Myndir", "Grunnupplýsingar", "Verð", "Staðsetning", "Yfirlit"];
 
@@ -20,7 +22,7 @@ const initial = {
   usageRestrictions: "",
   phone: "", phoneVisibility: false,
   attributes: {},
-  mainImage: "", gallery: [],
+  mainImage: "", gallery: [], imagePositions: {},
 };
 
 const NUMERIC_CONVERT = [
@@ -110,6 +112,7 @@ export default function ListingFormPage() {
   const [fieldOk, setFieldOk] = useState({});
   const [doneSteps, setDoneSteps] = useState({});
   const [errorSteps, setErrorSteps] = useState({});
+  const [editImage, setEditImage] = useState("");
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const num = (k, v) => set(k, v === "" ? null : Number(v));
@@ -159,6 +162,11 @@ export default function ListingFormPage() {
     }
   }, [id]);
 
+  // Never keep the editor pointing at a photo that was removed.
+  useEffect(() => {
+    setEditImage((cur) => (cur && !form.gallery.includes(cur) ? "" : cur));
+  }, [form.gallery]);
+
   if (!user || !user.ownerEnabled) {
     return (
       <div className="form-card">
@@ -196,8 +204,31 @@ export default function ListingFormPage() {
       }
     }
     setForm((f) => ({ ...f, gallery: [...f.gallery, ...urls], mainImage: f.mainImage || urls[0] || "" }));
+    if (urls.length) setEditImage(urls[0]);
     setUploading(false);
   };
+
+  const setImagePosition = (url, pos) =>
+    setForm((f) => ({ ...f, imagePositions: { ...f.imagePositions, [url]: pos } }));
+
+  const resetImagePosition = (url) =>
+    setForm((f) => {
+      const imagePositions = { ...f.imagePositions };
+      delete imagePositions[url];
+      return { ...f, imagePositions };
+    });
+
+  const removeImage = (url) =>
+    setForm((f) => {
+      const imagePositions = { ...f.imagePositions };
+      delete imagePositions[url];
+      return {
+        ...f,
+        gallery: f.gallery.filter((u) => u !== url),
+        mainImage: f.mainImage === url ? f.gallery.find((u) => u !== url) || "" : f.mainImage,
+        imagePositions,
+      };
+    });
 
   const addAttr = () => setAttrRows((r) => [...r, { k: "", v: "" }]);
   const setAttr = (i, k, v) => setAttrRows((r) => r.map((row, j) => (i === j ? { ...row, [k]: v } : row)));
@@ -382,7 +413,7 @@ export default function ListingFormPage() {
       {step === 0 && (
         <>
           <h2 style={{ marginTop: 0 }}>Bæta við myndum</h2>
-          <p className="muted" style={{ marginTop: -8 }}>Bættu við allt að 15 myndum af búnaðinum þínum. Fyrsta myndin verður forsíðumynd.</p>
+          <p className="muted" style={{ marginTop: -8 }}>Bættu við allt að 15 myndum af búnaðinum þínum. Fyrsta myndin verður forsíðumynd og þú getur stillt útskotið með því að draga myndina.</p>
           <label className="dropzone" onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); if (e.dataTransfer?.files?.length) uploadFiles(e.dataTransfer.files); }}>
             <span className="dropzone-ic">📷</span>
@@ -394,17 +425,65 @@ export default function ListingFormPage() {
           <p className="muted small" style={{ textAlign: "center" }}>{form.gallery.length}/15 myndir</p>
           {uploading && <p className="muted">Hleð upp…</p>}
           {form.gallery.length > 0 && (
-            <div className="gallery-thumbs" style={{ marginBottom: 16 }}>
-              {form.gallery.map((url) => (
-                <div key={url} style={{ position: "relative", display: "inline-block" }}>
-                  <img src={url} alt="" style={{ width: 96, height: 66, objectFit: "cover", borderRadius: 8, border: url === form.mainImage ? "2px solid var(--primary)" : "none" }} onClick={() => set("mainImage", url)} />
-                  <button type="button" className="btn btn-danger btn-sm" style={{ position: "absolute", top: 4, right: 4, padding: "0 6px", fontSize: 11 }}
-                    onClick={() => setForm((f) => ({ ...f, gallery: f.gallery.filter((u) => u !== url), mainImage: f.mainImage === url ? "" : f.mainImage }))}>×</button>
-                </div>
-              ))}
+            <div className="image-thumb-grid">
+              {form.gallery.map((url) => {
+                const isMain = url === form.mainImage;
+                const custom = !isDefaultPosition(form.imagePositions, url);
+                return (
+                  <div key={url} className={`image-thumb${isMain ? " is-main" : ""}${url === editImage ? " is-editing" : ""}`}>
+                    <button type="button" className="image-thumb-pick" onClick={() => set("mainImage", url)} title="Gera að forsíðumynd">
+                      <img src={url} alt="" style={{ objectPosition: objectPosition(form.imagePositions, url) }} />
+                      {isMain && <span className="image-thumb-badge">Forsíðumynd</span>}
+                    </button>
+                    <div className="image-thumb-actions">
+                      <button type="button" className={`image-thumb-btn${custom ? " is-set" : ""}`} onClick={() => setEditImage(url === editImage ? "" : url)}>
+                        {url === editImage ? "Loka" : "Stilla"}
+                      </button>
+                      <button type="button" className="image-thumb-del" aria-label="Eyða mynd" onClick={() => removeImage(url)}>×</button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
-          {form.mainImage && <p className="muted" style={{ fontSize: 13 }}>Fyrsta myndin er forsíðumynd — smelltu á hvaða mynd sem er til að gera hana að forsíðumynd.</p>}
+          {editImage && form.gallery.includes(editImage) && (
+            <div className="image-editor">
+              <div className="image-editor-head">
+                <div>
+                  <strong>Staðsettu myndina</strong>
+                  <small>Dragðu myndina til hægri, vinstri, upp eða niður til að velja hvað sést.</small>
+                </div>
+                <div className="row" style={{ gap: 8 }}>
+                  <button type="button" className="btn btn-outline btn-sm" onClick={() => resetImagePosition(editImage)}>↺ Endurstilla</button>
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => setEditImage("")}>Lokið</button>
+                </div>
+              </div>
+              <div className="image-editor-body">
+                <ImagePositioner
+                  url={editImage}
+                  position={positionFor(form.imagePositions, editImage)}
+                  onChange={(p) => setImagePosition(editImage, p)}
+                  alt="Staðsetja mynd"
+                />
+                <div className="image-editor-previews">
+                  <div className="image-preview-block">
+                    <span className="image-editor-preview-label">Forsíðumynd í leit</span>
+                    <div className="image-preview image-preview-card">
+                      <img src={editImage} alt="" style={{ objectPosition: objectPosition(form.imagePositions, editImage) }} />
+                    </div>
+                  </div>
+                  <div className="image-preview-block">
+                    <span className="image-editor-preview-label">Stór mynd</span>
+                    <div className="image-preview image-preview-wide">
+                      <img src={editImage} alt="" style={{ objectPosition: objectPosition(form.imagePositions, editImage) }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className="muted small mb0">Sama staðsetning gildir fyrir forsíðumynd, myndasafn og stóra mynd.</p>
+            </div>
+          )}
+          {form.mainImage && <p className="muted" style={{ fontSize: 13 }}>Smelltu á mynd til að gera hana að forsíðumynd. Ýttu á „Stilla“ til að velja útskotið.</p>}
           <div className="tip-box tip-info">
             <strong>⛨ Settu ekki símanúmerið þitt á myndir</strong>
             <p className="mb0">Leigjendur sjá númerið þitt á vettvanginum („Sýna númer“ hnappur) — sláðu það inn í reitinn „Símanúmer“ í Staðsetning skrefinu.</p>
@@ -626,7 +705,7 @@ export default function ListingFormPage() {
             <div className="review-head"><span>📷 Myndir ({form.gallery.length})</span><button className="link-btn" onClick={() => setStep(0)}>✎ Breyta</button></div>
             {form.gallery.length === 0 ? <p className="muted mb0">Engar myndir</p> : (
               <div className="gallery-thumbs" style={{ marginTop: 8 }}>
-                {form.gallery.slice(0, 6).map((url) => <img key={url} src={url} alt="" style={{ width: 72, height: 50, objectFit: "cover", borderRadius: 8 }} />)}
+                {form.gallery.slice(0, 6).map((url) => <img key={url} src={url} alt="" style={{ width: 72, height: 50, objectFit: "cover", objectPosition: objectPosition(form.imagePositions, url), borderRadius: 8 }} />)}
               </div>
             )}
           </div>

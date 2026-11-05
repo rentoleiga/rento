@@ -7,6 +7,7 @@ import ListingCard from "../components/ListingCard";
 import { StarRating } from "../components/ListingCard";
 import DateField from "../components/DateField";
 import { fmtDate } from "../lib/dates";
+import { objectPosition } from "../lib/imagePosition";
 
 const ATTR_LABELS = {
   brand: "Vörumerki",
@@ -304,6 +305,7 @@ export default function ListingPage() {
                   src={mainImg}
                   alt={listing.title}
                   className="gallery-zoom"
+                  style={{ objectPosition: objectPosition(listing.imagePositions, mainImg) }}
                   onClick={() => setLightbox(galleryIndex)}
                 />
               ) : (
@@ -336,6 +338,7 @@ export default function ListingPage() {
                     src={img}
                     alt=""
                     className={img === mainImg ? "active" : ""}
+                    style={{ objectPosition: objectPosition(listing.imagePositions, img) }}
                     onClick={() => setMainImg(img)}
                   />
                 ))}
@@ -625,6 +628,7 @@ export default function ListingPage() {
                   src={img}
                   alt=""
                   className={i === lightbox ? "active" : ""}
+                  style={{ objectPosition: objectPosition(listing.imagePositions, img) }}
                   onClick={() => setLightbox(i)}
                 />
               ))}
