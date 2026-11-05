@@ -7,6 +7,14 @@ import { fmtDate } from "../lib/dates";
 
 const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 const SLOT_PRICE = 490;
+const describeError = (e) => {
+  const details = e?.data?.details || {};
+  if (details.errorCode === "2039") {
+    return "Greiðslukerfið er ekki virkt eins og er (Straumur 2039). Vinsamlegast reyndu aftur síðar.";
+  }
+  if (details.errorCode) return `${e.message} (Straumur ${details.errorCode})`;
+  return e?.message || "Ekki tókst að hefja greiðslu.";
+};
 const PACKAGES = [
   { id: "pkg3", slots: 3, amount: 1290, per: 430, popular: false },
   { id: "pkg5", slots: 5, amount: 1990, per: 398, popular: true },
@@ -86,7 +94,7 @@ export default function PremiumPage() {
       }
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
-      setError(e.message);
+      setError(describeError(e));
     } finally {
       setBusy("");
     }
@@ -106,7 +114,7 @@ export default function PremiumPage() {
       }
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
-      setError(e.message);
+      setError(describeError(e));
     } finally {
       setBusy("");
     }
@@ -137,7 +145,7 @@ export default function PremiumPage() {
       setNotice(`${tierName} Boost virkjað · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
       loadListings();
     } catch (e) {
-      setError(e.message);
+      setError(describeError(e));
     } finally {
       setBusy("");
     }

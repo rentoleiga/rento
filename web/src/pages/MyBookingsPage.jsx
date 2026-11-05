@@ -50,7 +50,12 @@ export default function MyBookingsPage() {
       }
       load();
     } catch (err) {
-      alert(err.message);
+      const code = err?.data?.details?.errorCode;
+      alert(
+        code === "2039"
+          ? "Greiðslukerfið er ekki virkt eins og er (Straumur 2039). Vinsamlegast reyndu aftur síðar."
+          : err.message
+      );
     }
   };
 
