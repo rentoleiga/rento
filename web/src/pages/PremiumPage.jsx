@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api";
 import { useLang } from "../i18n";
 import { useAuth } from "../store";
@@ -31,6 +31,8 @@ export default function PremiumPage() {
   const { t } = useLang();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preselected = searchParams.get("listing") || "";
   const [listings, setListings] = useState([]);
   const [pickId, setPickId] = useState("");
   const [busy, setBusy] = useState("");
@@ -44,7 +46,12 @@ export default function PremiumPage() {
       .then((d) => {
         const active = (d.listings || []).filter(isActive);
         setListings(active);
-        setPickId((prev) => (active.some((l) => String(l.id) === prev) ? prev : String(active[0]?.id || "")));
+        const has = (id) => active.some((l) => String(l.id) === String(id));
+        setPickId((prev) => {
+          if (prev && has(prev)) return prev;
+          if (preselected && has(preselected)) return String(preselected);
+          return String(active[0]?.id || "");
+        });
       })
       .catch(() => {});
 
@@ -52,6 +59,11 @@ export default function PremiumPage() {
     if (!user) return;
     loadListings();
   }, [user]);
+
+  useEffect(() => {
+    if (!preselected || !listings.length) return;
+    document.getElementById("boost")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [preselected, listings.length]);
 
   const needLogin = () => navigate("/login?next=/promote");
 
@@ -225,7 +237,7 @@ export default function PremiumPage() {
         </div>
       </section>
 
-      <section className="section section-flush" style={{ background: "#0f2b24", color: "#e6f6f0" }}>
+      <section className="section section-flush" id="boost" style={{ background: "#0f2b24", color: "#e6f6f0" }}>
         <div className="container">
           <div className="section-head" style={{ justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
             <span className="adv-badge adv-badge-light">{t("adv.boost.badge")}</span>

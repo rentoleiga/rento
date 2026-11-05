@@ -181,7 +181,7 @@ export default function MyListingsPage() {
                   <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}/stats`}>Tölfræði</Link>
                   <Link className="btn btn-outline btn-sm" to={`/dashboard/calendar/${l.id}`}>Dagatal</Link>
                   <Link className="btn btn-outline btn-sm" to={`/dashboard/listings/${l.id}`}>Breyta</Link>
-                  <Link className="btn btn-outline btn-sm" to="/promote">Kynna ↑</Link>
+                  <Link className="btn btn-outline btn-sm" to={`/promote?listing=${l.id}`}>Kynna ↑</Link>
                   <button className="btn btn-danger btn-sm" onClick={() => del(l)}>Eyða</button>
                 </div>
               </li>
