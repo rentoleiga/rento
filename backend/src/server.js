@@ -88,4 +88,10 @@ migrate().then(() => {
     ]).catch((e) => console.error("reminders:", e.message));
   setTimeout(runReminders, 15000);
   setInterval(runReminders, 5 * 60 * 1000).unref();
+
+  const { reconcilePendingPayments } = require("./services/paymentFlow");
+  const runPaymentSync = () =>
+    reconcilePendingPayments().catch((e) => console.error("payment sync:", e.message));
+  setTimeout(runPaymentSync, 30000);
+  setInterval(runPaymentSync, 5 * 60 * 1000).unref();
 });

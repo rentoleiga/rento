@@ -341,6 +341,30 @@ async function refreshCheckoutStatus(payment) {
   return payment;
 }
 
+// Reconciles pending checkouts with Straumur, so a missed webhook does not
+// leave a paid purchase stuck forever.
+async function reconcilePendingPayments(limit = 50) {
+  const { rows } = await db.query(
+    `SELECT * FROM payments
+      WHERE status = 'pending'
+        AND checkout_reference IS NOT NULL
+        AND created_at > now() - interval '2 days'
+      ORDER BY created_at ASC
+      LIMIT $1`,
+    [limit]
+  );
+  let changed = 0;
+  for (const payment of rows) {
+    try {
+      const updated = await refreshCheckoutStatus(payment);
+      if (updated.status !== "pending") changed += 1;
+    } catch (e) {
+      console.error("payment reconcile failed:", payment.id, e.message);
+    }
+  }
+  return changed;
+}
+
 module.exports = {
   createPurchase,
   applyPaidPayment,
@@ -349,4 +373,5 @@ module.exports = {
   markDeclined,
   applyRefund,
   refreshCheckoutStatus,
+  reconcilePendingPayments,
 };

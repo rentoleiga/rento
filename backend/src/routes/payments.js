@@ -8,6 +8,8 @@ const router = Router();
 
 const SELECT = `SELECT p.id, p.user_id, p.kind, p.reference_id, p.package_id, p.amount, p.currency,
                        p.status, p.promo_code, p.discount, p.created_at,
+                       p.provider, p.merchant_reference, p.checkout_reference, p.checkout_url,
+                       p.provider_status, p.paid_at, p.refunded_at, p.failed_reason,
                        COALESCE(l.title, bl.title) AS listing_title,
                        COALESCE(l.slug, bl.slug) AS listing_slug
                   FROM payments p
@@ -40,6 +42,26 @@ router.get(
     }
     const fresh = await flow.getByReference(req.params.reference, req.user.id);
     res.json({ payment: fresh || payment });
+  })
+);
+
+// POST /api/payments/:id/sync -> ask Straumur for the current status and
+// reconcile a payment whose webhook never arrived.
+router.post(
+  "/:id/sync",
+  authRequired,
+  asyncHandler(async (req, res) => {
+    const { rows } = await db.query("SELECT * FROM payments WHERE id = $1", [req.params.id]);
+    const payment = rows[0];
+    if (!payment) throw err("Payment not found", 404);
+    if (payment.user_id !== req.user.id && req.user.role !== "admin") {
+      throw err("Payment not found", 404);
+    }
+    let updated = payment;
+    if (payment.status === "pending") {
+      updated = await flow.refreshCheckoutStatus(payment);
+    }
+    res.json({ payment: updated });
   })
 );
 
