@@ -225,7 +225,7 @@ export default function MyBookingsPage() {
           amount={payOverlay.amount}
           currency={payOverlay.currency}
           label={payOverlay.label}
-          url={payOverlay.url}
+          windowRef={payWinRef}
           onDone={() => {
             try { payWinRef.current?.close(); } catch {}
             load();

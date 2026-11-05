@@ -367,7 +367,7 @@ export default function PremiumPage() {
           reference={payOverlay.reference}
           amount={payOverlay.amount}
           label={payOverlay.label}
-          url={payOverlay.url}
+          windowRef={payWinRef}
           onDone={() => {
             try { payWinRef.current?.close(); } catch {}
             if (payOverlay.kind === "promotion") loadListings();

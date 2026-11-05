@@ -3,9 +3,9 @@ import { api, formatPrice } from "../api";
 
 const BAD_STATUSES = ["failed", "expired", "refunded"];
 
-export default function PaymentOverlay({ reference, amount, currency = "ISK", label, onDone, onClose }) {
+export default function PaymentOverlay({ reference, amount, currency = "ISK", label, windowRef, onDone, onClose }) {
   const [payment, setPayment] = useState(null);
-  const [state, setState] = useState("waiting"); // waiting | paid | bad | error
+  const [state, setState] = useState("waiting"); // waiting | paid | bad | error | abandoned
   const [error, setError] = useState("");
   const doneRef = useRef(onDone);
   const closeRef = useRef(onClose);
@@ -45,6 +45,21 @@ export default function PaymentOverlay({ reference, amount, currency = "ISK", la
           setState("bad");
           return;
         }
+        // The payment tab may have been closed or navigated back to about:blank.
+        // Keep polling (the payment may still have gone through) but surface it.
+        const win = windowRef?.current;
+        if (win) {
+          let lost = false;
+          if (win.closed) lost = true;
+          else {
+            try {
+              if (win.location.href === "about:blank") lost = true;
+            } catch {
+              // cross-origin: the tab is still on Straumur
+            }
+          }
+          if (lost) setState("abandoned");
+        }
         tries += 1;
         if (tries >= 200) {
           setState("bad");
@@ -68,8 +83,17 @@ export default function PaymentOverlay({ reference, amount, currency = "ISK", la
   }, [reference]);
 
   const paid = state === "paid";
-  const bad = state === "bad" || state === "error";
+  const abandoned = state === "abandoned";
+  const bad = state === "bad" || state === "error" || abandoned;
   const amountLabel = formatPrice(payment?.amount ?? amount, payment?.currency || currency);
+  const title = abandoned
+    ? "Greiðslusíða var lokuð"
+    : state === "error"
+      ? "Gat ekki staðfest greiðslu"
+      : "Greiðslan tókst ekki";
+  const message = abandoned
+    ? "Ef þú kláraðir greiðsluna birtist hún hér eftir nokkrar sekúndur. Annars skaltu reyna aftur."
+    : error || "Vinsamlegast reyndu aftur.";
 
   return (
     <div className="pay-overlay" role="dialog" aria-modal="true">
@@ -86,8 +110,8 @@ export default function PaymentOverlay({ reference, amount, currency = "ISK", la
           <>
             <button className="pay-overlay-close" aria-label="Loka" onClick={onClose}>×</button>
             <div className="pay-icon pay-icon-err" aria-hidden="true">!</div>
-            <h2>{state === "error" ? "Gat ekki staðfest greiðslu" : "Greiðslan tókst ekki"}</h2>
-            <p className="muted" style={{ marginTop: 0 }}>{error || "Vinsamlegast reyndu aftur."}</p>
+            <h2>{title}</h2>
+            <p className="muted" style={{ marginTop: 0 }}>{message}</p>
           </>
         ) : (
           <>
