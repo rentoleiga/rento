@@ -20,7 +20,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setSeo({
-      title: "Rentó — Leigðu það sem þig vantar á Íslandi",
+      title: "Rentó — Leigðu það sem þig vantar",
       description:
         "Rentó er íslenskur leigumarkaður fyrir búnað, tæki, fatnað og fleira. Finndu það sem þig vantar eða leigðu út það sem þú átt.",
       url: `${window.location.origin}/`,
