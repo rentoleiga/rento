@@ -53,7 +53,9 @@ export default function PaymentOverlay({ reference, amount, currency = "ISK", la
           if (win.closed) lost = true;
           else {
             try {
-              if (win.location.href === "about:blank") lost = true;
+              // Give the tab a moment to leave about:blank; only treat it as
+              // abandoned once it has stayed there for a couple of polls.
+              if (tries >= 2 && win.location.href === "about:blank") lost = true;
             } catch {
               // cross-origin: the tab is still on Straumur
             }
