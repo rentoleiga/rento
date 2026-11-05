@@ -59,7 +59,9 @@ app.use("/api/reports", require("./routes/reports"));
 app.use("/api/settings", require("./routes/settings"));
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/track", require("./routes/track"));
+app.use("/api/errors", require("./routes/errors"));
 app.use("/api/admin", require("./routes/admin"));
+app.use("/", require("./routes/seo"));
 
 app.use(notFound);
 app.use(errorHandler);

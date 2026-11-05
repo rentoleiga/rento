@@ -31,6 +31,19 @@ function notFound(req, res) {
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
   console.error(err);
+  if (!err.status || err.status >= 500) {
+    const { logError } = require("../utils/errorLog");
+    logError({
+      source: "backend",
+      message: err.message || String(err),
+      stack: err.stack || "",
+      url: `${req.method} ${req.originalUrl}`,
+      userId: req.user ? req.user.id : null,
+      userAgent: req.headers ? req.headers["user-agent"] : "",
+      ip: req.ip,
+      context: { name: err.name, code: err.code || null },
+    });
+  }
   if (err instanceof ZodError) {
     return res.status(400).json({
       error: "Validation failed",

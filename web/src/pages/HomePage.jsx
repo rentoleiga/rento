@@ -4,6 +4,7 @@ import { api } from "../api";
 import ListingCard from "../components/ListingCard";
 import CategoryIcon from "../components/CategoryIcon";
 import { useLang } from "../i18n";
+import { setSeo } from "../lib/seo";
 
 export default function HomePage() {
   const { t, lang } = useLang();
@@ -16,6 +17,26 @@ export default function HomePage() {
     if (!el) return;
     el.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    setSeo({
+      title: "Rentó — Leigðu það sem þig vantar á Íslandi",
+      description:
+        "Rentó er íslenskur leigumarkaður fyrir búnað, tæki, fatnað og fleira. Finndu það sem þig vantar eða leigðu út það sem þú átt.",
+      url: `${window.location.origin}/`,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Rentó",
+        url: "https://www.rento.is/",
+        potentialAction: {
+          "@type": "SearchAction",
+          target: "https://www.rento.is/search?keyword={search_term_string}",
+          "query-input": "required name=search_term_string",
+        },
+      },
+    });
+  }, []);
 
   useEffect(() => {
     api.get(`/api/categories/all?lang=${lang}`).then((d) => setCategories(d.categories?.filter(c=>!c.parent_id) || [])).catch(() => {});

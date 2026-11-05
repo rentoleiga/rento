@@ -5,6 +5,7 @@ import ListingCard from "../components/ListingCard";
 import CategoryIcon from "../components/CategoryIcon";
 import { useLang } from "../i18n";
 import { useAuth } from "../store";
+import { setSeo } from "../lib/seo";
 
 const SORTS = [
   ["recommended", "search.sort.recommended"],
@@ -76,6 +77,17 @@ export default function SearchPage() {
   const topCats = categories.filter((c) => !c.parent_id);
   const selectedCat = topCats.find((c) => c.slug === query.category);
   const subs = selectedCat ? categories.filter((c) => c.parent_id === selectedCat.id) : [];
+
+  useEffect(() => {
+    const cat = selectedCat?.name;
+    const where = query.location ? ` í ${query.location}` : "";
+    const what = query.keyword ? `„${query.keyword}“` : cat || "búnað";
+    setSeo({
+      title: `${cat ? `${cat} — ` : ""}Leita · Rentó`,
+      description: `Leigðu ${what}${where} á Rentó. Finndu búnað, tæki og fleira frá einstaklingum og fyrirtækjum á Íslandi.`,
+      url: window.location.href,
+    });
+  }, [selectedCat, query.keyword, query.location]);
 
   const regions = useMemo(() => {
     const map = {};

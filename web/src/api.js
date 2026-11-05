@@ -1,3 +1,5 @@
+import { reportError } from "./lib/monitor";
+
 const BASE = import.meta.env.VITE_API_URL || "";
 
 export function apiBase() {
@@ -29,6 +31,14 @@ async function request(method, path, body) {
     data = {};
   }
   if (!res.ok) {
+    if (res.status >= 500) {
+      reportError({
+        message: `API ${res.status} ${method} ${path}`,
+        stack: "",
+        url: `${typeof window !== "undefined" ? window.location.href : path}`,
+        context: { status: res.status, method, path },
+      });
+    }
     const e = new Error(data.error || `Request failed (${res.status})`);
     e.status = res.status;
     e.data = data;

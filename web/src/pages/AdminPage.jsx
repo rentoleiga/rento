@@ -14,6 +14,7 @@ import AdminPasswordResets from "../components/admin/AdminPasswordResets";
 import AdminReports from "../components/admin/AdminReports";
 import AdminPromoCodes from "../components/admin/AdminPromoCodes";
 import AdminContent from "../components/admin/AdminContent";
+import AdminErrors from "../components/admin/AdminErrors";
 
 const TABS = [
   { k: "overview", label: "Overview", C: AdminOverview },
@@ -28,6 +29,7 @@ const TABS = [
   { k: "messages", label: "Messages", C: AdminMessages },
   { k: "resets", label: "Password resets", C: AdminPasswordResets },
   { k: "log", label: "Audit log", C: AdminLog },
+  { k: "errors", label: "Errors", C: AdminErrors },
 ];
 
 function Denied({ user }) {

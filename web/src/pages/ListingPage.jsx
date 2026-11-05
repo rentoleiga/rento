@@ -8,6 +8,7 @@ import { StarRating } from "../components/ListingCard";
 import DateField from "../components/DateField";
 import { fmtDate } from "../lib/dates";
 import { objectPosition } from "../lib/imagePosition";
+import { setSeo } from "../lib/seo";
 
 const ATTR_LABELS = {
   brand: "Vörumerki",
@@ -112,21 +113,51 @@ export default function ListingPage() {
 
   useEffect(() => {
     if (!listing) return;
-    document.title = `${listing.title} · Rentó`;
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "description";
-      document.head.appendChild(meta);
+    const desc = String(listing.subtitle || listing.description || "").replace(/\s+/g, " ").trim();
+    const url = `${window.location.origin}/listing/${listing.slug}`;
+    const rawImage = listing.mainImage || (listing.gallery && listing.gallery[0]) || "";
+    let image = "";
+    try {
+      image = rawImage ? new URL(rawImage, window.location.origin).href : "";
+    } catch {
+      image = "";
     }
-    meta.setAttribute("content", String(listing.subtitle || listing.description || "").slice(0, 160));
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.rel = "canonical";
-      document.head.appendChild(canonical);
-    }
-    canonical.href = window.location.href;
+    const price = Number(listing.priceDaily || listing.priceHourly || 0);
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: listing.title,
+      description: desc.slice(0, 300),
+      url,
+      ...(image ? { image: [image] } : {}),
+      ...(listing.reviewCount > 0
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: Number(listing.rating || 0),
+              reviewCount: Number(listing.reviewCount),
+            },
+          }
+        : {}),
+      offers: {
+        "@type": "Offer",
+        price,
+        priceCurrency: listing.currency || "ISK",
+        availability:
+          listing.status === "published"
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+        url,
+      },
+    };
+    setSeo({
+      title: `${listing.title} · Rentó`,
+      description: desc.slice(0, 160),
+      image,
+      url,
+      type: "product",
+      jsonLd,
+    });
   }, [listing]);
 
   useEffect(() => {

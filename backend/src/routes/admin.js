@@ -1340,4 +1340,44 @@ router.put(
   })
 );
 
+// Error monitoring
+router.get(
+  "/errors",
+  asyncHandler(async (req, res) => {
+    const { page, perPage, offset } = paginate(req.query.page, req.query.perPage || 25);
+    const source = ["frontend", "backend"].includes(req.query.source) ? req.query.source : null;
+    const params = [];
+    const where = source ? `WHERE source = $1` : "";
+    if (source) params.push(source);
+    const [list, total] = await Promise.all([
+      db.query(
+        `SELECT id, source, message, stack, url, user_id, user_agent, ip, context, created_at
+           FROM error_logs ${where}
+          ORDER BY created_at DESC
+          LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        [...params, perPage, offset]
+      ),
+      db.query(`SELECT count(*)::int AS n FROM error_logs ${where}`, params),
+    ]);
+    res.json({ errors: list.rows, total: total.rows[0].n, page, perPage });
+  })
+);
+
+router.delete(
+  "/errors/:id",
+  asyncHandler(async (req, res) => {
+    const r = await db.query("DELETE FROM error_logs WHERE id = $1", [req.params.id]);
+    if (!r.rowCount) throw err("Error log not found", 404);
+    res.json({ ok: true });
+  })
+);
+
+router.delete(
+  "/errors",
+  asyncHandler(async (req, res) => {
+    const r = await db.query("DELETE FROM error_logs");
+    res.json({ ok: true, deleted: r.rowCount });
+  })
+);
+
 module.exports = router;

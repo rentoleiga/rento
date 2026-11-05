@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /messages
+Disallow: /notifications
+Disallow: /favorites
+Disallow: /receipt
+
+Sitemap: https://www.rento.is/sitemap.xml

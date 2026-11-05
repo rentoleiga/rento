@@ -317,6 +317,21 @@ async function applyMigrations() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT now()
       );
       CREATE INDEX IF NOT EXISTS idx_uploads_created ON uploads (created_at DESC);
+
+      CREATE TABLE IF NOT EXISTS error_logs (
+        id         SERIAL PRIMARY KEY,
+        source     VARCHAR(20) NOT NULL DEFAULT 'frontend',
+        message    TEXT NOT NULL,
+        stack      TEXT,
+        url        TEXT,
+        user_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        user_agent VARCHAR(300),
+        ip         VARCHAR(60),
+        context    JSONB,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_error_logs_created ON error_logs (created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_error_logs_source ON error_logs (source, created_at DESC);
     `);
     console.log("Growth feature tables ready.");
 

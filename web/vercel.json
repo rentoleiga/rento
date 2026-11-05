@@ -4,6 +4,7 @@
   "framework": "vite",
   "installCommand": "npm install",
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "https://rento-rento-74fc.up.railway.app/sitemap.xml" },
     { "source": "/((?!api/|assets/|favicon|manifest|icon-).*)", "destination": "/index.html" }
   ]
 }
