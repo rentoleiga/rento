@@ -120,7 +120,7 @@ async function createPurchase({
 // Marks a payment as paid and grants what was bought. Idempotent: only the
 // first call for a pending payment performs the fulfilment.
 async function applyPaidPayment(paymentId, { providerReference = "", checkoutReference = "" } = {}) {
-  const client = await db.connect();
+  const client = await db.pool.connect();
   let notification = null;
   try {
     await client.query("BEGIN");
