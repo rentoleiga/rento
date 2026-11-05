@@ -285,6 +285,16 @@ async function applyMigrations() {
 
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS expiry_reminder_sent_at TIMESTAMPTZ;
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS promotion_reminder_sent_at TIMESTAMPTZ;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS promotion_started_at TIMESTAMPTZ;
+      UPDATE listings
+         SET promotion_started_at = promotion_until - CASE promotion_tier
+               WHEN 'platinum' THEN interval '30 days'
+               WHEN 'gold'     THEN interval '14 days'
+               ELSE interval '7 days'
+             END
+       WHERE promotion_started_at IS NULL
+         AND promotion_until IS NOT NULL
+         AND promotion_until > now();
 
       ALTER TABLE reviews ADD COLUMN IF NOT EXISTS owner_reply TEXT;
       ALTER TABLE reviews ADD COLUMN IF NOT EXISTS owner_replied_at TIMESTAMPTZ;

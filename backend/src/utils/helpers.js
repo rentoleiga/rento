@@ -69,6 +69,7 @@ function publicListing(row, opts = {}) {
     verificationStatus: row.verification_status,
     featured: !!row.featured,
     promotionTier: row.promotion_tier,
+    promotionStartedAt: row.promotion_started_at || null,
     promotionUntil: row.promotion_until,
     goldenUntil: row.golden_until,
     expiresAt: row.expires_at || null,

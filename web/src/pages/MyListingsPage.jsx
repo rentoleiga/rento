@@ -18,6 +18,15 @@ const daysLabel = (iso) => {
   if (d <= 0) return "rennur út í dag";
   return `rennur út eftir ${d} ${d === 1 ? "dag" : "daga"}`;
 };
+const daysShort = (iso) => {
+  const d = daysLeft(iso);
+  if (d <= 0) return "í dag";
+  return `eftir ${d} ${d === 1 ? "dag" : "daga"}`;
+};
+const boostPeriod = (l) => {
+  const from = l.promotionStartedAt ? `frá ${fmtDate(l.promotionStartedAt)} ` : "";
+  return ` · Boost: ${from}til ${fmtDate(l.promotionUntil)} (${daysShort(l.promotionUntil)})`;
+};
 export default function MyListingsPage() {
   const [rows, setRows] = useState([]);
   const [archivedRows, setArchivedRows] = useState([]);
@@ -173,7 +182,7 @@ export default function MyListingsPage() {
                   <div className="sub">
                     {l.viewCount} skoðanir · {l.favoriteCount} vistuð
                     {l.status === "published" && l.expiresAt && ` · ${daysLabel(l.expiresAt)}`}
-                    {activePromo(l) && ` · Boost ${daysLabel(l.promotionUntil)}`}
+                    {activePromo(l) && boostPeriod(l)}
                   </div>
                 </div>
                 <span className={`status-pill status-${l.status}`}>{statusLabel(l.status)}</span>

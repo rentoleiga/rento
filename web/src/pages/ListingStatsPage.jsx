@@ -4,11 +4,16 @@ import { api, formatPrice } from "../api";
 import { fmtDate } from "../lib/dates";
 
 const DAY = 86400000;
-const boostLabel = (iso) => {
-  const ms = new Date(iso).getTime() - Date.now();
-  if (!(ms > 0)) return "";
-  const d = Math.max(1, Math.ceil(ms / DAY));
-  return `Boost rennur út eftir ${d} ${d === 1 ? "dag" : "daga"}`;
+const daysLeft = (iso) => Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / DAY));
+const daysShort = (iso) => {
+  const d = daysLeft(iso);
+  if (d <= 0) return "í dag";
+  return `eftir ${d} ${d === 1 ? "dag" : "daga"}`;
+};
+const boostPeriod = (s) => {
+  if (!s.promotionUntil || new Date(s.promotionUntil).getTime() <= Date.now()) return "";
+  const from = s.promotionStartedAt ? `frá ${fmtDate(s.promotionStartedAt)} ` : "";
+  return `Boost: ${from}til ${fmtDate(s.promotionUntil)} (${daysShort(s.promotionUntil)})`;
 };
 
 export default function ListingStatsPage() {
@@ -26,7 +31,7 @@ export default function ListingStatsPage() {
   if (!stats) return <div className="container section"><div className="empty">Hleður…</div></div>;
 
   const b = stats.bookings || {};
-  const boost = stats.promotionTier && stats.promotionTier !== "none" ? boostLabel(stats.promotionUntil) : "";
+  const boost = stats.promotionTier && stats.promotionTier !== "none" ? boostPeriod(stats) : "";
   const rows = [
     ["Skoðanir", stats.views],
     ["Einstakar skoðanir", stats.uniqueViews],
@@ -48,7 +53,7 @@ export default function ListingStatsPage() {
       <p className="muted" style={{ marginTop: -4 }}>
         {stats.status} · birt {fmtDate(stats.createdAt) || "—"}
         {stats.expiresAt ? ` · rennur út ${fmtDate(stats.expiresAt)}` : ""}
-        {stats.promotionTier && stats.promotionTier !== "none" ? (boost ? ` · ${boost}` : "") : ""}
+        {boost ? ` · ${boost}` : ""}
       </p>
 
       <div className="dash-grid" style={{ marginTop: 18 }}>

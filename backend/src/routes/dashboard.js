@@ -205,7 +205,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const { rows } = await db.query(
       `SELECT id, title, slug, status, view_count, unique_view_count, rating, review_count,
-              promotion_tier, promotion_until, expires_at, created_at
+              promotion_tier, promotion_started_at, promotion_until, expires_at, created_at
          FROM listings WHERE id = $1 AND owner_id = $2`,
       [req.params.id, req.user.id]
     );
@@ -242,6 +242,7 @@ router.get(
         bookings: byStatus,
         bookingsTotal: Object.values(byStatus).reduce((a, b) => a + b, 0),
         promotionTier: l.promotion_tier,
+        promotionStartedAt: l.promotion_started_at,
         promotionUntil: l.promotion_until,
         expiresAt: l.expires_at,
         createdAt: l.created_at,

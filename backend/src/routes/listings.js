@@ -546,14 +546,15 @@ router.post(
       [req.user.id, listing.id, tierIn, promo.finalAmount, promo.code, promo.discount]
     );
     await consumePromo(promo.promo);
+    const extend =
+      listing.promotion_tier === PROMO_TIERS[tierIn] &&
+      listing.promotion_until &&
+      new Date(listing.promotion_until) > new Date();
     await db.query(
       `UPDATE listings
          SET promotion_tier = $1,
-             promotion_until = ${listing.promotion_tier === PROMO_TIERS[tierIn] &&
-      listing.promotion_until &&
-      new Date(listing.promotion_until) > new Date()
-        ? "promotion_until"
-        : "now()"} + make_interval(days => $2),
+             promotion_until = ${extend ? "promotion_until" : "now()"} + make_interval(days => $2),
+             promotion_started_at = ${extend ? "COALESCE(promotion_started_at, now())" : "now()"},
              promotion_reminder_sent_at = NULL,
              updated_at = now()
        WHERE id = $3`,
