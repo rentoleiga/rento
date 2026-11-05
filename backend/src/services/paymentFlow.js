@@ -300,11 +300,11 @@ async function applyRefund(originalPayfacReference, success, reason) {
   const done = String(success) === "true";
   await db.query(
     `UPDATE payments
-        SET status = $2,
-            refunded_at = CASE WHEN $2 = 'refunded' THEN now() ELSE refunded_at END,
-            provider_status = $3,
-            failed_reason = CASE WHEN $2 = 'refunded' THEN failed_reason ELSE $4 END
-      WHERE provider_reference = $1
+        SET status = $2::varchar,
+            refunded_at = CASE WHEN $2::text = 'refunded' THEN now() ELSE refunded_at END,
+            provider_status = $3::varchar,
+            failed_reason = CASE WHEN $2::text = 'refunded' THEN failed_reason ELSE $4::varchar END
+      WHERE provider_reference = $1::varchar
         AND status IN ('paid', 'refund_pending')`,
     [
       String(originalPayfacReference),
