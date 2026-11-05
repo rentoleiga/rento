@@ -83,7 +83,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
+      <section className="section" style={{ paddingTop: 0, paddingBottom: 36 }}>
         <div className="container">
           <div className="promo-banner">
             <div className="promo-banner-main">
