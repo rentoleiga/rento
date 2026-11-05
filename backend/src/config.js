@@ -26,6 +26,9 @@ module.exports = {
       terminalId,
       webhookApiKey: process.env.STRAUMUR_WEBHOOK_API_KEY || "",
       hmacKey: process.env.STRAUMUR_HMAC_KEY || "",
+      themeKey:
+        process.env.STRAUMUR_THEME_KEY ||
+        (env === "live" ? "2213023-255e9" : ""),
       apiBase:
         process.env.STRAUMUR_API_BASE ||
         (env === "live"

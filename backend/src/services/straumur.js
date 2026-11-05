@@ -51,6 +51,7 @@ async function createCheckout({
     reference,
     terminalIdentifier: config.straumur.terminalId,
     culture,
+    ...(config.straumur.themeKey ? { themeKey: config.straumur.themeKey } : {}),
     ...(abandonUrl ? { abandonUrl } : {}),
     ...(shopperContact ? { shopperContact } : {}),
     ...(items && items.length
