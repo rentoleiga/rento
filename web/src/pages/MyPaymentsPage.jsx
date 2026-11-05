@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { fmtDate } from "../lib/dates";
 
-const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Kynning" };
+const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Boost" };
 const PACKAGE_LABEL = {
   single: "Stakt pláss",
   pkg3: "3 pláss",
@@ -31,7 +31,7 @@ export default function MyPaymentsPage() {
     <div className="container section" style={{ maxWidth: 880 }}>
       <h1 className="mt0">Kvittanir</h1>
       <p className="muted" style={{ marginTop: -6 }}>
-        Kaup á auglýsingaplássum og kynningum. Leigugreiðslur fara fram beint á milli aðila.
+        Kaup á auglýsingaplássum og Boost. Leigugreiðslur fara fram beint á milli aðila.
       </p>
 
       {loading ? (
@@ -39,7 +39,7 @@ export default function MyPaymentsPage() {
       ) : rows.length === 0 ? (
         <div className="empty">
           <h3>Engar kvittanir ennþá</h3>
-          <p>Þegar þú kaupir pláss eða kynningu birtist kvittunin hér.</p>
+          <p>Þegar þú kaupir pláss eða Boost birtist kvittunin hér.</p>
           <Link className="btn btn-primary" to="/promote">Sjá verð og pláss</Link>
         </div>
       ) : (

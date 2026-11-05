@@ -39,7 +39,7 @@ export default function ListingStatsPage() {
       <p className="muted" style={{ marginTop: -4 }}>
         {stats.status} · birt {fmtDate(stats.createdAt) || "—"}
         {stats.expiresAt ? ` · rennur út ${fmtDate(stats.expiresAt)}` : ""}
-        {stats.promotionTier && stats.promotionTier !== "none" ? ` · kynnt til ${fmtDate(stats.promotionUntil)}` : ""}
+        {stats.promotionTier && stats.promotionTier !== "none" ? ` · Boost til ${fmtDate(stats.promotionUntil)}` : ""}
       </p>
 
       <div className="dash-grid" style={{ marginTop: 18 }}>

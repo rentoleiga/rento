@@ -47,7 +47,7 @@ const sections = [
     title: "7. Boost-pakkar og röðun",
     paragraphs: [
       `Rentó býður valkvæða aukningu á sýnileika auglýsinga með pökkunum Silfur, Gull og Premium. Verð, gildistími og sú birting eða staðsetning sem hver pakki felur í sér eru sýnd í verðskrá og við kaup. Auglýsingar raðast að meginstefnu með nýjustu fyrst, en keypt boost getur haft áhrif á röðun. Fleiri en ein boostuð auglýsing getur verið virk samtímis og röðun þeirra fer eftir lýsingu viðkomandi pakka og gildandi röðunarreglum Rentó.`,
-      `Greiddur sýnileiki er auðkenndur með skýrum hætti, til dæmis með merkingunni „Boostuð auglýsing“ eða „Kynnt“. Boost tryggir hvorki fyrirspurnir, leiguviðskipti né tekjur. Eyði notandi auglýsingu fellur boost-birting hennar niður, með fyrirvara um lögbundinn rétt. Ef boost getur varað lengur en auglýsingin er kaupandi upplýstur fyrir kaup um nauðsyn endurnýjunar auglýsingarinnar.`,
+      `Greiddur sýnileiki er auðkenndur með skýrum hætti, til dæmis með merkingunni „Boost“. Boost tryggir hvorki fyrirspurnir, leiguviðskipti né tekjur. Eyði notandi auglýsingu fellur boost-birting hennar niður, með fyrirvara um lögbundinn rétt. Ef boost getur varað lengur en auglýsingin er kaupandi upplýstur fyrir kaup um nauðsyn endurnýjunar auglýsingarinnar.`,
     ],
   },
   {

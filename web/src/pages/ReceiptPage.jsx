@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { fmtDateTime as fmtDate } from "../lib/dates";
 
-const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Kynning" };
+const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Boost" };
 const PACKAGE_LABEL = {
   single: "Stakt pláss",
   pkg3: "3 pláss",
@@ -87,7 +87,7 @@ export default function ReceiptPage() {
         </table>
 
         <p className="muted" style={{ fontSize: 12, marginTop: 24 }}>
-          Kvittun fyrir kaupum á auglýsingaplássi eða kynningu. Leigugreiðslur fara fram beint milli leigjanda og leigusala.
+          Kvittun fyrir kaupum á auglýsingaplássi eða Boost. Leigugreiðslur fara fram beint milli leigjanda og leigusala.
         </p>
       </div>
     </div>

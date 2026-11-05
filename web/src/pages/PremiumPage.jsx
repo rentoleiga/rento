@@ -24,7 +24,7 @@ const isActive = (l) =>
 const promotionLabel = (l) => {
   if (!l.promotionTier || !l.promotionUntil) return "";
   if (new Date(l.promotionUntil).getTime() <= Date.now()) return "";
-  return `Kynnt til ${fmtDate(l.promotionUntil)}`;
+  return `Boost til ${fmtDate(l.promotionUntil)}`;
 };
 
 export default function PremiumPage() {
@@ -111,13 +111,13 @@ export default function PremiumPage() {
     const extend = chosen && promotionLabel(chosen);
     const tierName = t(`credit.boost.${tier.key}`);
     const msg = extend
-      ? `Framlengja ${tierName.toLowerCase()} kynningu um ${tier.days} daga fyrir ${fmt(tier.amount)} kr.? Núverandi kynning gildir til ${fmtDate(chosen.promotionUntil)}.`
-      : `Kaupa ${tierName.toLowerCase()} kynningu í ${tier.days} daga fyrir ${fmt(tier.amount)} kr.?`;
+      ? `Framlengja ${tierName.toLowerCase()} Boost um ${tier.days} daga fyrir ${fmt(tier.amount)} kr.? Núverandi Boost gildir til ${fmtDate(chosen.promotionUntil)}.`
+      : `Kaupa ${tierName.toLowerCase()} Boost í ${tier.days} daga fyrir ${fmt(tier.amount)} kr.?`;
     if (!window.confirm(msg)) return;
     setBusy(tier.key);
     try {
       const r = await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key, code: code.trim() });
-      setNotice(`${tierName} kynning virkjuð · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
+      setNotice(`${tierName} Boost virkjað · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
       loadListings();
     } catch (e) {
       setError(e.message);
