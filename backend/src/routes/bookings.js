@@ -238,7 +238,11 @@ router.put(
         items: [{ name: b.listing_title, amount }],
       });
       if (result.redirect) {
-        return res.json({ booking: serializeBooking(b), redirect: result.redirect });
+        return res.json({
+          booking: serializeBooking(b),
+          redirect: result.redirect,
+          reference: result.payment.merchant_reference,
+        });
       }
       const paidBooking = await getBookingRow(b.id);
       return res.json({ booking: serializeBooking(paidBooking), paid: true });

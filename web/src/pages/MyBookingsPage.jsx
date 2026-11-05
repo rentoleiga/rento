@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, formatPrice, timeAgo } from "../api";
 import { useAuth } from "../store";
 import ReviewForm from "../components/ReviewForm";
+import PaymentOverlay from "../components/PaymentOverlay";
 import { StarRating } from "../components/ListingCard";
 import { fmtDate } from "../lib/dates";
 import { useLang } from "../i18n";
@@ -15,6 +16,8 @@ export default function MyBookingsPage() {
   const [loading, setLoading] = useState(true);
   const [reviewState, setReviewState] = useState({}); // bookingId -> { loading, canReview, myReview, reviews }
   const [openForm, setOpenForm] = useState(null);
+  const [payOverlay, setPayOverlay] = useState(null);
+  const payWinRef = useRef(null);
 
   const load = () => {
     setLoading(true);
@@ -42,20 +45,48 @@ export default function MyBookingsPage() {
       const question = action === "reject" ? "Hafna þessari bókun?" : "Hætta við þessa bókun?";
       if (!window.confirm(question)) return;
     }
-    try {
-      const r = await api.put(`/api/bookings/${booking.id}/status`, { action });
-      if (r.redirect) {
-        window.location.href = r.redirect;
-        return;
+    if (action === "pay") {
+      let win = null;
+      try {
+        win = window.open("", "rento_checkout", "popup=yes,width=540,height=780");
+        payWinRef.current = win;
+      } catch {
+        win = null;
       }
+      try {
+        const r = await api.put(`/api/bookings/${booking.id}/status`, { action });
+        if (r.redirect && win && !win.closed && r.reference) {
+          win.location.href = r.redirect;
+          setPayOverlay({
+            reference: r.reference,
+            amount: booking.total,
+            currency: booking.currency,
+            label: booking.listing?.title || "Bókun",
+            url: r.redirect,
+          });
+        } else if (r.redirect) {
+          if (win && !win.closed) win.close();
+          window.location.href = r.redirect;
+        } else {
+          if (win && !win.closed) win.close();
+          load();
+        }
+      } catch (err) {
+        if (win && !win.closed) win.close();
+        const code = err?.data?.details?.errorCode;
+        alert(
+          code === "2039"
+            ? "Greiðslukerfið er ekki virkt eins og er (Straumur 2039). Vinsamlegast reyndu aftur síðar."
+            : err.message
+        );
+      }
+      return;
+    }
+    try {
+      await api.put(`/api/bookings/${booking.id}/status`, { action });
       load();
     } catch (err) {
-      const code = err?.data?.details?.errorCode;
-      alert(
-        code === "2039"
-          ? "Greiðslukerfið er ekki virkt eins og er (Straumur 2039). Vinsamlegast reyndu aftur síðar."
-          : err.message
-      );
+      alert(err.message);
     }
   };
 
@@ -186,6 +217,18 @@ export default function MyBookingsPage() {
             </li>
           ))}
         </ul>
+      )}
+
+      {payOverlay && (
+        <PaymentOverlay
+          reference={payOverlay.reference}
+          amount={payOverlay.amount}
+          currency={payOverlay.currency}
+          label={payOverlay.label}
+          url={payOverlay.url}
+          onDone={() => load()}
+          onClose={() => setPayOverlay(null)}
+        />
       )}
     </div>
   );

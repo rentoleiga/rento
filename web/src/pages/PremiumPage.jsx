@@ -1,9 +1,10 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api";
 import { useLang } from "../i18n";
 import { useAuth } from "../store";
 import { fmtDate } from "../lib/dates";
+import PaymentOverlay from "../components/PaymentOverlay";
 
 const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 const SLOT_PRICE = 490;
@@ -47,6 +48,30 @@ export default function PremiumPage() {
   const [notice, setNotice] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [payOverlay, setPayOverlay] = useState(null);
+  const payWinRef = useRef(null);
+
+  const openPayWindow = () => {
+    try {
+      const w = window.open("", "rento_checkout", "popup=yes,width=540,height=780");
+      payWinRef.current = w;
+      return w;
+    } catch {
+      return null;
+    }
+  };
+
+  const handleRedirect = (win, r, meta) => {
+    if (!r.redirect) return false;
+    if (win && !win.closed && r.reference) {
+      win.location.href = r.redirect;
+      setPayOverlay({ reference: r.reference, url: r.redirect, ...meta });
+    } else {
+      if (win && !win.closed) win.close();
+      window.location.href = r.redirect;
+    }
+    return true;
+  };
 
   const loadListings = () =>
     api
@@ -84,15 +109,15 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
+    const win = openPayWindow();
     setBusy("slots");
     try {
       const r = await api.post("/api/slots/purchase", { count: 1, code: code.trim() });
-      if (r.redirect) {
-        window.location.href = r.redirect;
-        return;
-      }
+      if (handleRedirect(win, r, { amount: SLOT_PRICE, label: "Auglýsingapláss", kind: "slot" })) return;
+      if (win && !win.closed) win.close();
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
+      if (win && !win.closed) win.close();
       setError(describeError(e));
     } finally {
       setBusy("");
@@ -103,15 +128,23 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
+    const win = openPayWindow();
     setBusy(pkg.id);
     try {
       const r = await api.post("/api/slots/purchase", { packageId: pkg.id, code: code.trim() });
-      if (r.redirect) {
-        window.location.href = r.redirect;
+      if (
+        handleRedirect(win, r, {
+          amount: pkg.amount,
+          label: `${t(`adv.pkg.${pkg.id}`)} (${pkg.slots} pláss)`,
+          kind: "slot",
+        })
+      ) {
         return;
       }
+      if (win && !win.closed) win.close();
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
+      if (win && !win.closed) win.close();
       setError(describeError(e));
     } finally {
       setBusy("");
@@ -127,16 +160,24 @@ export default function PremiumPage() {
       return;
     }
     const tierName = t(`credit.boost.${tier.key}`);
+    const win = openPayWindow();
     setBusy(tier.key);
     try {
       const r = await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key, code: code.trim() });
-      if (r.redirect) {
-        window.location.href = r.redirect;
+      if (
+        handleRedirect(win, r, {
+          amount: tier.amount,
+          label: `${tierName} Boost (${tier.days} dagar)`,
+          kind: "promotion",
+        })
+      ) {
         return;
       }
+      if (win && !win.closed) win.close();
       setNotice(`${tierName} Boost virkjað · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
       loadListings();
     } catch (e) {
+      if (win && !win.closed) win.close();
       setError(describeError(e));
     } finally {
       setBusy("");
@@ -320,6 +361,19 @@ export default function PremiumPage() {
           </div>
         </div>
       </section>
+
+      {payOverlay && (
+        <PaymentOverlay
+          reference={payOverlay.reference}
+          amount={payOverlay.amount}
+          label={payOverlay.label}
+          url={payOverlay.url}
+          onDone={() => {
+            if (payOverlay.kind === "promotion") loadListings();
+          }}
+          onClose={() => setPayOverlay(null)}
+        />
+      )}
     </>
   );
 }

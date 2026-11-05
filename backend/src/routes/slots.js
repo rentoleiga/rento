@@ -96,6 +96,7 @@ router.post(
       return res.status(201).json({
         ok: true,
         redirect: result.redirect,
+        reference: result.payment.merchant_reference,
         paymentId: result.payment.id,
         amount: finalAmount,
         discount: promo.discount,
