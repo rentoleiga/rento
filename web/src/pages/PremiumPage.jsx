@@ -84,7 +84,6 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
-    if (!window.confirm(`Kaupa 1 auglýsingapláss fyrir ${fmt(SLOT_PRICE)} kr.? Plássið gildir í 30 daga frá notkun.`)) return;
     setBusy("slots");
     try {
       const r = await api.post("/api/slots/purchase", { count: 1, code: code.trim() });
@@ -104,7 +103,6 @@ export default function PremiumPage() {
     setNotice("");
     setError("");
     if (!user) return needLogin();
-    if (!window.confirm(`Kaupa ${pkg.slots} auglýsingapláss fyrir ${fmt(pkg.amount)} kr.?`)) return;
     setBusy(pkg.id);
     try {
       const r = await api.post("/api/slots/purchase", { packageId: pkg.id, code: code.trim() });
@@ -128,13 +126,7 @@ export default function PremiumPage() {
       setError("Veldu auglýsingu fyrst.");
       return;
     }
-    const chosen = listings.find((l) => String(l.id) === String(pickId));
-    const extend = chosen && promotionLabel(chosen);
     const tierName = t(`credit.boost.${tier.key}`);
-    const msg = extend
-      ? `Framlengja ${tierName.toLowerCase()} Boost um ${tier.days} daga fyrir ${fmt(tier.amount)} kr.? Núverandi Boost gildir til ${fmtDate(chosen.promotionUntil)}.`
-      : `Kaupa ${tierName.toLowerCase()} Boost í ${tier.days} daga fyrir ${fmt(tier.amount)} kr.?`;
-    if (!window.confirm(msg)) return;
     setBusy(tier.key);
     try {
       const r = await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key, code: code.trim() });
