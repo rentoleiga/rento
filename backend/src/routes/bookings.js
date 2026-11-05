@@ -7,6 +7,7 @@ const { calcPrice } = require("../utils/pricing");
 const { checkAvailability } = require("../utils/availability");
 const { publicListing } = require("../utils/helpers");
 const { notify } = require("../utils/notify");
+const flow = require("../services/paymentFlow");
 
 const router = Router();
 
@@ -71,11 +72,6 @@ async function createBooking(user, listingId, body) {
 
   const who = user.first_name ? `${user.first_name} ${user.last_name}`.trim() : user.email;
   if (listing.instant_booking) {
-    await db.query(
-      `INSERT INTO transactions (booking_id, payer_id, receiver_id, amount, currency, status, provider_reference)
-       VALUES ($1,$2,$3,$4,$5,'authorized','mock_payment')`,
-      [bookingId, user.id, listing.owner_id, totalMoney, listing.currency]
-    );
     await notify(listing.owner_id, "booking_confirmed", "Ný bókun",
       `${who} bókaði "${listing.title}"`, { bookingId });
   } else {
@@ -219,20 +215,38 @@ router.put(
       throw err(`Cannot ${action} a booking in "${b.status}" status`, 409);
     }
 
+    if (action === "pay") {
+      if (b.payment_status === "paid") throw err("Bókun er þegar greidd", 409);
+      const pending = await db.query(
+        `SELECT checkout_url FROM payments
+          WHERE kind = 'booking' AND reference_id = $1 AND status = 'pending'
+            AND checkout_url IS NOT NULL
+          ORDER BY id DESC LIMIT 1`,
+        [b.id]
+      );
+      if (pending.rows.length && pending.rows[0].checkout_url) {
+        return res.json({ booking: serializeBooking(b), redirect: pending.rows[0].checkout_url });
+      }
+      const amount = Number(b.total) || 0;
+      const result = await flow.createPurchase({
+        userId: req.user.id,
+        kind: "booking",
+        referenceId: b.id,
+        amount,
+        currency: b.currency || "ISK",
+        metadata: { bookingId: b.id, description: `Bókun: ${b.listing_title}` },
+        items: [{ name: b.listing_title, amount }],
+      });
+      if (result.redirect) {
+        return res.json({ booking: serializeBooking(b), redirect: result.redirect });
+      }
+      const paidBooking = await getBookingRow(b.id);
+      return res.json({ booking: serializeBooking(paidBooking), paid: true });
+    }
+
     let nextPickup = b.pickup_status;
     let nextReturn = b.return_status;
 
-    if (action === "pay") {
-      // create a paid transaction (MVP mock; replace with Stripe webhook in Phase 3)
-      await db.query(
-        `INSERT INTO transactions (booking_id, payer_id, receiver_id, amount, platform_fee, owner_amount, currency, status, provider_reference)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,'paid','mock_payment')
-         ON CONFLICT DO NOTHING`,
-        [b.id, b.renter_id, b.owner_id, b.total, 0, b.total, b.currency]
-      );
-      await notify(b.owner_id, "payment_success", "Greiðsla móttekin",
-        `Greiðsla að upphæð ${b.total} ${b.currency} barst fyrir "${b.listing_title}".`, { bookingId: b.id });
-    }
     if (action === "pickup") nextPickup = "picked_up";
     if (action === "return") nextReturn = "returned";
     if (action === "complete") nextReturn = "inspected";

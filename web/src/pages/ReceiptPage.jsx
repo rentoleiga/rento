@@ -3,7 +3,16 @@ import { Link, useParams } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { fmtDateTime as fmtDate } from "../lib/dates";
 
-const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Boost" };
+const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Boost", booking: "Bókun" };
+const STATUS_LABEL = {
+  paid: "Greitt",
+  pending: "Bíður greiðslu",
+  failed: "Mistókst",
+  expired: "Útrunnið",
+  refunded: "Endurgreitt",
+  refund_pending: "Endurgreiðsla í vinnslu",
+  partially_refunded: "Endurgreitt að hluta",
+};
 const PACKAGE_LABEL = {
   single: "Stakt pláss",
   pkg3: "3 pláss",
@@ -81,7 +90,7 @@ export default function ReceiptPage() {
             </tr>
             <tr>
               <td className="muted">Staða</td>
-              <td className="text-right">{p.status === "paid" ? "Greitt" : p.status === "refunded" ? "Endurgreitt" : p.status}</td>
+              <td className="text-right">{STATUS_LABEL[p.status] || p.status}</td>
             </tr>
           </tbody>
         </table>

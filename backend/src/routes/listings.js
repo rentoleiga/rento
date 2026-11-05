@@ -7,6 +7,7 @@ const config = require("../config");
 const { authRequired, optionalAuth } = require("../middleware/auth");
 const { asyncHandler, validate, err } = require("../middleware/http");
 const { slugify, paginate, publicUser, publicListing } = require("../utils/helpers");
+const flow = require("../services/paymentFlow");
 const {
   AD_DAYS,
   PROMO_PRICES,
@@ -17,7 +18,7 @@ const {
 } = require("../utils/slots");
 const { notifySavedSearches } = require("../services/savedSearches");
 const { notify } = require("../utils/notify");
-const { resolvePromo, consumePromo } = require("../utils/promo");
+const { resolvePromo } = require("../utils/promo");
 
 const router = Router();
 
@@ -519,7 +520,6 @@ router.delete(
 );
 
 // ---------------- promotion tiers ----------------
-const PROMO_TIERS = { silver: "featured", gold: "gold", platinum: "platinum" };
 
 router.post(
   "/:id/promote",
@@ -540,26 +540,31 @@ router.post(
       throw err("Only published listings can be promoted", 400);
     }
     const promo = await resolvePromo(req.body.code, "promotion", pricing.amount);
-    await db.query(
-      `INSERT INTO payments (user_id, kind, reference_id, package_id, amount, promo_code, discount)
-       VALUES ($1, 'promotion', $2, $3, $4, $5, $6)`,
-      [req.user.id, listing.id, tierIn, promo.finalAmount, promo.code, promo.discount]
-    );
-    await consumePromo(promo.promo);
-    const extend =
-      listing.promotion_tier === PROMO_TIERS[tierIn] &&
-      listing.promotion_until &&
-      new Date(listing.promotion_until) > new Date();
-    await db.query(
-      `UPDATE listings
-         SET promotion_tier = $1,
-             promotion_until = ${extend ? "promotion_until" : "now()"} + make_interval(days => $2),
-             promotion_started_at = ${extend ? "COALESCE(promotion_started_at, now())" : "now()"},
-             promotion_reminder_sent_at = NULL,
-             updated_at = now()
-       WHERE id = $3`,
-      [PROMO_TIERS[tierIn], pricing.days, listing.id]
-    );
+    const result = await flow.createPurchase({
+      userId: req.user.id,
+      kind: "promotion",
+      referenceId: listing.id,
+      packageId: tierIn,
+      amount: promo.finalAmount,
+      currency: listing.currency || "ISK",
+      promoCode: promo.code,
+      discount: promo.discount,
+      metadata: {
+        tier: tierIn,
+        days: pricing.days,
+        description: `Boost — ${tierIn}`,
+      },
+      items: [{ name: `Boost — ${tierIn}`, amount: promo.finalAmount }],
+    });
+    if (result.redirect) {
+      return res.json({
+        redirect: result.redirect,
+        paymentId: result.payment.id,
+        paid: promo.finalAmount,
+        discount: promo.discount,
+        code: promo.code,
+      });
+    }
     const updated = await getListingOr404(req, res);
     res.json({
       listing: publicListing(updated, { detail: true }),

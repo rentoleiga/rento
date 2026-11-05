@@ -54,6 +54,28 @@ npm run db:seed          # reset data without schema
 curl http://localhost:4000/health
 ```
 
+## Payments (Straumur)
+
+Rentó uses [Straumur Hosted Checkout](https://docs.straumur.is/hosted-checkout/basic-checkout-request) for card, Apple Pay and Google Pay payments.
+
+Required backend environment variables:
+
+```
+STRAUMUR_ENV=staging            # or live
+STRAUMUR_API_KEY=...
+STRAUMUR_TERMINAL_ID=...        # 12 characters, Hosted Checkout terminal
+STRAUMUR_WEBHOOK_API_KEY=...
+STRAUMUR_HMAC_KEY=...
+```
+
+Register this webhook URL in the Straumur Merchant Portal (test and live separately):
+
+`https://<api-host>/api/webhooks/straumur`
+
+The terminal's allowed origin/return URL must include `WEB_ORIGIN` (for production, `https://www.rento.is`).
+
+Local development without those variables uses mock payments. To keep mock payments in a non-development environment set `PAYMENTS_MOCK=true`; otherwise payment endpoints return `503`.
+
 ## Feature map (MVP Phase 1 + 2)
 - Auth: register/login/JWT + Google OAuth, renter+owner profiles.
 - Listings: category-specific attributes, photo upload, pricing (hourly/daily/weekly), fees + deposit, availability windows & blocks.

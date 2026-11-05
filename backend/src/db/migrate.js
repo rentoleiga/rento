@@ -318,6 +318,24 @@ async function applyMigrations() {
       );
       CREATE INDEX IF NOT EXISTS idx_uploads_created ON uploads (created_at DESC);
 
+      -- Straumur / card payments
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS provider VARCHAR(20) NOT NULL DEFAULT 'mock';
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS merchant_reference VARCHAR(200);
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS checkout_reference VARCHAR(120);
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS checkout_url TEXT;
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS provider_status VARCHAR(40);
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS paid_at TIMESTAMPTZ;
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS refunded_at TIMESTAMPTZ;
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS failed_reason VARCHAR(300);
+      ALTER TABLE payments ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb;
+      ALTER TABLE payments ALTER COLUMN amount TYPE NUMERIC(12,2) USING amount::numeric(12,2);
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_merchant_reference
+        ON payments (merchant_reference) WHERE merchant_reference IS NOT NULL;
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_payments_checkout_reference
+        ON payments (checkout_reference) WHERE checkout_reference IS NOT NULL;
+      ALTER TABLE transactions ADD COLUMN IF NOT EXISTS payfac_reference VARCHAR(120);
+      ALTER TABLE transactions ADD COLUMN IF NOT EXISTS checkout_reference VARCHAR(120);
+
       CREATE TABLE IF NOT EXISTS error_logs (
         id         SERIAL PRIMARY KEY,
         source     VARCHAR(20) NOT NULL DEFAULT 'frontend',

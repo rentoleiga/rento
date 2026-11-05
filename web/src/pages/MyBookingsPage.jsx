@@ -43,7 +43,11 @@ export default function MyBookingsPage() {
       if (!window.confirm(question)) return;
     }
     try {
-      await api.put(`/api/bookings/${booking.id}/status`, { action });
+      const r = await api.put(`/api/bookings/${booking.id}/status`, { action });
+      if (r.redirect) {
+        window.location.href = r.redirect;
+        return;
+      }
       load();
     } catch (err) {
       alert(err.message);
@@ -105,7 +109,7 @@ export default function MyBookingsPage() {
                 )}
                 {b.status === "approved" && tab === "renter" && (
                   <div className="row" style={{ marginTop: 8 }}>
-                    <button className="btn btn-primary btn-sm" onClick={() => act(b, "pay")}>Borga (prufa)</button>
+                    <button className="btn btn-primary btn-sm" onClick={() => act(b, "pay")}>Borga</button>
                     <button className="btn btn-outline btn-sm" onClick={() => act(b, "cancel")}>Hætta við</button>
                   </div>
                 )}

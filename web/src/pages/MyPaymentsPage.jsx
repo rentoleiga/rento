@@ -3,7 +3,16 @@ import { Link } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { fmtDate } from "../lib/dates";
 
-const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Boost" };
+const KIND_LABEL = { slot: "Auglýsingapláss", promotion: "Boost", booking: "Bókun" };
+const STATUS_LABEL = {
+  paid: "Greitt",
+  pending: "Bíður greiðslu",
+  failed: "Mistókst",
+  expired: "Útrunnið",
+  refunded: "Endurgreitt",
+  refund_pending: "Endurgreiðsla í vinnslu",
+  partially_refunded: "Endurgreitt að hluta",
+};
 const PACKAGE_LABEL = {
   single: "Stakt pláss",
   pkg3: "3 pláss",
@@ -71,7 +80,7 @@ export default function MyPaymentsPage() {
                   {Number(p.discount) > 0 && (
                     <div className="muted" style={{ fontSize: 12 }}>afsláttur {formatPrice(p.discount, p.currency)}</div>
                   )}
-                  <div className="muted" style={{ fontSize: 12 }}>{p.status === "paid" ? "Greitt" : p.status === "refunded" ? "Endurgreitt" : p.status}</div>
+                  <div className="muted" style={{ fontSize: 12 }}>{STATUS_LABEL[p.status] || p.status}</div>
                   <Link className="btn btn-outline btn-sm" to={`/receipt/${p.id}`} style={{ marginTop: 6 }}>Kvittun</Link>
                 </div>
               </li>

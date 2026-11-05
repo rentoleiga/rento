@@ -75,6 +75,10 @@ export default function PremiumPage() {
     setBusy("slots");
     try {
       const r = await api.post("/api/slots/purchase", { count: 1, code: code.trim() });
+      if (r.redirect) {
+        window.location.href = r.redirect;
+        return;
+      }
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
@@ -91,6 +95,10 @@ export default function PremiumPage() {
     setBusy(pkg.id);
     try {
       const r = await api.post("/api/slots/purchase", { packageId: pkg.id, code: code.trim() });
+      if (r.redirect) {
+        window.location.href = r.redirect;
+        return;
+      }
       setNotice(`${r.slots} pláss keypt · ${fmt(r.amount)} kr.`);
     } catch (e) {
       setError(e.message);
@@ -117,6 +125,10 @@ export default function PremiumPage() {
     setBusy(tier.key);
     try {
       const r = await api.post(`/api/listings/${pickId}/promote`, { tier: tier.key, code: code.trim() });
+      if (r.redirect) {
+        window.location.href = r.redirect;
+        return;
+      }
       setNotice(`${tierName} Boost virkjað · ${fmt(r.paid != null ? r.paid : tier.amount)} kr.`);
       loadListings();
     } catch (e) {

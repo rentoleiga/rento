@@ -8,6 +8,7 @@ const { paginate } = require("../utils/helpers");
 const { logAdminAction } = require("../utils/adminLog");
 const { FREE_SLOTS } = require("../utils/slots");
 const creditGuard = require("../services/creditGuard");
+const straumur = require("../services/straumur");
 
 const router = Router();
 
@@ -1299,8 +1300,45 @@ router.put(
 router.put(
   "/payments/:id/refund",
   asyncHandler(async (req, res) => {
-    const r = await db.query("UPDATE payments SET status = 'refunded' WHERE id = $1", [req.params.id]);
-    if (r.rowCount === 0) throw err("Payment not found", 404);
+    const { rows } = await db.query("SELECT * FROM payments WHERE id = $1", [req.params.id]);
+    const payment = rows[0];
+    if (!payment) throw err("Payment not found", 404);
+    if (!["paid", "refund_pending"].includes(payment.status)) {
+      throw err("Payment is not refundable", 409);
+    }
+    if (payment.status === "refund_pending") {
+      throw err("Refund is already in progress", 409);
+    }
+
+    let pending = false;
+    if (payment.provider === "straumur" && straumur.isEnabled()) {
+      if (!payment.provider_reference || !payment.merchant_reference) {
+        throw err("Missing Straumur references for this payment", 409);
+      }
+      const result = await straumur.refund({
+        reference: payment.merchant_reference,
+        payfacReference: payment.provider_reference,
+        amount: payment.amount,
+        currency: payment.currency,
+      });
+      await db.query(
+        `UPDATE payments
+            SET status = 'refund_pending',
+                provider_status = 'refund_requested',
+                metadata = metadata || $2::jsonb
+          WHERE id = $1`,
+        [payment.id, JSON.stringify({ refundReference: result.payfacReference || null })]
+      );
+      pending = true;
+    } else {
+      await db.query(
+        `UPDATE payments
+            SET status = 'refunded', refunded_at = now(), provider_status = 'refunded'
+          WHERE id = $1`,
+        [payment.id]
+      );
+    }
+
     await logAdminAction({
       adminId: req.user.id,
       action: "payment.refund",
@@ -1308,7 +1346,7 @@ router.put(
       targetId: Number(req.params.id),
       ip: req.ip,
     });
-    res.json({ ok: true });
+    res.json({ ok: true, pending });
   })
 );
 

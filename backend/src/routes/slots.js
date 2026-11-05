@@ -9,7 +9,8 @@ const {
   expireListings,
   activeListingCount,
 } = require("../utils/slots");
-const { resolvePromo, consumePromo } = require("../utils/promo");
+const { resolvePromo } = require("../utils/promo");
+const flow = require("../services/paymentFlow");
 
 const router = Router();
 
@@ -75,25 +76,39 @@ router.post(
     }
     const promo = await resolvePromo(req.body.code, "slot", amount);
     const finalAmount = promo.finalAmount;
-    for (let i = 0; i < count; i++) {
-      await db.query(
-        `INSERT INTO listing_slots (user_id, package_id, amount)
-         VALUES ($1, $2, $3)`,
-        [req.user.id, packageId, Math.round(finalAmount / count)]
-      );
+    const result = await flow.createPurchase({
+      userId: req.user.id,
+      kind: "slot",
+      packageId,
+      amount: finalAmount,
+      currency: "ISK",
+      promoCode: promo.code,
+      discount: promo.discount,
+      metadata: {
+        count,
+        packageId,
+        promoCode: promo.code,
+        description: packageId === "single" ? `Auglýsingapláss (${count})` : `Plásspakki (${count} pláss)`,
+      },
+      items: [{ name: packageId === "single" ? "Auglýsingapláss" : "Plásspakki", amount: finalAmount }],
+    });
+    if (result.redirect) {
+      return res.status(201).json({
+        ok: true,
+        redirect: result.redirect,
+        paymentId: result.payment.id,
+        amount: finalAmount,
+        discount: promo.discount,
+        code: promo.code,
+      });
     }
-    await db.query(
-      `INSERT INTO payments (user_id, kind, package_id, amount, promo_code, discount)
-       VALUES ($1, 'slot', $2, $3, $4, $5)`,
-      [req.user.id, packageId, finalAmount, promo.code, promo.discount]
-    );
-    await consumePromo(promo.promo);
     res.status(201).json({
       ok: true,
       slots: count,
       amount: finalAmount,
       discount: promo.discount,
       code: promo.code,
+      paid: true,
     });
   })
 );

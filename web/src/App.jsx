@@ -36,6 +36,7 @@ import MyPaymentsPage from "./pages/MyPaymentsPage";
 import SavedSearchesPage from "./pages/SavedSearchesPage";
 import ListingStatsPage from "./pages/ListingStatsPage";
 import ReceiptPage from "./pages/ReceiptPage";
+import PaymentReturnPage from "./pages/PaymentReturnPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AdminPage from "./pages/AdminPage";
 import { useAuth } from "./store";
@@ -90,6 +91,7 @@ export default function App() {
           <Route path="/dashboard/searches" element={<RequireAuth><SavedSearchesPage /></RequireAuth>} />
           <Route path="/dashboard/listings/:id/stats" element={<RequireAuth><ListingStatsPage /></RequireAuth>} />
           <Route path="/receipt/:id" element={<RequireAuth><ReceiptPage /></RequireAuth>} />
+          <Route path="/payment/return" element={<RequireAuth><PaymentReturnPage /></RequireAuth>} />
           <Route path="/dashboard/credits" element={<CreditsPage />} />
           <Route path="/favorites" element={<RequireAuth><FavoritesPage /></RequireAuth>} />
           <Route path="/messages" element={<RequireAuth><MessagesPage /></RequireAuth>} />

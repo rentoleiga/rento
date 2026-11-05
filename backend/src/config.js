@@ -16,4 +16,22 @@ module.exports = {
   resendApiKey: process.env.RESEND_API_KEY || "",
   mailFrom: process.env.MAIL_FROM || "Rentó <no-reply@rento.is>",
   siteUrl: process.env.SITE_URL || "https://www.rento.is",
+  straumur: (() => {
+    const env = String(process.env.STRAUMUR_ENV || "staging").toLowerCase() === "live" ? "live" : "staging";
+    const apiKey = process.env.STRAUMUR_API_KEY || "";
+    const terminalId = process.env.STRAUMUR_TERMINAL_ID || "";
+    return {
+      env,
+      apiKey,
+      terminalId,
+      webhookApiKey: process.env.STRAUMUR_WEBHOOK_API_KEY || "",
+      hmacKey: process.env.STRAUMUR_HMAC_KEY || "",
+      apiBase:
+        process.env.STRAUMUR_API_BASE ||
+        (env === "live"
+          ? "https://greidslugatt.straumur.is/api/v1"
+          : "https://checkout-api.staging.straumur.is/api/v1"),
+      enabled: !!(apiKey && terminalId),
+    };
+  })(),
 };
