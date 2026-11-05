@@ -554,6 +554,7 @@ router.post(
       new Date(listing.promotion_until) > new Date()
         ? "promotion_until"
         : "now()"} + make_interval(days => $2),
+             promotion_reminder_sent_at = NULL,
              updated_at = now()
        WHERE id = $3`,
       [PROMO_TIERS[tierIn], pricing.days, listing.id]

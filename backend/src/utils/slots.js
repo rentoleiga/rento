@@ -197,6 +197,34 @@ async function sendReturnReminders() {
   return rows.length;
 }
 
+// Email + in-app reminder when a bought boost is about to expire.
+async function sendPromotionReminders() {
+  const { rows } = await db.query(
+    `SELECT l.id, l.title, l.slug, l.owner_id, l.promotion_until
+       FROM listings l
+      WHERE l.promotion_tier IS NOT NULL
+        AND l.promotion_tier <> 'none'
+        AND l.promotion_until IS NOT NULL
+        AND l.promotion_until > now()
+        AND l.promotion_until <= now() + interval '1 day'
+        AND l.promotion_reminder_sent_at IS NULL
+      LIMIT 200`
+  );
+  if (!rows.length) return 0;
+  const { notify } = require("./notify");
+  for (const l of rows) {
+    await notify(
+      l.owner_id,
+      "promotion_expiring",
+      "Boost rennur út",
+      `Boost fyrir „${l.title}“ rennur út ${fmtDate(l.promotion_until)}. Þú getur endurnýtt það í Boost hlutanum.`,
+      { listingId: l.id, slug: l.slug }
+    );
+    await db.query("UPDATE listings SET promotion_reminder_sent_at = now() WHERE id = $1", [l.id]);
+  }
+  return rows.length;
+}
+
 // Keep notification history for 90 days (spec: 30–90 days).
 async function cleanupOldNotifications() {
   const { rowCount } = await db.query(
@@ -217,6 +245,7 @@ module.exports = {
   attachSlot,
   releaseSlotForListing,
   sendExpiryReminders,
+  sendPromotionReminders,
   sendReturnReminders,
   cleanupOldNotifications,
 };

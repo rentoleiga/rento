@@ -3,6 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import { api, formatPrice } from "../api";
 import { fmtDate } from "../lib/dates";
 
+const DAY = 86400000;
+const boostLabel = (iso) => {
+  const ms = new Date(iso).getTime() - Date.now();
+  if (!(ms > 0)) return "";
+  const d = Math.max(1, Math.ceil(ms / DAY));
+  return `Boost rennur út eftir ${d} ${d === 1 ? "dag" : "daga"}`;
+};
+
 export default function ListingStatsPage() {
   const { id } = useParams();
   const [stats, setStats] = useState(null);
@@ -18,6 +26,7 @@ export default function ListingStatsPage() {
   if (!stats) return <div className="container section"><div className="empty">Hleður…</div></div>;
 
   const b = stats.bookings || {};
+  const boost = stats.promotionTier && stats.promotionTier !== "none" ? boostLabel(stats.promotionUntil) : "";
   const rows = [
     ["Skoðanir", stats.views],
     ["Einstakar skoðanir", stats.uniqueViews],
@@ -39,7 +48,7 @@ export default function ListingStatsPage() {
       <p className="muted" style={{ marginTop: -4 }}>
         {stats.status} · birt {fmtDate(stats.createdAt) || "—"}
         {stats.expiresAt ? ` · rennur út ${fmtDate(stats.expiresAt)}` : ""}
-        {stats.promotionTier && stats.promotionTier !== "none" ? ` · Boost til ${fmtDate(stats.promotionUntil)}` : ""}
+        {stats.promotionTier && stats.promotionTier !== "none" ? (boost ? ` · ${boost}` : "") : ""}
       </p>
 
       <div className="dash-grid" style={{ marginTop: 18 }}>

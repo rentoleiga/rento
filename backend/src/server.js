@@ -68,10 +68,11 @@ migrate().then(() => {
   app.listen(config.port, () => {
     console.log(`Rento API listening on http://localhost:${config.port}`);
   });
-  const { sendExpiryReminders, sendReturnReminders, cleanupOldNotifications } = require("./utils/slots");
+  const { sendExpiryReminders, sendPromotionReminders, sendReturnReminders, cleanupOldNotifications } = require("./utils/slots");
   const runReminders = () =>
     Promise.all([
       sendExpiryReminders(),
+      sendPromotionReminders(),
       sendReturnReminders(),
       cleanupOldNotifications(),
     ]).catch((e) => console.error("reminders:", e.message));

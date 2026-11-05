@@ -73,6 +73,8 @@ export default function NotificationsPage() {
       navigate("/dashboard/searches");
     } else if ((n.type === "listing_expiring" || n.type === "listing_expired") && data.slug) {
       navigate(`/listing/${data.slug}`);
+    } else if (n.type === "promotion_expiring") {
+      navigate(data.listingId ? `/promote?listing=${data.listingId}` : "/promote");
     }
   };
 

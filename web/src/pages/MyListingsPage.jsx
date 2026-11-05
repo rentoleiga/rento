@@ -173,7 +173,7 @@ export default function MyListingsPage() {
                   <div className="sub">
                     {l.viewCount} skoðanir · {l.favoriteCount} vistuð
                     {l.status === "published" && l.expiresAt && ` · ${daysLabel(l.expiresAt)}`}
-                    {activePromo(l) && ` · Boost til ${fmtDate(l.promotionUntil)}`}
+                    {activePromo(l) && ` · Boost ${daysLabel(l.promotionUntil)}`}
                   </div>
                 </div>
                 <span className={`status-pill status-${l.status}`}>{statusLabel(l.status)}</span>

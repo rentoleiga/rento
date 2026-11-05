@@ -284,6 +284,7 @@ async function applyMigrations() {
       CREATE UNIQUE INDEX IF NOT EXISTS idx_users_referral_code ON users (referral_code);
 
       ALTER TABLE listings ADD COLUMN IF NOT EXISTS expiry_reminder_sent_at TIMESTAMPTZ;
+      ALTER TABLE listings ADD COLUMN IF NOT EXISTS promotion_reminder_sent_at TIMESTAMPTZ;
 
       ALTER TABLE reviews ADD COLUMN IF NOT EXISTS owner_reply TEXT;
       ALTER TABLE reviews ADD COLUMN IF NOT EXISTS owner_replied_at TIMESTAMPTZ;
