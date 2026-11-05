@@ -53,7 +53,7 @@ export default function PremiumPage() {
 
   const openPayWindow = () => {
     try {
-      const w = window.open("", "rento_checkout", "popup=yes,width=540,height=780");
+      const w = window.open("", "_blank");
       payWinRef.current = w;
       return w;
     } catch {
@@ -369,6 +369,7 @@ export default function PremiumPage() {
           label={payOverlay.label}
           url={payOverlay.url}
           onDone={() => {
+            try { payWinRef.current?.close(); } catch {}
             if (payOverlay.kind === "promotion") loadListings();
           }}
           onClose={() => setPayOverlay(null)}

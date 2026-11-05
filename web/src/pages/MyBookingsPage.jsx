@@ -48,7 +48,7 @@ export default function MyBookingsPage() {
     if (action === "pay") {
       let win = null;
       try {
-        win = window.open("", "rento_checkout", "popup=yes,width=540,height=780");
+        win = window.open("", "_blank");
         payWinRef.current = win;
       } catch {
         win = null;
@@ -226,7 +226,10 @@ export default function MyBookingsPage() {
           currency={payOverlay.currency}
           label={payOverlay.label}
           url={payOverlay.url}
-          onDone={() => load()}
+          onDone={() => {
+            try { payWinRef.current?.close(); } catch {}
+            load();
+          }}
           onClose={() => setPayOverlay(null)}
         />
       )}

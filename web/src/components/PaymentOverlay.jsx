@@ -3,15 +3,26 @@ import { api, formatPrice } from "../api";
 
 const BAD_STATUSES = ["failed", "expired", "refunded"];
 
-export default function PaymentOverlay({ reference, amount, currency = "ISK", label, url, onDone, onClose }) {
+export default function PaymentOverlay({ reference, amount, currency = "ISK", label, onDone, onClose }) {
   const [payment, setPayment] = useState(null);
   const [state, setState] = useState("waiting"); // waiting | paid | bad | error
   const [error, setError] = useState("");
   const doneRef = useRef(onDone);
+  const closeRef = useRef(onClose);
 
   useEffect(() => {
     doneRef.current = onDone;
   }, [onDone]);
+
+  useEffect(() => {
+    closeRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (state !== "paid") return undefined;
+    const timer = setTimeout(() => closeRef.current?.(), 2200);
+    return () => clearTimeout(timer);
+  }, [state]);
 
   useEffect(() => {
     if (!reference) return undefined;
@@ -70,33 +81,24 @@ export default function PaymentOverlay({ reference, amount, currency = "ISK", la
             <p className="muted" style={{ marginTop: 0 }}>
               {label ? `${label} · ` : ""}{amountLabel}
             </p>
-            <button className="btn btn-primary" onClick={onClose}>Loka</button>
           </>
         ) : bad ? (
           <>
+            <button className="pay-overlay-close" aria-label="Loka" onClick={onClose}>×</button>
             <div className="pay-icon pay-icon-err" aria-hidden="true">!</div>
             <h2>{state === "error" ? "Gat ekki staðfest greiðslu" : "Greiðslan tókst ekki"}</h2>
             <p className="muted" style={{ marginTop: 0 }}>{error || "Vinsamlegast reyndu aftur."}</p>
-            <button className="btn btn-primary" onClick={onClose}>Loka</button>
           </>
         ) : (
           <>
             <div className="pay-spinner" aria-hidden="true" />
             <h2>Bíð eftir greiðslu…</h2>
             <p className="muted" style={{ marginTop: 0 }}>
-              Greiðslusíðan er opnuð í nýjum glugga. Ljúktu greiðslunni þar — þessi síða uppfærist sjálfkrafa.
+              Greiðslusíðan er opnuð í nýjum flipa. Ljúktu greiðslunni þar — hún fer sjálfkrafa í gegn hér.
             </p>
             <p className="muted" style={{ marginTop: -6 }}>
               {label ? `${label} · ` : ""}{amountLabel}
             </p>
-            <div className="row" style={{ justifyContent: "center", gap: 10, marginTop: 12 }}>
-              {url && (
-                <a className="btn btn-outline btn-sm" href={url} target="_blank" rel="noreferrer">
-                  Opna greiðslusíðu
-                </a>
-              )}
-              <button className="btn btn-outline btn-sm" onClick={onClose}>Hætta við</button>
-            </div>
           </>
         )}
       </div>
