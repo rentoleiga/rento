@@ -33,7 +33,14 @@ app.get("/uploads/:filename", async (req, res, next) => {
 });
 
 // Health
-app.get("/health", (req, res) => res.json({ ok: true, service: "rento-api" }));
+app.get("/health", (req, res) =>
+  res.json({
+    ok: true,
+    service: "rento-api",
+    commit: process.env.RAILWAY_GIT_COMMIT_SHA || null,
+    themeKey: config.straumur.themeKey || null,
+  })
+);
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
