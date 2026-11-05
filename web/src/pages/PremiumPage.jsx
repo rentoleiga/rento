@@ -65,6 +65,11 @@ export default function PremiumPage() {
     document.getElementById("boost")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [preselected, listings.length]);
 
+  useEffect(() => {
+    if (!error) return;
+    document.getElementById("purchase-notice")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [error]);
+
   const needLogin = () => navigate("/login?next=/promote");
 
   const buySlot = async () => {
@@ -152,7 +157,7 @@ export default function PremiumPage() {
       </section>
 
       {(notice || error) && (
-        <div className="container" style={{ marginTop: 18 }}>
+        <div className="container" id="purchase-notice" style={{ marginTop: 18 }}>
           {notice && <div className="form-success">{notice}</div>}
           {error && <div className="form-error">{error}</div>}
         </div>
