@@ -534,9 +534,38 @@ export default function ListingPage() {
                 </div>
               </div>
               <div className="owner-card-verify" style={{ marginTop: 12, borderTop: "1px solid var(--line)", paddingTop: 10 }}>
-                <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6 }}>Staðfesting</div>
-                <div className="verify-row"><span>✉️ Netfang</span><span style={{ color: "#0a7a5a" }}>✓</span></div>
-                <div className="verify-row"><span>📞 Símanúmer</span><span style={{ color: listing.ownerPhone ? "#0a7a5a" : "var(--muted)" }}>{listing.ownerPhone ? "✓" : "—"}</span></div>
+                <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>Staðfesting</div>
+                <div className="verify-row">
+                  <span className="verify-label">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <path d="m3 7 9 6 9-6" />
+                    </svg>
+                    Netfang
+                  </span>
+                  <span className="verify-ok" title="Staðfest">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="m5 12 4 4 10-10" />
+                    </svg>
+                  </span>
+                </div>
+                <div className="verify-row">
+                  <span className="verify-label">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.81.37 1.6.72 2.34a2 2 0 0 1-.45 2.11L8 9.5a16 16 0 0 0 6 6l1.33-1.33a2 2 0 0 1 2.11-.45c.74.35 1.53.6 2.34.72A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                    Símanúmer
+                  </span>
+                  {listing.ownerPhone ? (
+                    <span className="verify-ok" title="Staðfest">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="m5 12 4 4 10-10" />
+                      </svg>
+                    </span>
+                  ) : (
+                    <span className="verify-none" title="Ekki staðfest">–</span>
+                  )}
+                </div>
               </div>
               <button className="btn btn-primary btn-block btn-icon" style={{ marginTop: 12 }} onClick={() => { if (!user) navigate("/login?next=" + encodeURIComponent(`/listing/${slug}`)); else if (listing.ownerPhone) window.location.href=`tel:${listing.ownerPhone}`; }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

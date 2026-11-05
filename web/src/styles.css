@@ -1831,7 +1831,11 @@ a:hover {
 .owner-avatar { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #e6f0eb; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .owner-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .avatar-fallback { font-size: 22px; }
-.verify-row { display: flex; justify-content: space-between; align-items: center; background: #eef6f3; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 13px; }
+.verify-row { display: flex; justify-content: space-between; align-items: center; background: #eef6f3; border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 13px; }
+.verify-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: var(--ink); }
+.verify-label svg { flex: none; color: #5b7a70; }
+.verify-ok { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #dcefe7; color: #0a7a5a; flex: none; }
+.verify-none { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #f1f4f3; color: var(--muted); font-weight: 700; flex: none; }
 .price-line {
   font-size: 24px;
   font-weight: 800;
