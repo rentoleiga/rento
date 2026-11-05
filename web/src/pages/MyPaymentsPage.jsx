@@ -46,7 +46,6 @@ const isFreshCheckout = (p) =>
 export default function MyPaymentsPage() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [busyId, setBusyId] = useState(null);
   const [error, setError] = useState("");
 
   const load = useCallback(
@@ -62,19 +61,6 @@ export default function MyPaymentsPage() {
   useEffect(() => {
     load();
   }, [load]);
-
-  const sync = async (id) => {
-    setBusyId(id);
-    setError("");
-    try {
-      await api.post(`/api/payments/${id}/sync`);
-      await load();
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setBusyId(null);
-    }
-  };
 
   const sum = (status) =>
     rows.filter((r) => r.status === status).reduce((s, r) => s + (Number(r.amount) || 0), 0);
@@ -140,25 +126,16 @@ export default function MyPaymentsPage() {
                   {p.status === "pending" && p.failed_reason && ` · ${p.failed_reason}`}
                 </div>
 
-                {p.status === "pending" && (
+                {p.status === "pending" && isFreshCheckout(p) && (
                   <div className="row" style={{ marginTop: 8, gap: 8, flexWrap: "wrap" }}>
-                    {isFreshCheckout(p) && (
-                      <a
-                        className="btn btn-primary btn-sm"
-                        href={p.checkout_url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Klára greiðslu
-                      </a>
-                    )}
-                    <button
-                      className="btn btn-outline btn-sm"
-                      disabled={busyId === p.id}
-                      onClick={() => sync(p.id)}
+                    <a
+                      className="btn btn-primary btn-sm"
+                      href={p.checkout_url}
+                      target="_blank"
+                      rel="noreferrer"
                     >
-                      {busyId === p.id ? "Athuga…" : "Athuga stöðu"}
-                    </button>
+                      Klára greiðslu
+                    </a>
                   </div>
                 )}
 
