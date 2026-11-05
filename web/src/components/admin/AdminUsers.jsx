@@ -13,6 +13,7 @@ export default function AdminUsers() {
   const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState(null);
+  const [freeSlots, setFreeSlots] = useState(3);
 
   const load = useCallback((p, keyword, r) => {
     const params = new URLSearchParams({ page: String(p), perPage: "25" });
@@ -21,6 +22,7 @@ export default function AdminUsers() {
     return api.get(`/api/admin/users?${params}`).then((d) => {
       setRows(d.users || []);
       setTotal(d.total || 0);
+      if (d.freeSlots != null) setFreeSlots(d.freeSlots);
     }).catch((e) => setError(e.message));
   }, []);
 
@@ -56,6 +58,39 @@ export default function AdminUsers() {
       if (!window.confirm(`Reinstate ${u.email}?`)) return;
       setBusyId(u.id);
       patch(`/api/admin/users/${u.id}/unban`, {});
+    }
+  };
+
+  const grantSlots = async (u) => {
+    const raw = window.prompt(`How many extra ad slots should ${u.email} get?`, "1");
+    if (raw === null) return;
+    const count = parseInt(raw, 10);
+    if (!Number.isFinite(count) || count < 1 || count > 20) {
+      window.alert("Enter a number between 1 and 20.");
+      return;
+    }
+    setBusyId(u.id);
+    try {
+      await api.post(`/api/admin/users/${u.id}/slots`, { count });
+      await load(page, q, role);
+    } catch (e) {
+      window.alert(e.message);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const revokeSlot = async (u) => {
+    if (!u.granted_slot_id) return;
+    if (!window.confirm(`Remove one unused granted ad slot from ${u.email}?`)) return;
+    setBusyId(u.id);
+    try {
+      await api.del(`/api/admin/users/${u.id}/slots/${u.granted_slot_id}`);
+      await load(page, q, role);
+    } catch (e) {
+      window.alert(e.message);
+    } finally {
+      setBusyId(null);
     }
   };
 
@@ -122,12 +157,37 @@ export default function AdminUsers() {
                   )}
                 </td>
                 <td>{fmt(u.credit_balance)}</td>
-                <td>{fmt(u.extra_slots)}</td>
+                <td>
+                  <div title="Published listings / total ad capacity">
+                    {fmt(u.active_listings)} / {fmt(freeSlots + (u.available_slots || 0))}
+                  </div>
+                  <div className="muted" style={{ fontSize: 12, display: "flex", gap: 6, alignItems: "center" }}>
+                    {u.available_slots > 0 ? `+${fmt(u.available_slots)} extra` : "3 free"}
+                    {u.granted_slots > 0 && (
+                      <button
+                        className="btn btn-sm btn-outline"
+                        style={{ padding: "0 6px", lineHeight: 1.4 }}
+                        disabled={busyId === u.id}
+                        onClick={() => revokeSlot(u)}
+                        title="Remove one unused granted slot"
+                      >
+                        −
+                      </button>
+                    )}
+                  </div>
+                </td>
                 <td>{fmt(u.listings)}</td>
                 <td>{fmt(u.bookings)}</td>
                 <td className="muted">{shortDate(u.created_at)}</td>
                 <td>
                   <div className="admin-row-actions">
+                    <button
+                      className="btn btn-sm btn-outline"
+                      disabled={busyId === u.id}
+                      onClick={() => grantSlots(u)}
+                    >
+                      + Ad slot
+                    </button>
                     <button
                       className="btn btn-sm btn-outline"
                       disabled={busyId === u.id || u.id === me?.id}

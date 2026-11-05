@@ -4,59 +4,38 @@ import CmsContent, { useCms } from "../components/CmsContent";
 
 const GROUPS = [
   {
-    title: "Grunnatriði",
+    title: "Almennt",
     items: [
-      { q: "Hvað er Rentó?", a: "Rentó er leigumarkaðstorg þar sem einstaklingar og fyrirtæki geta leigt hluti sín á milli. Þú getur annaðhvort fundið eitthvað sem þig vantar eða sett eigin hluti í leigu og fengið greitt fyrir þá.", link: { to: "/how-it-works", label: "Sjá nánar: Hvernig virkar Rentó?" } },
-      { q: "Er Rentó eigandi hlutanna sem eru á síðunni?", a: "Nei. Rentó er markaðstorg sem tengir saman leigjendur og leigusala. Hluturinn er í eigu þess aðila sem skráir hann til leigu nema annað sé sérstaklega tekið fram." },
-      { q: "Hvernig get ég haft samband við Rentó?", a: "Ef þú finnur ekki svarið hér getur þú haft samband við okkur í gegnum tengiliðasíðuna.", link: { to: "/contact", label: "Hafðu samband", btn: true } },
+      { q: "1. Hvað er Rentó?", a: "Rentó er íslenskur vettvangur þar sem einstaklingar og fyrirtæki geta leigt út hluti eða fundið hluti til leigu. Rentó tengir saman leigusala og leigutaka á einfaldan hátt." },
+      { q: "2. Er ókeypis að nota Rentó?", a: "Já! Það er ókeypis að stofna aðgang, skoða auglýsingar og senda skilaboð. Þú getur einnig haft allt að þrjár virkar auglýsingar samtímis án greiðslu." },
+      { q: "3. Hvernig leigi ég hlut?", a: "Finndu hlut sem þig vantar og sendu auglýsandanum skilaboð. Þið komið ykkur sjálf saman um verð, leigutíma, greiðslu, afhendingu og skil." },
     ],
   },
   {
-    title: "Að leigja hlut",
+    title: "Auglýsingar",
     items: [
-      { q: "Hvernig leigi ég hlut á Rentó?", a: "Finndu hlut sem þú vilt leigja, veldu dagsetningar og sendu inn bókunarbeiðni. Þegar bókunin hefur verið samþykkt færðu upplýsingar um næstu skref og afhendingu.", link: { to: "/how-it-works", label: "Sjá skref fyrir skref: Hvernig virkar Rentó?" } },
-      { q: "Hvernig fer afhending fram?", a: "Leigjandi og leigusali koma sér saman um afhendingu og skil á hlutnum. Við mælum með að báðir aðilar fari yfir ástand hlutarins við afhendingu og aftur við skil." },
-      { q: "Get ég hætt við bókun?", a: "Það fer eftir því hvenær bókun er afturkölluð og þeim afbókunarreglum sem eiga við um bókunina. Þú sérð gildandi skilmála áður en bókun er staðfest.", link: { to: "/terms", label: "Sjá nánar: Afbókunarreglur" } },
-      { q: "Hvað gerist ef leigusali hættir við?", a: "Ef leigusali getur ekki staðið við bókunina skal hann afturkalla hana eins fljótt og hægt er. Endurgreiðsla og önnur réttindi leigjanda fara eftir gildandi afbókunarskilmálum.", link: { to: "/terms", label: "Sjá nánar: Afbókunarreglur" } },
+      { q: "4. Hvernig set ég inn auglýsingu?", a: "Skráðu þig inn, veldu „Búa til auglýsingu“, bættu við myndum, lýsingu og verði og birtu auglýsinguna." },
+      { q: "5. Hversu margar auglýsingar get ég birt ókeypis?", a: "Þú færð þrjú ókeypis auglýsingapláss sem þú getur notað aftur og aftur. Ef þú eyðir auglýsingu eða hún rennur út losnar pláss fyrir nýja." },
+      { q: "6. Hversu lengi er auglýsing virk?", a: "Hver auglýsing er virk í 30 daga. Þú getur endurnýjað hana ókeypis svo lengi sem hún rúmast innan þriggja ókeypis auglýsingaplássanna. Auglýsingar endurnýjast ekki sjálfkrafa." },
+      { q: "7. Get ég verið með fleiri en þrjár auglýsingar?", a: "Já! Þú getur keypt viðbótarbirtingar. Hver keypt birting gildir fyrir eina tiltekna auglýsingu í allt að 30 daga frá staðfestingu greiðslu." },
+      { q: "8. Hvað er Boost?", a: "Boost er valkvæð þjónusta sem eykur sýnileika auglýsingarinnar þinnar. Þú getur valið milli Silfur, Gull og Premium pakka. Boost tryggir þó ekki að hluturinn verði leigður." },
+      { q: "9. Hvað má ég leigja út?", a: "Þú mátt leigja út löglega og örugga hluti sem þú átt eða hefur heimild til að leigja út. Sumir hlutir eru bannaðir og sérstakar reglur geta gilt um til dæmis ökutæki." },
     ],
   },
   {
-    title: "Að leigja út",
+    title: "Greiðslur og öryggi",
     items: [
-      { q: "Hvernig set ég hlut í leigu?", a: "Þú stofnar aðgang, skráir hlutinn, setur inn myndir, lýsingu, verð og upplýsingar um hvenær hann er laus. Þegar einhver óskar eftir að leigja hlutinn færðu bókunarbeiðni sem þú getur tekið afstöðu til.", link: { to: "/how-it-works", label: "Sjá nánar: Hvernig virkar Rentó?" } },
-      { q: "Hver má leigja út á Rentó?", a: "Bæði einstaklingar og fyrirtæki geta skráð hluti til leigu, að því gefnu að þeir hafi heimild til þess og hluturinn megi vera boðinn til leigu samkvæmt lögum og skilmálum Rentó.", link: { to: "/terms", label: "Sjá nánar: Notendaskilmálar" } },
-      { q: "Hvaða hluti má ég leigja út?", a: "Flesta venjulega hluti sem heimilt er að eiga og leigja út má skrá á Rentó, til dæmis verkfæri, búnað, útivistarbúnað og ýmsa aðra hluti. Sumir hlutir eru þó bannaðir eða háðir sérstökum reglum.", link: { to: "/banned", label: "Sjá nánar: Bannaðir og takmarkaðir hlutir" } },
-      { q: "Get ég leigt út ökutæki?", a: "Já, ef þú hefur heimild til útleigunnar og uppfyllir þær reglur sem gilda um viðkomandi ökutæki, tryggingar þess og notkun. Leigusali ber ábyrgð á að útleigan sé lögleg og að nauðsynlegar tryggingar og heimildir séu til staðar.", link: { to: "/terms", label: "Sjá nánar: Notendaskilmálar" } },
-      { q: "Get ég breytt eða eytt auglýsingunni minni?", a: "Já. Þú getur farið inn á aðganginn þinn og breytt upplýsingum um hlutinn, verði, myndum og framboði. Ekki er þó alltaf hægt að breyta upplýsingum sem hafa áhrif á bókun sem þegar hefur verið staðfest." },
-      { q: "Get ég hafnað bókunarbeiðni?", a: "Já. Leigusali getur hafnað bókunarbeiðni áður en hún hefur verið staðfest. Við mælum þó með að halda dagatali og framboði uppfærðu til að draga úr óþarfa höfnunum." },
+      { q: "10. Hvernig fara greiðslur fyrir leigu fram?", a: "Leigusali og leigutaki ákveða sjálfir greiðslumáta. Rentó tekur ekki við leigugreiðslum eða tryggingarfé og tekur enga þóknun af leiguviðskiptum milli notenda." },
+      { q: "11. Þarf ég að greiða tryggingarfé?", a: "Það fer eftir samkomulagi við leigusalann. Við mælum með að þið ákveðið skilmála um tryggingarfé áður en leigan hefst." },
+      { q: "12. Hver ber ábyrgð ef hlutur skemmist?", a: "Leigusali og leigutaki bera ábyrgð samkvæmt samkomulagi sínu og gildandi lögum. Rentó er ekki aðili að leigusamningnum og tryggir ekki auglýsta hluti." },
+      { q: "13. Hvað ef eitthvað fer úrskeiðis við leiguna?", a: "Best er að reyna fyrst að leysa málið beint við hinn aðilann. Ef þig grunar svik eða brot gegn reglum Rentó geturðu tilkynnt það til okkar á info@rento.is." },
     ],
   },
   {
-    title: "Greiðslur og verð",
+    title: "Aðgangur og aðstoð",
     items: [
-      { q: "Hvernig virka greiðslur?", a: "Rentó sér um greiðslur fyrir auglýsingapláss og kynningar. Leigugreiðslan sjálf fer fram beint á milli leigjanda og leigusala við afhendingu, nema annað sé samið. Áður en þú staðfestir bókun sérðu hvað leigan kostar og hvaða gjöld eiga við.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
-      { q: "Hvað kostar að auglýsa hlut?", a: "Þú færð þrjú ókeypis auglýsingapláss í 30 daga í senn. Þegar þau eru uppnotuð geturðu keypt viðbótarpláss fyrir 490 kr. hvert og gildir það í 30 daga frá notkun. Einnig eru til pakkar: 3 pláss fyrir 1.290 kr., 5 pláss fyrir 1.990 kr. og 10 pláss fyrir 3.490 kr.", link: { to: "/promote", label: "Sjá verð og pláss" } },
-      { q: "Hvað er kynning á auglýsingu?", a: "Kynning setur auglýsinguna þína ofar í leit og merkir hana sem „Kynnt“. Þú getur valið Silfur í 7 daga fyrir 1.290 kr., Gull í 14 daga fyrir 1.990 kr. eða Platína í 30 daga fyrir 2.990 kr.", link: { to: "/promote", label: "Kynna auglýsingu" } },
-      { q: "Hvað gerist þegar auglýsingin rennur út?", a: "Auglýsingin birtist ekki lengur og plássið sem hún notaði verður laust. Þú getur endurbirt auglýsinguna úr stjórnborðinu ef pláss er laust. Keypt pláss sem ekki hefur verið notuð halda gildi sínu þar til þau eru notuð.", link: { to: "/dashboard/listings", label: "Fara í mínar auglýsingar" } },
-      { q: "Hvað kostar að nota Rentó?", a: "Það kostar ekkert að stofna aðgang, skoða hluti eða leigja. Leigusala eru aðeins gjaldfærð auglýsingapláss og kynningar sem hann velur sjálfur.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
-      { q: "Hvenær fær leigusali greitt?", a: "Leigugreiðsla fer fram beint milli leigjanda og leigusala samkvæmt því sem þeir semja um, oftast við afhendingu. Rentó heldur ekki um leiguféð.", link: { to: "/terms", label: "Sjá nánar: Verð og gjöld" } },
-      { q: "Þarf ég að greiða skatt af tekjum sem ég fæ í gegnum Rentó?", a: "Leigusalar bera sjálfir ábyrgð á að standa skil á sköttum og öðrum opinberum gjöldum sem kunna að eiga við um tekjur þeirra. Reglur geta verið mismunandi eftir tegund útleigu, umfangi hennar og því hvort þú starfar sem einstaklingur eða fyrirtæki." },
-    ],
-  },
-  {
-    title: "Ef eitthvað kemur upp",
-    items: [
-      { q: "Hvað ef hluturinn skemmist?", a: "Ef hlutur skemmist á meðan á leigu stendur ættu leigjandi og leigusali að skrá skemmdina eins fljótt og mögulegt er og hafa samband í gegnum Rentó ef þörf er á. Ábyrgð fer eftir aðstæðum hverju sinni og þeim skilmálum sem samþykktir voru við bókun.", link: { to: "/terms", label: "Sjá nánar: Notendaskilmálar" } },
-      { q: "Hvað ef hluturinn er ekki eins og lýsingin segir?", a: "Ef hluturinn er verulega frábrugðinn lýsingu eða ekki nothæfur skaltu fyrst hafa samband við leigusalann og reyna að leysa málið áður en notkun hefst. Ef ekki tekst að leysa málið getur þú haft samband við Rentó." },
-      { q: "Hvað ef leigjandi skilar hlutnum ekki?", a: "Hafðu fyrst samband við leigjandann. Ef hluturinn hefur ekki verið skilaður samkvæmt samkomulagi skaltu hafa samband við Rentó og varðveita öll samskipti og upplýsingar um bókunina." },
-    ],
-  },
-  {
-    title: "Traust og persónuvernd",
-    items: [
-      { q: "Staðfestir Rentó alla leigusala og hluti?", a: "Rentó getur staðfest ákveðnar upplýsingar um notendur, en það þýðir ekki að Rentó hafi sérstaklega yfirfarið eða samþykkt hvern hlut, leyfi, tryggingar eða lögmæti hverrar útleigu. Leigusali ber ábyrgð á upplýsingum sem hann skráir og því að hann hafi heimild til útleigunnar.", link: { to: "/terms", label: "Sjá nánar: Notendaskilmálar" } },
-      { q: "Hvernig veit ég hvort ég geti treyst öðrum notanda?", a: "Skoðaðu upplýsingar á notandasíðu, umsagnir og fyrri viðskipti þegar þær upplýsingar liggja fyrir. Við mælum einnig með skýrum samskiptum um afhendingu, skil og ástand hlutarins áður en leiga hefst." },
-      { q: "Hvernig meðhöndlar Rentó persónuupplýsingarnar mínar?", a: "Rentó vinnur með persónuupplýsingar í samræmi við persónuverndarstefnu sína.", link: { to: "/privacy", label: "Sjá nánar: Persónuverndarstefna" } },
+      { q: "14. Hvernig stofna ég aðgang?", a: "Þú getur skráð þig með Google eða stofnað aðgang með netfangi og lykilorði. Þú þarft að vera 18 ára eða eldri." },
+      { q: "15. Hvernig hef ég samband við Rentó?", a: "Þú getur sent okkur tölvupóst á info@rento.is og við reynum að svara eins fljótt og hægt er." },
     ],
   },
 ];
@@ -71,7 +50,7 @@ export default function FaqPage() {
       <div className="container" style={{ maxWidth: 780 }}>
         <h1>Algengar spurningar</h1>
         <p className="muted" style={{ fontSize: 16, marginTop: 8, lineHeight: 1.6 }}>
-          Hér finnur þú svör við algengustu spurningunum um Rentó, bæði fyrir þá sem vilja leigja og þá sem vilja leigja út.
+          Hér finnur þú svör við algengustu spurningunum um Rentó.
         </p>
 
         {cms && <CmsContent text={cms} />}

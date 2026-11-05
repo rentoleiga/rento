@@ -6,6 +6,7 @@ const { authRequired, adminRequired } = require("../middleware/auth");
 const { asyncHandler, err } = require("../middleware/http");
 const { paginate } = require("../utils/helpers");
 const { logAdminAction } = require("../utils/adminLog");
+const { FREE_SLOTS } = require("../utils/slots");
 const creditGuard = require("../services/creditGuard");
 
 const router = Router();
@@ -146,6 +147,13 @@ router.get(
                 u.business_verified, u.listing_verified,
                 u.rating, u.review_count, u.completed_rentals, u.created_at,
                 (SELECT count(*) FROM listings l WHERE l.owner_id = u.id AND l.status <> 'deleted')::int AS listings,
+                (SELECT count(*) FROM listings l WHERE l.owner_id = u.id AND l.status = 'published'
+                   AND (l.expires_at IS NULL OR l.expires_at > now()))::int AS active_listings,
+                (SELECT count(*) FROM listing_slots s WHERE s.user_id = u.id AND s.used_at IS NULL)::int AS available_slots,
+                (SELECT count(*) FROM listing_slots s WHERE s.user_id = u.id AND s.used_at IS NULL
+                   AND s.package_id = 'admin_grant')::int AS granted_slots,
+                (SELECT min(s.id) FROM listing_slots s WHERE s.user_id = u.id AND s.used_at IS NULL
+                   AND s.package_id = 'admin_grant') AS granted_slot_id,
                 (SELECT count(*) FROM bookings b WHERE b.owner_id = u.id OR b.renter_id = u.id)::int AS bookings
          FROM users u
          ${where}
@@ -156,7 +164,7 @@ router.get(
       db.query(`SELECT count(*)::int AS n FROM users u ${where}`, params),
     ]);
 
-    res.json({ users: list.rows, total: total.rows[0].n, page, perPage });
+    res.json({ users: list.rows, total: total.rows[0].n, page, perPage, freeSlots: FREE_SLOTS });
   })
 );
 
@@ -167,7 +175,7 @@ router.get(
     const id = parseInt(req.params.id, 10);
     if (!id) throw err("Invalid user id", 400);
 
-    const [u, listings, bookings, credits] = await Promise.all([
+    const [u, listings, bookings, credits, slots] = await Promise.all([
       db.query(
         `SELECT id, email, first_name, last_name, city, phone, avatar, bio, language, role,
                 renter_enabled, owner_enabled, business_account,
@@ -199,6 +207,15 @@ router.get(
          ORDER BY created_at DESC LIMIT 100`,
         [id]
       ),
+      db.query(
+        `SELECT s.id, s.package_id, s.amount, s.purchased_at, s.used_at, s.expires_at,
+                s.listing_id, l.title AS listing_title, l.slug AS listing_slug
+         FROM listing_slots s
+         LEFT JOIN listings l ON l.id = s.listing_id
+         WHERE s.user_id = $1
+         ORDER BY (s.used_at IS NULL), s.purchased_at, s.id`,
+        [id]
+      ),
     ]);
     if (u.rows.length === 0) throw err("User not found", 404);
 
@@ -207,6 +224,8 @@ router.get(
       listings: listings.rows,
       bookings: bookings.rows,
       credits: credits.rows,
+      slots: slots.rows,
+      freeSlots: FREE_SLOTS,
     });
   })
 );
@@ -238,6 +257,73 @@ router.patch(
     });
 
     res.json({ user: upd.rows[0] });
+  })
+);
+
+// POST /api/admin/users/:id/slots { count } -> grant extra listing slots (audited)
+router.post(
+  "/users/:id/slots",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    if (!id) throw err("Invalid user id", 400);
+    const count = Math.floor(Number(req.body?.count ?? 1));
+    if (!Number.isFinite(count) || count < 1 || count > 20) {
+      throw err("count must be between 1 and 20", 400);
+    }
+
+    const u = await db.query("SELECT id, email FROM users WHERE id = $1", [id]);
+    if (u.rows.length === 0) throw err("User not found", 404);
+
+    const inserted = await db.query(
+      `INSERT INTO listing_slots (user_id, package_id, amount)
+       SELECT $1, 'admin_grant', 0 FROM generate_series(1, $2::int)
+       RETURNING id`,
+      [id, count]
+    );
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "user.slot_grant",
+      targetType: "user",
+      targetId: id,
+      data: {
+        count,
+        email: u.rows[0].email,
+        slotIds: inserted.rows.map((r) => r.id),
+      },
+      ip: req.ip,
+    });
+
+    res.status(201).json({ granted: count, slotIds: inserted.rows.map((r) => r.id) });
+  })
+);
+
+// DELETE /api/admin/users/:id/slots/:slotId -> revoke an unused granted slot (audited)
+router.delete(
+  "/users/:id/slots/:slotId",
+  asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const slotId = parseInt(req.params.slotId, 10);
+    if (!id || !slotId) throw err("Invalid slot id", 400);
+
+    const del = await db.query(
+      `DELETE FROM listing_slots
+        WHERE id = $1 AND user_id = $2 AND used_at IS NULL AND package_id = 'admin_grant'
+        RETURNING id`,
+      [slotId, id]
+    );
+    if (del.rowCount === 0) throw err("Slot not found or already in use", 404);
+
+    await logAdminAction({
+      adminId: req.user.id,
+      action: "user.slot_revoke",
+      targetType: "user",
+      targetId: id,
+      data: { slotId },
+      ip: req.ip,
+    });
+
+    res.json({ ok: true });
   })
 );
 
