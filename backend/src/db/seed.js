@@ -73,6 +73,7 @@ async function seed() {
       { slug: "cleaning", icon: "cleaning_services", en: "Cleaning", is: "Þrif", sort: 9 },
       { slug: "office", icon: "business_center", en: "Office", is: "Skrifstofa", sort: 10 },
       { slug: "sports", icon: "sports_soccer", en: "Sports & Games", is: "Íþróttir og leikir", sort: 11 },
+      { slug: "clothing-accessories", icon: "checkroom", en: "Clothing & Accessories", is: "Föt og fylgihlutir", sort: 12 },
     ];
 
     const catIds = {};
