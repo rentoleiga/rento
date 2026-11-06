@@ -555,7 +555,7 @@ const messages = {
     "home.listItem": "Skráðu hlut",
     "home.promoTitle": "Þarftu eitthvað í einn dag eða yfir helgina?",
     "home.promoTitle2": "Leigðu það í stað þess að kaupa.",
-    "home.promoSub": "Finndu verkfæri, búnað og annað sem þig vantar — beint frá fólki í þínu nágrinni.",
+    "home.promoSub": "Finndu verkfæri, búnað og annað sem þig vantar — beint frá fólki í þínu nágrenni.",
     "home.promoFind": "Finndu það sem þú þarft →",
     "home.promoStart": "Byrjaðu að leigja út",
     "home.promoFoot": "Einföld og örugg leið til að leigja búnað frá fólki um allt land.",
