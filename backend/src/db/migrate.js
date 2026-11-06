@@ -350,6 +350,18 @@ async function applyMigrations() {
       );
       CREATE INDEX IF NOT EXISTS idx_error_logs_created ON error_logs (created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_error_logs_source ON error_logs (source, created_at DESC);
+
+      INSERT INTO categories (parent_id, slug, icon, sort_order)
+      VALUES (NULL, 'clothing-accessories', 'checkroom', 12)
+      ON CONFLICT (slug) DO UPDATE SET icon = EXCLUDED.icon, sort_order = EXCLUDED.sort_order;
+
+      INSERT INTO category_translations (category_id, language, name)
+      SELECT id, 'is', 'Föt og fylgihlutir' FROM categories WHERE slug = 'clothing-accessories'
+      ON CONFLICT (category_id, language) DO UPDATE SET name = EXCLUDED.name;
+
+      INSERT INTO category_translations (category_id, language, name)
+      SELECT id, 'en', 'Clothing & Accessories' FROM categories WHERE slug = 'clothing-accessories'
+      ON CONFLICT (category_id, language) DO UPDATE SET name = EXCLUDED.name;
     `);
     console.log("Growth feature tables ready.");
 
